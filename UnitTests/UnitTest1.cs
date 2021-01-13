@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using TTRBookings;
+using TTRBookings.Entities;
 using Xunit;
 
 namespace UnitTests

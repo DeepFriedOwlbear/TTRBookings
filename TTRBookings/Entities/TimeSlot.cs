@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 
-namespace TTRBookings
+namespace TTRBookings.Entities
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class TimeSlot
     {
+        public Guid Id { get; set; }
         public DateTime Start { get; private set; }
 
         public TimeSlot(DateTime start)
@@ -19,5 +22,10 @@ namespace TTRBookings
         // These are just for convenience.
         public static bool operator ==(TimeSlot left, TimeSlot right) => Equals(left, right);
         public static bool operator !=(TimeSlot left, TimeSlot right) => !(left == right);
+
+        private string GetDebuggerDisplay()
+        {
+            return $"{Start:yyyy-MM-dd HH:mm}";
+        }
     }
 }
