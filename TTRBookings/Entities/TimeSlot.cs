@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace TTRBookings.Entities
@@ -8,6 +9,7 @@ namespace TTRBookings.Entities
     {
         public Guid Id { get; set; }
         public DateTime Start { get; private set; }
+        public IList<Room> Rooms { get; set; } = new List<Room>();
 
         public TimeSlot(DateTime start)
         {

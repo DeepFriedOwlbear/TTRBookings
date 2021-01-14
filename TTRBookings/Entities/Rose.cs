@@ -15,11 +15,11 @@ namespace TTRBookings.Entities
             Name = name;
         }
 
-        public void AddTier(TierRate rate) => AddTier(rate, 1);
-        public void AddTier(TierRate rate, int amount)
+        public void AddTier(TierRate tierRate) => AddTier(tierRate, 1);
+        public void AddTier(TierRate tierRate, int amount)
         {            
             //check if tier is in the list, if so add an increment, else add it to the list
-            Tier present = Tiers.FirstOrDefault(t => t.Rate == rate.Value);
+            Tier present = Tiers.FirstOrDefault(t => t.Rate == tierRate.Value);
 
             if (present != null)
             {
@@ -27,7 +27,7 @@ namespace TTRBookings.Entities
             }
             else
             {
-                Tier tier = new Tier() { Rate = rate.Value, Unit = amount };
+                Tier tier = new Tier() { Rate = tierRate.Value, Unit = amount };
                 Tiers.Add(tier);
             }
         }
