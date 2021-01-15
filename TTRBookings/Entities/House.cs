@@ -14,7 +14,7 @@ namespace TTRBookings.Entities
         public IList<Manager> Managers { get; set; } = new List<Manager>();
         public IList<Room> Rooms { get; set; } = new List<Room>();
         public IList<TierRate> TierRates { get; set; } = new List<TierRate>();
-        public IList<TimeSlot> Bookings = new List<TimeSlot>();
+        public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
         public decimal ManagerCut => Calculator.DoManagerCalculation(Managers.Count, TotalRoseRevenue());
 
@@ -46,48 +46,21 @@ namespace TTRBookings.Entities
             return tierRate;
         }
 
-        public void AddBooking(Rose rose, TierRate tier, Room room, TimeSlot timeslot, int duration)
+        public void AddBooking(Rose rose, TierRate tierRate, Room room, TimeSlot timeslot)
         {
-            for (int i = 0; i < duration; i++)
+            Tier tier = new Tier()
             {
-                TimeSlot tempTimeslot = new TimeSlot(timeslot.Start.Add(Calculator.TimeUnit * i));
-                rose.AddTier(tier);
-                room.Rose = rose;
-                AddSingleSlotBooking(tempTimeslot, room);
-            }
+                Discount = 1,
+                Rate = tierRate.Value,
+                Unit = (int)((timeslot.End - timeslot.Start) / Calculator.TimeUnit)
+            };
+            Booking booking = Booking.Create(rose, tier, room, timeslot);
+
+            Bookings.Add(booking);
+
+            rose.AddTier(tier);
         }
 
-        private void AddSingleSlotBooking(TimeSlot timeslot, Room room)
-        {
-            TimeSlot existingTimeslot = Bookings.FirstOrDefault(b => b.Start == timeslot.Start);
-
-            if (existingTimeslot != null)
-            {
-                existingTimeslot.Rooms.Add(room);
-            }
-            else
-            {
-                timeslot.Rooms.Add(room);
-                Bookings.Add(timeslot);
-            }
-        }        
-        
-        /*private void AddSingleSlotBooking(TimeSlot timeslot, Room room)
-        {
-            var existingRoomSlot = Bookings.FirstOrDefault(b => b.Key.Start == timeslot.Start);
-
-            if (existingRoomSlot.Key != null)
-            {
-                IList<Room> bookedRooms = existingRoomSlot.Value;
-                bookedRooms.Add(room);
-            }
-            else
-            {
-                List<Room> bookedRooms = new List<Room>();
-                bookedRooms.Add(room);
-                Bookings.Add(timeslot, bookedRooms);
-            }
-        }*/
         private decimal TotalRoseRevenue()
         {
             return Roses.Sum(a => a.TotalRevenue());

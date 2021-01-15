@@ -6,7 +6,6 @@ namespace TTRBookings.Entities
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Rose Rose { get; set; }
         public Room(string name)
         {
             Name = name;

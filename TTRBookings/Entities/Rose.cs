@@ -9,25 +9,21 @@ namespace TTRBookings.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public IList<Tier> Tiers { get; set; } = new List<Tier>();
-
         public Rose(string name)
         {
             Name = name;
         }
 
-        public void AddTier(TierRate tierRate) => AddTier(tierRate, 1);
-        public void AddTier(TierRate tierRate, int amount)
-        {            
-            //check if tier is in the list, if so add an increment, else add it to the list
-            Tier present = Tiers.FirstOrDefault(t => t.Rate == tierRate.Value);
+        public void AddTier(Tier tier)
+        {
+            Tier present = Tiers.FirstOrDefault(t => t.Rate == tier.Rate);
 
             if (present != null)
             {
-                present.Unit += amount;
+                present.Unit += tier.Unit;
             }
             else
             {
-                Tier tier = new Tier() { Rate = tierRate.Value, Unit = amount };
                 Tiers.Add(tier);
             }
         }

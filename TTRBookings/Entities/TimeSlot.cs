@@ -9,17 +9,26 @@ namespace TTRBookings.Entities
     {
         public Guid Id { get; set; }
         public DateTime Start { get; private set; }
-        public IList<Room> Rooms { get; set; } = new List<Room>();
+        public DateTime End { get; private set; }
 
-        public TimeSlot(DateTime start)
+        public TimeSlot(DateTime start, DateTime end)
         {
             Start = start;
+            End = end;
         }
 
         // Dictionaries compare keys based on equality,
         // this forces it to compare the actual value instead of the memory-reference.
-        public override bool Equals(object obj) => obj is TimeSlot slot && Start == slot.Start;
-        public override int GetHashCode() => HashCode.Combine(Start);
+        public override bool Equals(object obj)
+        {
+            if (obj is TimeSlot slot)
+            {
+                return Start == slot.Start && End == slot.End;
+            }
+            return false;            
+        }
+
+        public override int GetHashCode() => HashCode.Combine(Start, End);
 
         // These are just for convenience.
         public static bool operator ==(TimeSlot left, TimeSlot right) => Equals(left, right);

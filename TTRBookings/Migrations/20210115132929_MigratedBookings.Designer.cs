@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TTRBookings.Data;
 
 namespace TTRBookings.Migrations
 {
     [DbContext(typeof(TTRBookingsContext))]
-    partial class TTRBookingsContextModelSnapshot : ModelSnapshot
+    [Migration("20210115132929_MigratedBookings")]
+    partial class MigratedBookings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
