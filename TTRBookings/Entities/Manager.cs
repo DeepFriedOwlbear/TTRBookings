@@ -1,10 +1,10 @@
 ﻿using System;
+using TTRBookings.Data;
 
 namespace TTRBookings.Entities
 {
-    public class Manager
+    public class Manager : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public Manager(string name)
         {

@@ -1,10 +1,10 @@
 ﻿using System;
+using TTRBookings.Data;
 
 namespace TTRBookings.Entities
 {
-    public class Tier
+    public class Tier : BaseEntity
     {
-        public Guid Id { get; set; }
         public int Rate { get; set; }
         public int Unit { get; set; }
         public decimal Discount { get; set; } = 1;

@@ -1,10 +1,10 @@
 ﻿using System;
+using TTRBookings.Data;
 
 namespace TTRBookings.Entities
 {
-    public class Room
+    public class Room : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public Room(string name)
         {

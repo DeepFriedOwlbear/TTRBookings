@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using TTRBookings.Data;
 
 namespace TTRBookings.Entities
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
-    public class TimeSlot
+    public class TimeSlot : BaseEntity
     {
-        public Guid Id { get; set; }
         public DateTime Start { get; private set; }
         public DateTime End { get; private set; }
 

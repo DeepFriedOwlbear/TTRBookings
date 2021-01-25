@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TTRBookings.Data;
 
 namespace TTRBookings.Entities
 {
-    public class House
+    public class House : BaseEntity
     {
-        public Guid Id { get; set; }
         public decimal RoseCut { get; set; } = 0.7M; //0.7M = 70%
         public decimal HouseCut { get; set; } = 0.3M; //0.3M = 30%
 
@@ -21,7 +21,9 @@ namespace TTRBookings.Entities
         public Rose CreateRose(string name)
         {
             Rose rose = new Rose(name);
+            rose.HouseId = Id;
             Roses.Add(rose);
+            
             return rose;
         }
 

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TTRBookings.Data;
 
 namespace TTRBookings.Entities
 {
-    public class Rose
+    public class Rose : BaseEntity
     {
-        public Guid Id { get; set; }
+        public Guid HouseId { get; set; }
         public string Name { get; set; }
         public IList<Tier> Tiers { get; set; } = new List<Tier>();
         public Rose(string name)

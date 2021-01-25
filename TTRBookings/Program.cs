@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TTRBookings.Data;
 using TTRBookings.Entities;
@@ -14,46 +15,21 @@ namespace TTRBookings
 
         static void Main(string[] args)
         {
-            //--input for calculations
-            House house = new House();
+            RepositorySeed.SeedDatabase();
 
-            TierRate tierRate1 = house.CreateTierRate("Tier1", 50000);
-            TierRate tierRate2 = house.CreateTierRate("Tier2", 100000);
+            House house = Repository.ListWithIncludes<House>(_ => true, _ => _.Managers, _ => _.Rooms, _ => _.TierRates, _ => _.Bookings[0].TimeSlot, _ => _.Roses[0].Tiers)
+                .FirstOrDefault();
 
-            Rose rose1 = house.CreateRose("Rose1");
-            Rose rose2 = house.CreateRose("Rose2");
+            Repository.CreateEntry(house.CreateRose("Rose3"));
+            var rose3 = Repository.ReadEntry<Rose>(house.Roses.Last().Id);
+            rose3.Name = "Rose3_Modified";
+            Repository.UpdateEntry(rose3);
+            Repository.DeleteEntry(rose3);
 
-            house.CreateManager("Alice");
-            house.CreateManager("Bob");
 
-            Room room1 = house.CreateRoom("Room1");
-            Room room2 = house.CreateRoom("Room2");
-            Room room3 = house.CreateRoom("Room3");
-            Room room4 = house.CreateRoom("Room4");
+            //IList<Booking> bod = Repository.ListWithIncludes<Booking>(r=>r.Rose == rose1, r=>r.Rose,r=>r.Room,r=>r.Tier, r=>r.TimeSlot);
 
-            house.AddBooking(rose1, tierRate1, room1, new TimeSlot(new DateTime(2021, 1, 4, 20, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 4, 22, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose2, tierRate2, room2, new TimeSlot(new DateTime(2021, 1, 4, 19, 30, 00, DateTimeKind.Utc), new DateTime(2021, 1, 4, 23, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose1, tierRate2, room1, new TimeSlot(new DateTime(2021, 1, 4, 22, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 5, 01, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose2, tierRate1, room3, new TimeSlot(new DateTime(2021, 1, 4, 23, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 5, 00, 30, 00, DateTimeKind.Utc)));
-
-            //--end of input for calculation
-
-            SeedDatabase(house);
-            DisplayBookings(house);
-        }
-
-        private static void SeedDatabase(House house)
-        {
-            using var context = new TTRBookingsContext();
-            context.Database.EnsureDeleted();
-            context.Database.Migrate();
-
-            if (!context.Houses.Any())
-            {
-                context.Houses.Add(house);
-                context.SaveChanges();
-            }
-            context.SaveChanges();
+            //DisplayBookings(house);
         }
 
         private static void DisplayBookings(House house)
@@ -77,7 +53,8 @@ namespace TTRBookings
                 Console.WriteLine();
             }
 
-            Console.WriteLine(JsonConvert.SerializeObject(house, Formatting.Indented));
+            //show house object
+            //Console.WriteLine(JsonConvert.SerializeObject(house, Formatting.Indented));
 
             //Console.WriteLine(JsonSerializer.Serialize(house, new JsonSerializerOptions() { WriteIndented = true }));
 

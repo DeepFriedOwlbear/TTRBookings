@@ -1,10 +1,10 @@
 ﻿using System;
+using TTRBookings.Data;
 
 namespace TTRBookings.Entities
 {
-    public class TierRate
+    public class TierRate : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Tier { get; set; }
         public int Value { get; set; }
         public TierRate(string tier, int value)
