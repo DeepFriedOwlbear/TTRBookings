@@ -24,7 +24,7 @@ namespace TTRBookings
             var rose3 = Repository.ReadEntry<Rose>(house.Roses.Last().Id);
             rose3.Name = "Rose3_Modified";
             Repository.UpdateEntry(rose3);
-            Repository.DeleteEntry(rose3);
+            Repository.UpdateEntry(rose3);
 
 
             //IList<Booking> bod = Repository.ListWithIncludes<Booking>(r=>r.Rose == rose1, r=>r.Rose,r=>r.Room,r=>r.Tier, r=>r.TimeSlot);
