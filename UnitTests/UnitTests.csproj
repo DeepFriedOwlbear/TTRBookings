@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TTRBookings\TTRBookings.csproj" />
+    <ProjectReference Include="..\TTRBookings.Core\TTRBookings.Core.csproj" />
   </ItemGroup>
 
 </Project>

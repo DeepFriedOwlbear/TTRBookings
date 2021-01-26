@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TTRBookings.Core.Entities;
 
-namespace TTRBookings
+namespace TTRBookings.Core
 {
     public class Calculator
     {

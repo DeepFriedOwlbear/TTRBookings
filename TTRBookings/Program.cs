@@ -3,8 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TTRBookings.Data;
-using TTRBookings.Entities;
+
+using TTRBookings.Core.Entities;
 
 namespace TTRBookings
 {
@@ -15,16 +15,16 @@ namespace TTRBookings
 
         static void Main(string[] args)
         {
-            RepositorySeed.SeedDatabase();
+            //RepositorySeed.SeedDatabase();
 
-            House house = Repository.ListWithIncludes<House>(_ => true, _ => _.Managers, _ => _.Rooms, _ => _.TierRates, _ => _.Bookings[0].TimeSlot, _ => _.Roses[0].Tiers)
-                .FirstOrDefault();
+            //House house = Repository.ListWithIncludes<House>(_ => true, _ => _.Managers, _ => _.Rooms, _ => _.TierRates, _ => _.Bookings[0].TimeSlot, _ => _.Roses[0].Tiers)
+            //    .FirstOrDefault();
 
-            Repository.CreateEntry(house.CreateRose("Rose3"));
-            var rose3 = Repository.ReadEntry<Rose>(house.Roses.Last().Id);
-            rose3.Name = "Rose3_Modified";
-            Repository.UpdateEntry(rose3);
-            Repository.DeleteEntry(rose3);
+            //Repository.CreateEntry(house.CreateRose("Rose3"));
+            //var rose3 = Repository.ReadEntry<Rose>(house.Roses.Last().Id);
+            //rose3.Name = "Rose3_Modified";
+            //Repository.UpdateEntry(rose3);
+            //Repository.DeleteEntry(rose3);
 
 
             //IList<Booking> bod = Repository.ListWithIncludes<Booking>(r=>r.Rose == rose1, r=>r.Rose,r=>r.Room,r=>r.Tier, r=>r.TimeSlot);
@@ -34,24 +34,24 @@ namespace TTRBookings
 
         private static void DisplayBookings(House house)
         {
-            TimeSlot lastTimeslot = null;
-            using var context = new TTRBookingsContext();
+            //TimeSlot lastTimeslot = null;
+            //using var context = new TTRBookingsContext();
 
-            foreach (Booking booking in house.Bookings.OrderBy(k => k.TimeSlot.Start))
-            {
-                if (lastTimeslot == null || lastTimeslot != booking.TimeSlot)
-                {
-                    Console.WriteLine($"{booking.TimeSlot.Start:yyyy-MM-dd HH:mm} - {booking.TimeSlot.End:HH:mm}");
-                    Console.WriteLine($"{booking.Room.Name} > {booking.Rose.Name}");
-                }
-                else
-                {
-                    Console.WriteLine();
-                }
+            //foreach (Booking booking in house.Bookings.OrderBy(k => k.TimeSlot.Start))
+            //{
+            //    if (lastTimeslot == null || lastTimeslot != booking.TimeSlot)
+            //    {
+            //        Console.WriteLine($"{booking.TimeSlot.Start:yyyy-MM-dd HH:mm} - {booking.TimeSlot.End:HH:mm}");
+            //        Console.WriteLine($"{booking.Room.Name} > {booking.Rose.Name}");
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine();
+            //    }
 
-                lastTimeslot = booking.TimeSlot;
-                Console.WriteLine();
-            }
+            //    lastTimeslot = booking.TimeSlot;
+            //    Console.WriteLine();
+            //}
 
             //show house object
             //Console.WriteLine(JsonConvert.SerializeObject(house, Formatting.Indented));

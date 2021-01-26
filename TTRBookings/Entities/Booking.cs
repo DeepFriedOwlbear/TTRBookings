@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using TTRBookings.Data;
 
-namespace TTRBookings.Entities
+
+namespace TTRBookings.Core.Entities
 {
     public class Booking : BaseEntity
     {
@@ -49,18 +49,18 @@ namespace TTRBookings.Entities
             //load context
             //find bookings in context where booking matches predicate
             //return bookings
-            using var context = new TTRBookingsContext();
+            //using var context = new TTRBookingsContext();
 
-            var bookings = context.Set<Booking>()
-                .Include(r => r.Rose)
-                    .ThenInclude(rt => rt.Tiers)
-                .Include(r => r.Tier)
-                .Include(r => r.Room)
-                .Include(r => r.TimeSlot)
-                .Where(predicate)
-                .ToList();
-
-            return bookings;
+            //var bookings = context.Set<Booking>()
+            //    .Include(r => r.Rose)
+            //        .ThenInclude(rt => rt.Tiers)
+            //    .Include(r => r.Tier)
+            //    .Include(r => r.Room)
+            //    .Include(r => r.TimeSlot)
+            //    .Where(predicate)
+            //    .ToList();
+            return default;
+            //return bookings;
         }
     }
 }

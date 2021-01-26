@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data;
 
 namespace TTRBookings.Web
 {
@@ -25,9 +28,14 @@ namespace TTRBookings.Web
         {
             services.AddRazorPages();
 
-            //services.AddDbContext();
+            services.AddDbContext<TTRBookingsContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("TTRBookingsContext"))
+                .EnableSensitiveDataLogging()
+                //.LogTo((e) => System.Console.WriteLine(e))
+                );
 
-            services.AddSingleton(c => new NeedToBeInjected("abc"));
+            services.AddScoped<IRepository, Repository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,14 +63,6 @@ namespace TTRBookings.Web
             {
                 endpoints.MapRazorPages();
             });
-        }
-    }
-
-    public class NeedToBeInjected
-    {
-        public NeedToBeInjected(string random)
-        {
-
         }
     }
 }

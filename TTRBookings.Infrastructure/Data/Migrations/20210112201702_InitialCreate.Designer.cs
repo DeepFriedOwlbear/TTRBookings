@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TTRBookings.Data;
+using TTRBookings.Infrastructure.Data;
 
-namespace TTRBookings.Migrations
+namespace TTRBookings.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(TTRBookingsContext))]
-    [Migration("20210115132929_MigratedBookings")]
-    partial class MigratedBookings
+    [Migration("20210112201702_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,42 +20,6 @@ namespace TTRBookings.Migrations
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
-
-            modelBuilder.Entity("TTRBookings.Entities.Booking", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("HouseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("RoomId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("RoseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TimeSlotId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HouseId");
-
-                    b.HasIndex("RoomId");
-
-                    b.HasIndex("RoseId");
-
-                    b.HasIndex("TierId");
-
-                    b.HasIndex("TimeSlotId");
-
-                    b.ToTable("Bookings");
-                });
 
             modelBuilder.Entity("TTRBookings.Entities.House", b =>
                 {
@@ -105,9 +69,14 @@ namespace TTRBookings.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("RoseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("HouseId");
+
+                    b.HasIndex("RoseId");
 
                     b.ToTable("Rooms");
                 });
@@ -162,9 +131,6 @@ namespace TTRBookings.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("HouseId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Tier")
                         .HasColumnType("nvarchar(max)");
 
@@ -173,9 +139,7 @@ namespace TTRBookings.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HouseId");
-
-                    b.ToTable("TierRates");
+                    b.ToTable("TierLists");
                 });
 
             modelBuilder.Entity("TTRBookings.Entities.TimeSlot", b =>
@@ -184,46 +148,12 @@ namespace TTRBookings.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("End")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("Start")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("TimeSlots");
-                });
-
-            modelBuilder.Entity("TTRBookings.Entities.Booking", b =>
-                {
-                    b.HasOne("TTRBookings.Entities.House", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("HouseId");
-
-                    b.HasOne("TTRBookings.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId");
-
-                    b.HasOne("TTRBookings.Entities.Rose", "Rose")
-                        .WithMany()
-                        .HasForeignKey("RoseId");
-
-                    b.HasOne("TTRBookings.Entities.Tier", "Tier")
-                        .WithMany()
-                        .HasForeignKey("TierId");
-
-                    b.HasOne("TTRBookings.Entities.TimeSlot", "TimeSlot")
-                        .WithMany()
-                        .HasForeignKey("TimeSlotId");
-
-                    b.Navigation("Room");
-
-                    b.Navigation("Rose");
-
-                    b.Navigation("Tier");
-
-                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("TTRBookings.Entities.Manager", b =>
@@ -238,6 +168,12 @@ namespace TTRBookings.Migrations
                     b.HasOne("TTRBookings.Entities.House", null)
                         .WithMany("Rooms")
                         .HasForeignKey("HouseId");
+
+                    b.HasOne("TTRBookings.Entities.Rose", "Rose")
+                        .WithMany()
+                        .HasForeignKey("RoseId");
+
+                    b.Navigation("Rose");
                 });
 
             modelBuilder.Entity("TTRBookings.Entities.Rose", b =>
@@ -254,24 +190,13 @@ namespace TTRBookings.Migrations
                         .HasForeignKey("RoseId");
                 });
 
-            modelBuilder.Entity("TTRBookings.Entities.TierRate", b =>
-                {
-                    b.HasOne("TTRBookings.Entities.House", null)
-                        .WithMany("TierRates")
-                        .HasForeignKey("HouseId");
-                });
-
             modelBuilder.Entity("TTRBookings.Entities.House", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("Managers");
 
                     b.Navigation("Rooms");
 
                     b.Navigation("Roses");
-
-                    b.Navigation("TierRates");
                 });
 
             modelBuilder.Entity("TTRBookings.Entities.Rose", b =>

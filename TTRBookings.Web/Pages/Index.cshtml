@@ -9,4 +9,9 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@Model.Text
+@string.Join(',',Model.Rooms.Select(r => r.Name))
+
+@foreach (var room in Model.Rooms)
+{
+    <div>@room.Name</div>
+}

@@ -3,6 +3,7 @@ using TTRBookings.Core.Entities;
 
 namespace TTRBookings.Infrastructure.Data
 {
+    //add-migration Initial -p TTRBookings.Infrastructure -s TTRBookings.Web -o Data/Migrations
     public class TTRBookingsContext : DbContext
     {
         public DbSet<House> Houses { get; set; }

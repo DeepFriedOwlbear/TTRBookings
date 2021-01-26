@@ -4,14 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using TTRBookings.Core;
+using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Infrastructure.Data
 {
-    public class BaseEntity
-    {
-        public Guid Id { get; set; }
-    }
-
     public class Repository : IRepository
     {
         private readonly TTRBookingsContext context;
@@ -76,6 +73,10 @@ namespace TTRBookings.Infrastructure.Data
         public IList<TEntity> List<TEntity>(Expression<Func<TEntity, bool>> predicate)
             where TEntity : BaseEntity
             => ListWithIncludes(predicate);
+
+        public IList<TEntity> List<TEntity>()
+            where TEntity : BaseEntity
+            => ListWithIncludes<TEntity>(_=>true);
 
         public IList<TEntity> ListWithIncludes<TEntity>(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
             where TEntity : BaseEntity

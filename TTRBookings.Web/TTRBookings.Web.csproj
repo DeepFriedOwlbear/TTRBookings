@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TTRBookings.Core\TTRBookings.Core.csproj" />
+    <ProjectReference Include="..\TTRBookings.Infrastructure\TTRBookings.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

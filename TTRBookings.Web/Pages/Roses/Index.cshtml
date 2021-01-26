@@ -1,0 +1,21 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Roses";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+@string.Join(',', Model.Roses.Select(r => r.Name))
+
+@foreach (var rose in Model.Roses)
+{
+    <div>@rose.Name</div>
+}
+
+<form asp-page="/Roses/Index" method="post">
+    <input type="submit" value="Submit"/>
+</form>
