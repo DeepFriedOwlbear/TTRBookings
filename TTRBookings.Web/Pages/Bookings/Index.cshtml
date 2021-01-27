@@ -1,0 +1,27 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Bookings";
+}
+
+<table style="width:50%">
+    <tr>
+        <th>Rose</th>
+        <th>Room</th>
+        <th>Tier</th>
+        <th>Timeslot Start</th>
+        <th>Timeslot End</th>
+    </tr>
+    @foreach (var Booking in Model.Bookings)
+    {
+    <tr>
+        <td>@Booking.Rose.Name</td>
+        <td>@Booking.Room.Name</td>
+        <td>@Booking.Tier.Rate</td>
+        <td>@Booking.TimeSlot.Start</td>
+        <td>@Booking.TimeSlot.End</td>
+    </tr>
+    }
+</table>
+
+

@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTRBookings.Web", "TTRBookings.Web\TTRBookings.Web.csproj", "{DB6511A9-9E10-4EB5-A149-65071D5ADFDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTRBookings.Core", "TTRBookings.Core\TTRBookings.Core.csproj", "{4B217FCB-511E-4DE8-8C07-683F07F8363B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTRBookings.Core", "TTRBookings.Core\TTRBookings.Core.csproj", "{4B217FCB-511E-4DE8-8C07-683F07F8363B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTRBookings.Infrastructure", "TTRBookings.Infrastructure\TTRBookings.Infrastructure.csproj", "{E9C29453-BF45-4D41-AC9B-5304CFB254E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTRBookings.Infrastructure", "TTRBookings.Infrastructure\TTRBookings.Infrastructure.csproj", "{E9C29453-BF45-4D41-AC9B-5304CFB254E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
