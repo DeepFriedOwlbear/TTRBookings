@@ -12,14 +12,11 @@
         <th>Timeslot Start</th>
         <th>Timeslot End</th>
     </tr>
-    @foreach (var Booking in Model.Bookings)
+    @foreach (var booking in Model.Bookings)
     {
     <tr>
-        <td>@Booking.Rose.Name</td>
-        <td>@Booking.Room.Name</td>
-        <td>@Booking.Tier.Rate</td>
-        <td>@Booking.TimeSlot.Start</td>
-        <td>@Booking.TimeSlot.End</td>
+        <td>@booking.Room.Name</td>
+        <td><a asp-page="./Details" asp-route-id="@booking.Id">Details</a></td>
     </tr>
     }
 </table>

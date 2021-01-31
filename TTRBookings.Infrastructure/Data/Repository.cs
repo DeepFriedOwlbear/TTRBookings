@@ -14,14 +14,6 @@ namespace TTRBookings.Infrastructure.Data
         private readonly TTRBookingsContext context;
         private readonly ILogger<Repository> logger;
 
-        //TODO: see list below, then clean up all DATABASE code from other classes and such
-        //CRUD
-        //-----
-        //CREATE
-        //READ
-        //UPDATE
-        //DELETE
-
         public Repository(TTRBookingsContext context, ILogger<Repository> logger)
         {
             this.context = context;
@@ -32,8 +24,6 @@ namespace TTRBookings.Infrastructure.Data
             where TEntity : BaseEntity
         {
             //TODO: change this to be a local method so we can share a single context within a 'session'
-            //using var context = new TTRBookingsContext();
-
             context.Add(entry);
             context.SaveChanges();
         }
@@ -42,8 +32,6 @@ namespace TTRBookings.Infrastructure.Data
             where TEntity : BaseEntity
         {
             //load entry from the DB where id matches
-
-            //using var context = new TTRBookingsContext();
             return context.Set<TEntity>().FirstOrDefault(e => e.Id == id);
         }
 
@@ -53,7 +41,6 @@ namespace TTRBookings.Infrastructure.Data
             //load entry from the DB
             //update entry
             //savechanges
-            //using var context = new TTRBookingsContext();
             context.Update(entry);
             context.SaveChanges();
             return entry;
@@ -65,7 +52,6 @@ namespace TTRBookings.Infrastructure.Data
             //find entry in the DB
             //delete entry
             //savechanges
-            //using var context = new TTRBookingsContext();
             context.Remove(entry);
             context.SaveChanges();
         }

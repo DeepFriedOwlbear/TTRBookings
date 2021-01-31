@@ -10,6 +10,8 @@ using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Bookings
 {
+    //https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/da1?view=aspnetcore-5.0
+    
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
@@ -28,7 +30,8 @@ namespace TTRBookings.Web.Pages.Bookings
         public void OnGet()
         {
             //Bookings = repository.List<Booking>();
-            Bookings = repository.ListWithIncludes<Booking>(_ => true, _ => _.Room, _ => _.Rose, _ => _.Tier, _ => _.TimeSlot);
+            //Bookings = repository.ListWithIncludes<Booking>(_ => true, _ => _.Room, _ => _.Rose, _ => _.Tier, _ => _.TimeSlot);
+            Bookings = repository.ListWithIncludes<Booking>(_ => true, _ => _.Room);
         }
     }
 }
