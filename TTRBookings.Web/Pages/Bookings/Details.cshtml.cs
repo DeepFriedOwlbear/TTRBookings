@@ -12,21 +12,24 @@ namespace TTRBookings.Web.Pages.Bookings
 {
     public class DetailsModel : PageModel
     {
-        //private readonly ILogger<IndexModel> _logger;
-        //private readonly IRepository repository;
+        private readonly ILogger<DetailsModel> _logger;
+        private readonly IRepository repository;
 
         public IList<Booking> Bookings { get; set; }
+
+        public DetailsModel(IRepository repository)
+        {
+            this.repository = repository;
+        }
 
         public void OnGet(Guid id)
         {
             //what was the goal for this page?
             //What do we need to ask our dearest dependency container?
 
-            
-            //Bookings = repository.ListWithIncludes<Booking>(_ => _.Id == id, _ => _.Room);
 
-           
-
+            Bookings = repository.ListWithIncludes<Booking>(_ => _.Id == id, _ => _.Room, _=> _.Rose, _ => _.TimeSlot, _ => _.Tier);
+            //TODO: check if booking timeslot is all within the same day.
 
             //Load booking where id matches from database
             //pass information to Details.cshtml

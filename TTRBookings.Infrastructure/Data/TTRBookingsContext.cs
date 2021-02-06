@@ -3,7 +3,10 @@ using TTRBookings.Core.Entities;
 
 namespace TTRBookings.Infrastructure.Data
 {
+    //for a complete list of package manager console commands see: https://docs.microsoft.com/en-us/ef/core/cli/powershell
     //add-migration Initial -p TTRBookings.Infrastructure -s TTRBookings.Web -o Data/Migrations
+    //remove-migration -s TTRBookings.Web -p TTRBookings.Infrastructure -context TTRBookingsContext
+    //update-database -s TTRBookings.Web -p TTRBookings.Infrastructure -context TTRBookingsContext
     public class TTRBookingsContext : DbContext
     {
         public DbSet<House> Houses { get; set; }

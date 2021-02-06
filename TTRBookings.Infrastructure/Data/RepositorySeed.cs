@@ -7,8 +7,8 @@ namespace TTRBookings.Infrastructure.Data
 {
     public static class RepositorySeed
     {
-        static TTRBookingsContext context;
-        public static void SeedDatabase()
+        //static TTRBookingsContext context;
+        public static void SeedDatabase(TTRBookingsContext context)
         {
             //using var context = new TTRBookingsContext();
             context.Database.EnsureDeleted();
