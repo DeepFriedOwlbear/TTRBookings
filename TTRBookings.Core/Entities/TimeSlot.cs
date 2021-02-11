@@ -8,8 +8,8 @@ namespace TTRBookings.Core.Entities
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class TimeSlot : BaseEntity
     {
-        public DateTime Start { get; private set; }
-        public DateTime End { get; private set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
 
         public TimeSlot(DateTime start, DateTime end)
         {

@@ -67,9 +67,24 @@ namespace TTRBookings.Infrastructure.Data
         public IList<TEntity> ListWithIncludes<TEntity>(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
             where TEntity : BaseEntity
         {
-            //using var context = new TTRBookingsContext();
-            IQueryable<TEntity> query = context.Set<TEntity>();
+            return context.Set<TEntity>()
+                .AddIncludes(includes)
+                .Where(predicate)
+                .ToList();
+        }
 
+        public TEntity ReadEntryWithIncludes<TEntity>(Guid id, params Expression<Func<TEntity, object>>[] includes) where TEntity : BaseEntity
+        {
+            return context.Set<TEntity>()
+                .AddIncludes(includes)
+                .FirstOrDefault(e => e.Id == id);
+        }
+    }
+
+    internal static class RepositoryExtensions
+    {
+        public static IQueryable<TEntity> AddIncludes<TEntity>(this IQueryable<TEntity> query, Expression<Func<TEntity, object>>[] includes) where TEntity : BaseEntity
+        {
             foreach (var include in includes)
             {
                 var includeString = include.ToString();
@@ -77,7 +92,7 @@ namespace TTRBookings.Infrastructure.Data
                 query = query.Include(includeString);
             }
 
-            return query.Where(predicate).ToList();
+            return query;
         }
     }
 }

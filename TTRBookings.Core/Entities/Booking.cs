@@ -8,10 +8,10 @@ namespace TTRBookings.Core.Entities
 {
     public class Booking : BaseEntity
     {
-        public Rose Rose { get; private set; }
-        public Room Room { get; private set; }
-        public Tier Tier { get; private set; }
-        public TimeSlot TimeSlot { get; private set; }
+        public Rose Rose { get; set; }
+        public Room Room { get; set; }
+        public Tier Tier { get; set; }
+        public TimeSlot TimeSlot { get; set; }
 
         private Booking() { } //needed by EntityFramework
 

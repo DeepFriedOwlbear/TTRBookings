@@ -4,11 +4,13 @@
     ViewData["Title"] = "Bookings";
 }
 
-<table style="width:50%">
-    <tr>
-        <th>Booked Room</th>
-        <th>Details Page</th>
-    </tr>
+<table class="table table-light table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Booked Room</th>
+            <th>Details Page</th>
+        </tr>
+    </thead>
     @foreach (var booking in Model.Bookings)
     {
     <tr>
@@ -17,5 +19,3 @@
     </tr>
     }
 </table>
-
-
