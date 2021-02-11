@@ -23,7 +23,6 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public List<SelectListItem> RoomList { get; } = new List<SelectListItem> { };
         public List<SelectListItem> RoseList { get; } = new List<SelectListItem> { };
-        public List<SelectListItem> TierList { get; } = new List<SelectListItem> { };
 
         public EditModel(IRepository repository)
         {
@@ -34,9 +33,8 @@ namespace TTRBookings.Web.Pages.Bookings
         {
             var booking = repository.ReadEntryWithIncludes<Booking>(id, _ => _.Room, _ => _.Rose, _ => _.TimeSlot, _ => _.Tier);
 
-            PopulateList<Rose>(booking);
-            PopulateList<Tier>(booking);
             PopulateList<Room>(booking);
+            PopulateList<Rose>(booking);
 
             //convert booking to bookingvm here;
             BookingVM = BookingVM.Create(booking);
@@ -45,32 +43,7 @@ namespace TTRBookings.Web.Pages.Bookings
         //TODO: make PopulateList() prettier, can probably be made sleeker.
         private void PopulateList<TEntity>(Booking booking)
         {
-            if(typeof(TEntity) == typeof(Rose))
-            {
-                foreach (Rose rose in repository.List<Rose>())
-                {
-                    RoseList.Add(new SelectListItem
-                    {
-                        Value = rose.Id.ToString(),
-                        Text = rose.Name
-                    });
-
-                    if (rose.Id == booking.Rose.Id) RoseList.Last().Selected = true;
-                }
-            }
-            else if (typeof(TEntity) == typeof(Tier))
-            {
-                foreach (Tier tier in repository.List<Tier>(_ => _.RoseId == booking.Rose.Id))
-                {
-                    TierList.Add(new SelectListItem
-                    {
-                        Value = tier.Id.ToString(),
-                        Text = tier.Rate.ToString()
-                    });
-                    if (tier.Id == booking.Tier.Id) TierList.Last().Selected = true;
-                }
-            }
-            else if (typeof(TEntity) == typeof(Room))
+            if (typeof(TEntity) == typeof(Room))
             {
                 foreach (Room room in repository.List<Room>())
                 {
@@ -81,6 +54,19 @@ namespace TTRBookings.Web.Pages.Bookings
                     });
 
                     if (room.Id == booking.Room.Id) RoomList.Last().Selected = true;
+                }
+            }
+            else if (typeof(TEntity) == typeof(Rose))
+            {
+                foreach (Rose rose in repository.List<Rose>())
+                {
+                    RoseList.Add(new SelectListItem
+                    {
+                        Value = rose.Id.ToString(),
+                        Text = rose.Name
+                    });
+
+                    if (rose.Id == booking.Rose.Id) RoseList.Last().Selected = true;
                 }
             }
         }
@@ -96,10 +82,10 @@ namespace TTRBookings.Web.Pages.Bookings
             Booking booking = repository.ReadEntryWithIncludes<Booking>(BookingVM.Id, _ => _.Room, _ => _.Rose, _ => _.TimeSlot, _ => _.Tier);
 
             //assign bookingVM values to booking
-            //TODO: When changing the Rose AND Tier of a booking at the same time, the Tier refers to the old Rose's tier.
+            //TODO: Tier in DB loses RoseID when booking is updated with new tier.
             booking.Room = repository.ReadEntry<Room>(BookingVM.Room.Id);
             booking.Rose = repository.ReadEntry<Rose>(BookingVM.Rose.Id);
-            booking.Tier = repository.ReadEntry<Tier>(BookingVM.Tier.Id);
+            booking.Tier.Rate = BookingVM.Tier.Rate;
             booking.TimeSlot.Start = BookingVM.TimeSlot.Start;
             booking.TimeSlot.End = BookingVM.TimeSlot.End;
 
@@ -109,28 +95,5 @@ namespace TTRBookings.Web.Pages.Bookings
             //return/redirect user to somewhere
             return RedirectToPage("/Bookings/Edit", new { booking.Id });
         }
-
-        //[BindProperty]
-        //public CartVM Cart {get;set;}
-        //public async Task<IActionResult> OnPostAsync()
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Page();
-        //    }
-        //    var product = _context.Product.SingleOrDefault(p => p.ProductName == Cart.Name);
-        //    OrderItem orderItem = new OrderItem
-        //    {
-
-        //        Price = Cart.Price,
-        //        Qty = Cart.Qty,
-        //        TotalPrice = Cart.TotalPrice,
-        //        Product = product
-        //    };
-        //    _context.OrderItem.Add(orderItem);
-        //    await _context.SaveChangesAsync();
-
-        //    return RedirectToPage("../Index");
-        //}
     }
 }
