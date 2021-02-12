@@ -75,9 +75,9 @@ namespace TTRBookings.Web.Models
             {
                 Id = tier.Id,
                 Rate = tier.Rate,
-                //Unit = tier.Unit,
-                //Discount = tier.Discount,
-                //Revenue = tier.Revenue
+                Unit = tier.Unit,
+                Discount = tier.Discount,
+                Revenue = tier.Revenue
             };
         }
     }
