@@ -10,7 +10,7 @@
     <label asp-for="BookingVM.Rose.Name"></label>
     <select asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList"></select> <br />
     <label asp-for="BookingVM.Tier.Rate"></label>
-    <input asp-for="BookingVM.Tier.Rate" /> <br />
+    <input asp-for="BookingVM.Tier.Rate" step="10000" /> <br />
     <label asp-for="BookingVM.TimeSlot.Start"></label>
     <input asp-for="BookingVM.TimeSlot.Start" /> <br />
     <label asp-for="BookingVM.TimeSlot.End"></label>

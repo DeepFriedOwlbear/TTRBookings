@@ -15,8 +15,6 @@ namespace TTRBookings.Web.Pages.Bookings
         private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
 
-        public IList<Booking> Bookings { get; set; }
-
         //dear dependency Booking, if you know how to create an XYZ,
         //then please give me an XYZ.
         public DeleteModel(ILogger<IndexModel> logger, IRepository repository)

@@ -4,27 +4,22 @@
     ViewData["Title"] = "Roses";
 }
 
-<table style="width:50%">
+<table class="table table-light table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Rose</th>
+            <th>Details Page</th>
+        </tr>
+    </thead>
     <tr>
-        <th>Rose</th>
+        <td><a asp-page="./Create">Create Rose</a></td>
+        <td></td>
     </tr>
     @foreach (var rose in Model.Roses)
     {
     <tr>
         <td>@rose.Name</td>
+        <td><a asp-page="./Details" asp-route-id="@rose.Id">Details</a></td>
     </tr>
     }
 </table>
-
-@*<div class="text-center">
-    @string.Join(',', Model.Roses.Select(r => r.Name))
-
-    @foreach (var rose in Model.Roses)
-    {
-        <div>@rose.Name</div>
-    }
-
-    <form asp-page="/Roses/Index" method="post">
-        <input type="submit" value="Submit" />
-    </form>
-</div>*@

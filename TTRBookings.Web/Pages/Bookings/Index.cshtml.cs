@@ -19,8 +19,6 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public IList<Booking> Bookings { get; set; }
 
-        //dear dependency Booking, if you know how to create an XYZ,
-        //then please give me an XYZ.
         public IndexModel(ILogger<IndexModel> logger, IRepository repository)
         {
             _logger = logger;
@@ -29,8 +27,6 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public void OnGet()
         {
-            //Bookings = repository.List<Booking>();
-            //Bookings = repository.ListWithIncludes<Booking>(_ => true, _ => _.Room, _ => _.Rose, _ => _.Tier, _ => _.TimeSlot);
             Bookings = repository.ListWithIncludes<Booking>(_ => true, _ => _.Room);
         }
     }

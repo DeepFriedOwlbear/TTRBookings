@@ -1,0 +1,10 @@
+﻿@page
+@model TTRBookings.Web.Pages.Roses.CreateModel
+
+<h2>Create Booking</h2>
+<form asp-page="./Create" method="post">
+    <label asp-for="RoseVM.Name"></label>
+    <input asp-for="RoseVM.Name" /> <br />
+
+    <button type="submit">Submit</button>
+</form>

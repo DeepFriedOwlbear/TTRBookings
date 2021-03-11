@@ -7,25 +7,25 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
+using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Pages.Roses
 {
-    public class IndexModel : PageModel
+    public class DetailsModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<DetailsModel> _logger;
         private readonly IRepository repository;
 
-        public IList<Rose> Roses { get; set; }
+        public Rose Rose { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, IRepository repository)
+        public DetailsModel(IRepository repository)
         {
-            _logger = logger;
             this.repository = repository;
         }
 
-        public void OnGet()
+        public void OnGet(Guid id)
         {
-            Roses = repository.List<Rose>();
+            Rose = repository.ReadEntry<Rose>(id);
         }
     }
 }

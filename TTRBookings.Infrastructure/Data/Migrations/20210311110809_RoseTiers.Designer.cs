@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TTRBookings.Infrastructure.Data;
 
 namespace TTRBookings.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(TTRBookingsContext))]
-    partial class TTRBookingsContextModelSnapshot : ModelSnapshot
+    [Migration("20210311110809_RoseTiers")]
+    partial class RoseTiers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,15 +143,10 @@ namespace TTRBookings.Infrastructure.Data.Migrations
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("RoseId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Unit")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoseId");
 
                     b.ToTable("Tiers");
                 });
@@ -247,13 +244,6 @@ namespace TTRBookings.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TTRBookings.Core.Entities.Tier", b =>
-                {
-                    b.HasOne("TTRBookings.Core.Entities.Rose", null)
-                        .WithMany("Tiers")
-                        .HasForeignKey("RoseId");
-                });
-
             modelBuilder.Entity("TTRBookings.Core.Entities.TierRate", b =>
                 {
                     b.HasOne("TTRBookings.Core.Entities.House", null)
@@ -272,11 +262,6 @@ namespace TTRBookings.Infrastructure.Data.Migrations
                     b.Navigation("Roses");
 
                     b.Navigation("TierRates");
-                });
-
-            modelBuilder.Entity("TTRBookings.Core.Entities.Rose", b =>
-                {
-                    b.Navigation("Tiers");
                 });
 #pragma warning restore 612, 618
         }

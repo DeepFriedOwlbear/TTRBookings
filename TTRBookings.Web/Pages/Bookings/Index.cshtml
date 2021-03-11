@@ -4,7 +4,6 @@
     ViewData["Title"] = "Bookings";
 }
 
-<a asp-page="./Create">Create Booking</a>
 <table class="table table-light table-hover">
     <thead class="thead-dark">
         <tr>
@@ -12,6 +11,10 @@
             <th>Details Page</th>
         </tr>
     </thead>
+    <tr>
+        <td><a asp-page="./Create">Create Booking</a></td>
+        <td></td>
+    </tr>
     @foreach (var booking in Model.Bookings)
     {
     <tr>

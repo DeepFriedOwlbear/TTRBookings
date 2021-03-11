@@ -1,8 +1,6 @@
 ﻿@page
 @model TTRBookings.Web.Pages.Bookings.CreateModel
-@{
-//TODO: DateTime picker, fix TierRate picking from list.
-}
+
 <h2>Create Booking</h2>
 <form asp-page="./Create" method="post">
     <label asp-for="BookingVM.Room.Name"></label>
@@ -10,11 +8,11 @@
     <label asp-for="BookingVM.Rose.Name"></label>
     <select asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList"></select> <br />
     <label asp-for="BookingVM.Tier.Rate"></label>
-    <select asp-for="BookingVM.Tier.Rate" asp-items="Model.TierList"></select> <br />
+    <input asp-for="BookingVM.Tier.Rate" step="10000" /> <br />
     <label asp-for="BookingVM.TimeSlot.Start"></label>
-    <input class="form-control" asp-for="BookingVM.TimeSlot.Start" type="time" asp-format="{0:yyyy-MM-ddTHH:mm}" /> <br />
+    <input asp-for="BookingVM.TimeSlot.Start" /> <br />
     <label asp-for="BookingVM.TimeSlot.End"></label>
-    <input class="form-control" asp-for="BookingVM.TimeSlot.End" type="date" asp-format="{0:yyyy-MM-ddTHH:mm}" /> <br />
+    <input asp-for="BookingVM.TimeSlot.End" /> <br />
 
     <button type="submit">Create Booking</button>
 </form>

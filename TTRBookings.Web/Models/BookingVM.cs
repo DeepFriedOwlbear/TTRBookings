@@ -35,7 +35,7 @@ namespace TTRBookings.Web.Models
         public Guid HouseId { get; set; }
         public string Name { get; set; }
         public decimal TotalRevenue { get; set; }
-        //public IList<Tier> Tiers { get; set; } = new List<Tier>();
+        public IList<Tier> Tiers { get; set; } = new List<Tier>();
 
         public static RoseVM Create(Rose rose)
         {

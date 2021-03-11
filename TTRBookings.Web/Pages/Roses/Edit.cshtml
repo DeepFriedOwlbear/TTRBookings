@@ -1,0 +1,12 @@
+﻿@page
+@model TTRBookings.Web.Pages.Roses.EditModel
+@{
+}
+<h2>Edit Booking</h2>
+<form asp-page="./Edit" method="post">
+    <input asp-for="RoseVM.Id" type="hidden" />
+    <label asp-for="RoseVM.Name"></label>
+    <input asp-for="RoseVM.Name" /> <br />
+
+    <button type="submit">Submit</button>
+</form>

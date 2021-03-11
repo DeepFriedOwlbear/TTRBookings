@@ -10,22 +10,21 @@ using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Roses
 {
-    public class IndexModel : PageModel
+    public class DeleteModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
 
-        public IList<Rose> Roses { get; set; }
-
-        public IndexModel(ILogger<IndexModel> logger, IRepository repository)
+        public DeleteModel(ILogger<IndexModel> logger, IRepository repository)
         {
             _logger = logger;
             this.repository = repository;
         }
 
-        public void OnGet()
+        public IActionResult OnGet(Guid id)
         {
-            Roses = repository.List<Rose>();
+            repository.DeleteEntry(repository.ReadEntry<Rose>(id));
+            return RedirectToPage("/Roses/Index");
         }
     }
 }
