@@ -3,6 +3,7 @@
 
 <h2>Create Booking</h2>
 <form asp-page="./Create" method="post">
+    <input asp-for="house.Id" type="hidden" />
     <label asp-for="RoseVM.Name"></label>
     <input asp-for="RoseVM.Name" /> <br />
 

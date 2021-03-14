@@ -20,6 +20,7 @@ namespace TTRBookings.Web.Pages.Roses
         private readonly IRepository repository;
 
         [BindProperty] public RoseVM RoseVM { get; set; }
+        [BindProperty] public House house { get; set; }
 
         public CreateModel(IRepository repository)
         {
@@ -28,10 +29,11 @@ namespace TTRBookings.Web.Pages.Roses
 
         public void OnGet()
         {
-
+            //TODO - House probably needs its own HouseVM
+            //TODO - Currently assigning new Roses to the only house in the DB, add a way to assign which house is currently being worked on.
+            house = repository.List<House>().FirstOrDefault();
         }
 
-        //TODO: Rose needs HouseID
         public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
@@ -40,6 +42,7 @@ namespace TTRBookings.Web.Pages.Roses
             }
 
             Rose rose = new Rose(RoseVM.Name);
+            rose.HouseId = house.Id;
 
             //store in database
             repository.CreateEntry(rose);
