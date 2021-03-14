@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
+using TTRBookings.Web.Helpers;
 using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Pages.Bookings
@@ -31,38 +32,8 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public void OnGet()
         {
-            RoomList.AddRange(PopulateList<Room>());
-            RoseList.AddRange(PopulateList<Rose>());
-        }
-
-        //TODO: make PopulateList() prettier, can probably be made sleeker.
-        public List<SelectListItem> PopulateList<TEntity>()
-        {
-            List<SelectListItem> populatedList = new List<SelectListItem> { };
-
-            if (typeof(TEntity) == typeof(Room))
-            {
-                foreach (Room room in repository.List<Room>())
-                {
-                    populatedList.Add(new SelectListItem
-                    {
-                        Value = room.Id.ToString(),
-                        Text = room.Name
-                    });
-                }
-            }
-            else if (typeof(TEntity) == typeof(Rose))
-            {
-                foreach (Rose rose in repository.List<Rose>())
-                {
-                    populatedList.Add(new SelectListItem
-                    {
-                        Value = rose.Id.ToString(),
-                        Text = rose.Name
-                    });
-                }
-            }
-            return populatedList;
+            RoomList.AddRange(SelectListHelper.PopulateList<Room>(repository.List<Room>(), e => e.Name));
+            RoseList.AddRange(SelectListHelper.PopulateList<Rose>(repository.List<Rose>(), e => e.Name));
         }
 
         public IActionResult OnPost()
@@ -87,4 +58,6 @@ namespace TTRBookings.Web.Pages.Bookings
             return RedirectToPage("/Bookings/Details", new { booking.Id });
         }
     }
+
+
 }

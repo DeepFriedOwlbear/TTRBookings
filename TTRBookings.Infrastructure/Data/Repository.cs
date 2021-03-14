@@ -32,7 +32,9 @@ namespace TTRBookings.Infrastructure.Data
             where TEntity : BaseEntity
         {
             //load entry from the DB where id matches
-            return context.Set<TEntity>().FirstOrDefault(e => e.Id == id);
+            return context.Set<TEntity>()
+                .Where(e => !e.IsDeleted)
+                .FirstOrDefault(e => e.Id == id);
         }
 
         public TEntity UpdateEntry<TEntity>(TEntity entry)
@@ -52,8 +54,11 @@ namespace TTRBookings.Infrastructure.Data
             //find entry in the DB
             //delete entry
             //savechanges
-            context.Remove(entry);
-            context.SaveChanges();
+
+            entry.IsDeleted = true;
+            UpdateEntry(entry);
+            //context.Remove(entry);
+            //context.SaveChanges();
         }
 
         public IList<TEntity> List<TEntity>(Expression<Func<TEntity, bool>> predicate)
@@ -69,6 +74,7 @@ namespace TTRBookings.Infrastructure.Data
         {
             return context.Set<TEntity>()
                 .AddIncludes(includes)
+                .Where(e => !e.IsDeleted)
                 .Where(predicate)
                 .ToList();
         }
@@ -77,6 +83,7 @@ namespace TTRBookings.Infrastructure.Data
         {
             return context.Set<TEntity>()
                 .AddIncludes(includes)
+                .Where(e => !e.IsDeleted)
                 .FirstOrDefault(e => e.Id == id);
         }
     }

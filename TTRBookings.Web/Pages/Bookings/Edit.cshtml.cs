@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
+using TTRBookings.Web.Helpers;
 using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Pages.Bookings
@@ -21,8 +22,8 @@ namespace TTRBookings.Web.Pages.Bookings
         [BindProperty]
         public BookingVM BookingVM { get; set; }
 
-        public List<SelectListItem> RoomList { get; } = new List<SelectListItem> { };
-        public List<SelectListItem> RoseList { get; } = new List<SelectListItem> { };
+        public List<SelectListItem> RoomList { get; } = new List<SelectListItem>();
+        public List<SelectListItem> RoseList { get; } = new List<SelectListItem>();
 
         public EditModel(IRepository repository)
         {
@@ -33,45 +34,11 @@ namespace TTRBookings.Web.Pages.Bookings
         {
             var booking = repository.ReadEntryWithIncludes<Booking>(id, _ => _.Room, _ => _.Rose, _ => _.TimeSlot, _ => _.Tier);
 
-            RoomList.AddRange(PopulateList<Room>(booking.Room.Id));
-            RoseList.AddRange(PopulateList<Rose>(booking.Rose.Id));
+            RoomList.AddRange(SelectListHelper.PopulateList<Room>(repository.List<Room>(), e=>e.Name, booking.Room.Id));
+            RoseList.AddRange(SelectListHelper.PopulateList<Rose>(repository.List<Rose>(), e=>e.Name, booking.Rose.Id));
 
             //convert booking to bookingvm here;
             BookingVM = BookingVM.Create(booking);
-        }
-
-        //TODO: make PopulateList() prettier, can probably be made sleeker.
-        public List<SelectListItem> PopulateList<TEntity>(Guid entityId)
-        {
-            List<SelectListItem> populatedList = new List<SelectListItem> { };
-
-            if (typeof(TEntity) == typeof(Room))
-            {
-                foreach (Room room in repository.List<Room>())
-                {
-                    populatedList.Add(new SelectListItem
-                    {
-                        Value = room.Id.ToString(),
-                        Text = room.Name
-                    });
-
-                    if (room.Id == entityId) populatedList.Last().Selected = true;
-                }
-            }
-            else if (typeof(TEntity) == typeof(Rose))
-            {
-                foreach (Rose rose in repository.List<Rose>())
-                {
-                    populatedList.Add(new SelectListItem
-                    {
-                        Value = rose.Id.ToString(),
-                        Text = rose.Name
-                    });
-
-                    if (rose.Id == entityId) populatedList.Last().Selected = true;
-                }
-            }
-            return populatedList;
         }
 
         public IActionResult OnPost()
