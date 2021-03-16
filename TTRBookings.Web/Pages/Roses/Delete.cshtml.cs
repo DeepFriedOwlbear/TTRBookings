@@ -23,8 +23,6 @@ namespace TTRBookings.Web.Pages.Roses
 
         public IActionResult OnGet(Guid id)
         {
-            //TODO - Can't delete entry because it is tied to a booking.
-            //Might be better to set an IsDeleted flag so it doesn't break existing bookings
             repository.DeleteEntry(repository.ReadEntry<Rose>(id));
             return RedirectToPage("/Roses/Index");
         }

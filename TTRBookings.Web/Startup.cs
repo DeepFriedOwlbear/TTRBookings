@@ -26,6 +26,17 @@ namespace TTRBookings.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Session Storage
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                //options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            //Session Storage End
+
             services.AddRazorPages();
 
             services.AddDbContext<TTRBookingsContext>(options =>
@@ -58,6 +69,10 @@ namespace TTRBookings.Web
             app.UseRouting();
 
             app.UseAuthorization();
+
+            //Session Storage
+            app.UseSession();
+            //Session Storage End
 
             app.UseEndpoints(endpoints =>
             {

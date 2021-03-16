@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,8 @@ namespace TTRBookings.Web.Pages.Rooms
 
         public void OnGet()
         {
-            Rooms = repository.List<Room>();
+            //TODO - HouseId in BaseEntity and BookingVM to fetch the correct items from the DB
+            Rooms = repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")));
         }
     }
 }

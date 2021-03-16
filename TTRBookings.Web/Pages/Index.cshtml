@@ -4,7 +4,10 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2>Select House</h2>
+<form asp-page="./Create" method="post">
+    <label>Houses</label>
+    <select asp-for="HouseId" asp-items="Model.Houses"></select> <br />
+
+    <button type="submit">Select</button>
+</form>
