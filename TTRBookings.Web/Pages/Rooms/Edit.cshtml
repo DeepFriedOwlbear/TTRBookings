@@ -1,0 +1,12 @@
+﻿@page
+@model TTRBookings.Web.Pages.Rooms.EditModel
+@{
+}
+<h2>Edit Booking</h2>
+<form asp-page="./Edit" method="post">
+    <input asp-for="RoomVM.Id" type="hidden" />
+    <label asp-for="RoomVM.Name"></label>
+    <input asp-for="RoomVM.Name" /> <br />
+
+    <button type="submit">Submit</button>
+</form>

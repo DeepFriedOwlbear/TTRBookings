@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -11,22 +10,21 @@ using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Managers
 {
-    public class IndexModel : PageModel
+    public class DeleteModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
 
-        public IList<Manager> Managers { get; set; }
-
-        public IndexModel(ILogger<IndexModel> logger, IRepository repository)
+        public DeleteModel(ILogger<IndexModel> logger, IRepository repository)
         {
             _logger = logger;
             this.repository = repository;
         }
 
-        public void OnGet()
+        public IActionResult OnGet(Guid id)
         {
-            Managers = repository.List<Manager>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")));
+            repository.DeleteEntry(repository.ReadEntry<Manager>(id));
+            return RedirectToPage("/Managers/Index");
         }
     }
 }

@@ -30,7 +30,7 @@ namespace TTRBookings.Infrastructure.Data
         private static House CreateHouse()
         {
             //--input for calculations
-            House house = new House();
+            House house = new House("House_1");
 
             TierRate tierRate1 = house.CreateTierRate("1_Tier1", 50000);
             TierRate tierRate2 = house.CreateTierRate("1_Tier2", 100000);
@@ -41,10 +41,10 @@ namespace TTRBookings.Infrastructure.Data
             house.CreateManager("1_Alice");
             house.CreateManager("1_Bob");
 
-            Room room1 = house.CreateRoom("Room1");
-            Room room2 = house.CreateRoom("Room2");
-            Room room3 = house.CreateRoom("Room3");
-            Room room4 = house.CreateRoom("Room4");
+            Room room1 = house.CreateRoom("1_Room1");
+            Room room2 = house.CreateRoom("1_Room2");
+            Room room3 = house.CreateRoom("1_Room3");
+            Room room4 = house.CreateRoom("1_Room4");
 
             house.AddBooking(rose1, tierRate1, room1, new TimeSlot(new DateTime(2021, 1, 4, 20, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 4, 22, 00, 00, DateTimeKind.Utc)));
             house.AddBooking(rose2, tierRate2, room2, new TimeSlot(new DateTime(2021, 1, 4, 19, 30, 00, DateTimeKind.Utc), new DateTime(2021, 1, 4, 23, 00, 00, DateTimeKind.Utc)));
@@ -58,7 +58,7 @@ namespace TTRBookings.Infrastructure.Data
         private static House CreateHouse2()
         {
             //--input for calculations
-            House house = new House();
+            House house = new House("House_2");
 
             TierRate tierRate1 = house.CreateTierRate("2_Tier1", 20000);
             TierRate tierRate2 = house.CreateTierRate("2_Tier2", 50000);

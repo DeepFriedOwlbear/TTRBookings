@@ -7,6 +7,8 @@ namespace TTRBookings.Core.Entities
 {
     public class House : BaseEntity
     {
+        public string Name { get; set; }
+
         public decimal RoseCut { get; set; } = 0.7M; //0.7M = 70%
         public decimal HouseCut { get; set; } = 0.3M; //0.3M = 30%
 
@@ -17,6 +19,11 @@ namespace TTRBookings.Core.Entities
         public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
         public decimal ManagerCut => Calculator.DoManagerCalculation(Managers.Count, TotalRoseRevenue());
+
+        public House(string name)
+        {
+            Name = name;
+        }
 
         public Rose CreateRose(string name)
         {

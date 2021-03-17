@@ -1,0 +1,10 @@
+﻿@page
+@model TTRBookings.Web.Pages.Managers.CreateModel
+
+<h2>Create Manager</h2>
+<form asp-page="./Create" method="post">
+    <label asp-for="ManagerVM.Name"></label>
+    <input asp-for="ManagerVM.Name" /> <br />
+
+    <button type="submit">Submit</button>
+</form>

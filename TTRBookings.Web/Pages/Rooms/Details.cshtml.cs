@@ -2,31 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
+using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Pages.Rooms
 {
-    public class IndexModel : PageModel
+    public class DetailsModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<DetailsModel> _logger;
         private readonly IRepository repository;
 
-        public IList<Room> Rooms { get; set; }
+        public Room Room { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, IRepository repository)
+        public DetailsModel(IRepository repository)
         {
-            _logger = logger;
             this.repository = repository;
         }
 
-        public void OnGet()
+        public void OnGet(Guid id)
         {
-            Rooms = repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")));
+            Room = repository.ReadEntry<Room>(id);
         }
     }
 }

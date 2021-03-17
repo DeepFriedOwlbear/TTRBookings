@@ -1,0 +1,10 @@
+﻿@page
+@model TTRBookings.Web.Pages.Rooms.CreateModel
+
+<h2>Create Room</h2>
+<form asp-page="./Create" method="post">
+    <label asp-for="RoomVM.Name"></label>
+    <input asp-for="RoomVM.Name" /> <br />
+
+    <button type="submit">Submit</button>
+</form>

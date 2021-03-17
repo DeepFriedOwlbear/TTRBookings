@@ -44,7 +44,7 @@ namespace UnitTests
         [Fact]
         public void CreateManager_ShouldAddToManagers_GivenCreateManagerCalled()
         {
-            House house = new House();
+            House house = new House("House_1");
             Manager manager1 = house.CreateManager("Alice");
 
             Assert.Equal(manager1, house.Managers.First());

@@ -61,6 +61,19 @@ namespace TTRBookings.Web.Models
             };
         }
     }
+    public class ManagerVM
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public static ManagerVM Create(Manager manager)
+        {
+            return new ManagerVM()
+            {
+                Id = manager.Id,
+                Name = manager.Name
+            };
+        }
+    }
     public class TierVM
     {
         public Guid Id { get; set; }

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,8 +33,15 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public void OnGet()
         {
-            RoomList.AddRange(SelectListHelper.PopulateList<Room>(repository.List<Room>(), e => e.Name));
-            RoseList.AddRange(SelectListHelper.PopulateList<Rose>(repository.List<Rose>(), e => e.Name));
+            RoomList.AddRange(SelectListHelper.PopulateList<Room>(
+                repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))), 
+                e => e.Name
+            ));
+
+            RoseList.AddRange(SelectListHelper.PopulateList<Rose>(
+                repository.List<Rose>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))), 
+                e => e.Name
+            ));
         }
 
         public IActionResult OnPost()
@@ -49,7 +57,12 @@ namespace TTRBookings.Web.Pages.Bookings
                 Rate = BookingVM.Tier.Rate
             };
             
-            Booking booking = Booking.Create(repository.ReadEntry<Rose>(BookingVM.Rose.Id), tier, repository.ReadEntry<Room>(BookingVM.Room.Id), new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End));
+            Booking booking = Booking.Create(
+                repository.ReadEntry<Rose>(BookingVM.Rose.Id), 
+                tier, 
+                repository.ReadEntry<Room>(BookingVM.Room.Id), 
+                new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End)
+            );
 
             //store in database
             repository.CreateEntry(booking);

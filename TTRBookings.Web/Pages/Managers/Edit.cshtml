@@ -1,0 +1,12 @@
+﻿@page
+@model TTRBookings.Web.Pages.Managers.EditModel
+@{
+}
+<h2>Edit Booking</h2>
+<form asp-page="./Edit" method="post">
+    <input asp-for="ManagerVM.Id" type="hidden" />
+    <label asp-for="ManagerVM.Name"></label>
+    <input asp-for="ManagerVM.Name" /> <br />
+
+    <button type="submit">Submit</button>
+</form>

@@ -33,7 +33,7 @@ namespace TTRBookings.Web.Pages
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("HouseId")))
             {
                 Houses.AddRange(SelectListHelper.PopulateList(
-                    repository.List<House>(), e => e.Id.ToString("D")
+                    repository.List<House>(), e => e.Name
                     ));
 
                 HttpContext.Session.SetString("HouseId", Houses.FirstOrDefault().Value);
@@ -41,7 +41,7 @@ namespace TTRBookings.Web.Pages
             else
             {
                 Houses.AddRange(SelectListHelper.PopulateList(
-                    repository.List<House>(), e => e.Id.ToString("D"), 
+                    repository.List<House>(), e => e.Name, 
                     Guid.Parse(HttpContext.Session.GetString("HouseId"))
                     ));
             }
@@ -50,7 +50,7 @@ namespace TTRBookings.Web.Pages
         public IActionResult OnPost()
         {
             Houses.AddRange(SelectListHelper.PopulateList(
-                repository.List<House>(), e => e.Id.ToString("D"),
+                repository.List<House>(), e => e.Name,
                 Guid.Parse(HouseId)
                 ));
 

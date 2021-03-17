@@ -4,16 +4,22 @@
     ViewData["Title"] = "Managers";
 }
 
-<table style="width:50%">
+<table class="table table-light table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Rose</th>
+            <th>Details Page</th>
+        </tr>
+    </thead>
     <tr>
-        <th>Manager</th>
+        <td><a asp-page="./Create">Create Manager</a></td>
+        <td></td>
     </tr>
-    @foreach (var Manager in Model.Managers)
+    @foreach (var manager in Model.Managers)
     {
         <tr>
-            <td>@Manager.Name</td>
+            <td>@manager.Name</td>
+            <td><a asp-page="./Details" asp-route-id="@manager.Id">Details</a></td>
         </tr>
     }
 </table>
-
-

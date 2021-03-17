@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -34,8 +35,17 @@ namespace TTRBookings.Web.Pages.Bookings
         {
             var booking = repository.ReadEntryWithIncludes<Booking>(id, _ => _.Room, _ => _.Rose, _ => _.TimeSlot, _ => _.Tier);
 
-            RoomList.AddRange(SelectListHelper.PopulateList<Room>(repository.List<Room>(), e=>e.Name, booking.Room.Id));
-            RoseList.AddRange(SelectListHelper.PopulateList<Rose>(repository.List<Rose>(), e=>e.Name, booking.Rose.Id));
+            RoomList.AddRange(SelectListHelper.PopulateList<Room>(
+                repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+                e=>e.Name,
+                booking.Room.Id
+            ));
+
+            RoseList.AddRange(SelectListHelper.PopulateList<Rose>(
+                repository.List<Rose>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))), 
+                e=>e.Name, 
+                booking.Rose.Id
+            ));
 
             //convert booking to bookingvm here;
             BookingVM = BookingVM.Create(booking);

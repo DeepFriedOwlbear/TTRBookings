@@ -1,0 +1,15 @@
+﻿@page
+@model TTRBookings.Web.Pages.Managers.DetailsModel
+@{
+}
+<h2>Manager Details</h2>
+<table style="width:50%">
+    <tr>
+        <th>Manager</th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>@Model.Manager.Name</td>
+        <th><a asp-page="./Edit" asp-route-id="@Model.Manager.Id">Edit</a> | <a asp-page="./Delete" asp-route-id="@Model.Manager.Id" >Delete</a></th>
+    </tr>
+</table>

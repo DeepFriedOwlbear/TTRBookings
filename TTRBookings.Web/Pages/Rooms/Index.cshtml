@@ -4,16 +4,23 @@
     ViewData["Title"] = "Rooms";
 }
 
-<table style="width:50%">
+<table class="table table-light table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Rose</th>
+            <th>Details Page</th>
+        </tr>
+    </thead>
     <tr>
-        <th>Room</th>
+        <td><a asp-page="./Create">Create Room</a></td>
+        <td></td>
     </tr>
     @foreach (var room in Model.Rooms)
     {
         <tr>
             <td>@room.Name</td>
+            <td><a asp-page="./Details" asp-route-id="@room.Id">Details</a></td>
         </tr>
     }
 </table>
-
 

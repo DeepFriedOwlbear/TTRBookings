@@ -8,6 +8,7 @@ namespace TTRBookings.Core.Entities
 {
     public class Booking : BaseEntity
     {
+        public Guid HouseId { get; set; }
         public Rose Rose { get; set; }
         public Room Room { get; set; }
         public Tier Tier { get; set; }

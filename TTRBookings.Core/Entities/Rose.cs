@@ -7,8 +7,8 @@ namespace TTRBookings.Core.Entities
 {
     public class Rose : BaseEntity
     {
-        public Guid HouseId { get; set; }
         public string Name { get; set; }
+        public Guid HouseId { get; set; }
         public IList<Tier> Tiers { get; set; } = new List<Tier>();
         public Rose(string name)
         {

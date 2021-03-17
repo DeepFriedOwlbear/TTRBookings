@@ -1,0 +1,15 @@
+﻿@page
+@model TTRBookings.Web.Pages.Rooms.DetailsModel
+@{
+}
+<h2>Room Details</h2>
+<table style="width:50%">
+    <tr>
+        <th>Room</th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>@Model.Room.Name</td>
+        <th><a asp-page="./Edit" asp-route-id="@Model.Room.Id">Edit</a> | <a asp-page="./Delete" asp-route-id="@Model.Room.Id" >Delete</a></th>
+    </tr>
+</table>

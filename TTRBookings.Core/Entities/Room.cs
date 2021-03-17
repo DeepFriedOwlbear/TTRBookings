@@ -5,6 +5,7 @@ namespace TTRBookings.Core.Entities
 {
     public class Room : BaseEntity
     {
+        public Guid HouseId { get; set; }
         public string Name { get; set; }
         public Room(string name)
         {
