@@ -10,6 +10,9 @@ using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Bookings
 {
+    //TODO - FORM POST VERSION, Can't post from Index.cshtml if forgery token isn't inactive.
+    //[IgnoreAntiforgeryToken(Order = 1001)]
+
     public class DeleteModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
@@ -25,8 +28,33 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public IActionResult OnGet(Guid id)
         {
-            repository.DeleteEntry(repository.ReadEntry<Booking>(id));
-            return RedirectToPage("/Bookings/Index");
+            if (repository.DeleteEntry(repository.ReadEntry<Booking>(id)) == true)
+            {
+                return new JsonResult(new { Success = true });
+            }
+            else 
+            { 
+                return new JsonResult(new { Success = false }); 
+            }
+
+            //return RedirectToPage("/Bookings/Index");
+
+            //if (DateTime.Now.Second % 2 == 0)
+            //{
+            //    return new JsonResult(new { Success = false });
+            //}
+            //return new JsonResult(new { Success = true });
+        }
+
+        public IActionResult OnPost()
+        {
+            var bookingId = Request.Form["bookingId"];
+
+            if (DateTime.Now.Second % 2 == 0)
+            {
+                return new JsonResult(new { Success = false });
+            }
+            return new JsonResult(new { Success = true });
         }
     }
 }

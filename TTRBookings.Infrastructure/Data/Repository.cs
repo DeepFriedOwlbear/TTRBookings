@@ -48,15 +48,23 @@ namespace TTRBookings.Infrastructure.Data
             return entry;
         }
 
-        public void DeleteEntry<TEntity>(TEntity entry)
+        public bool DeleteEntry<TEntity>(TEntity entry)
             where TEntity : BaseEntity
         {
             //find entry in the DB
             //delete entry
             //savechanges
 
-            entry.IsDeleted = true;
-            UpdateEntry(entry);
+            try
+            {
+                entry.IsDeleted = true;
+                UpdateEntry(entry);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
             //context.Remove(entry);
             //context.SaveChanges();
         }

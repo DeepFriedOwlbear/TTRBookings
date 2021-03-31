@@ -3,7 +3,7 @@
 @{
 }
 <h2>Edit Booking</h2>
-<form asp-page="./Edit" method="post">
+<form id="myForm" asp-page="./Edit" method="post">
     <input asp-for="BookingVM.Id" type="hidden" />
     <label asp-for="BookingVM.Room.Name"></label>
     <select asp-for="BookingVM.Room.Id" asp-items="Model.RoomList"></select> <br />
@@ -18,3 +18,53 @@
 
     <button type="submit">Submit</button>
 </form>
+
+<!--TODO: Delete entry here and use function in Delete.cshtml.cs-->
+<ul id="authors">
+</ul>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        document.querySelector('#myForm').addEventListener('submit', function () {
+            event.preventDefault()
+
+            function createNode(element) {
+                return document.createElement(element);
+            }
+
+            function append(parent, el) {
+                return parent.appendChild(el);
+            }
+
+            const ul = document.getElementById('authors');
+
+            const url = 'https://randomuser.me/api/?results=10';
+
+            fetch(url)
+                .then((resp) => resp.json())
+                .then(function (data) {
+                    let authors = data.results;
+                    return authors.map(function (author) {
+                        let li = createNode('li');
+                        let img = createNode('img');
+                        let span = createNode('span');
+                        img.src = author.picture.medium;
+                        span.innerHTML = `${author.name.first} ${author.name.last}`;
+                        append(li, img);
+                        append(li, span);
+                        append(ul, li);
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        });
+    </script>
+    <!--Clicked delete, if response from post to delete onpost method == success = true, 
+        then delete this entry from the frontend UI-->
+    <!--Clicked delete, if response from post to delete onpost method == success = false, 
+        then display error message to user, 
+        hint crappy way is to use "alert('message')" frontend UI-->
+
+}

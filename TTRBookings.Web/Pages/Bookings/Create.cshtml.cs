@@ -64,6 +64,8 @@ namespace TTRBookings.Web.Pages.Bookings
                 new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End)
             );
 
+            booking.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
+
             //store in database
             repository.CreateEntry(booking);
 
