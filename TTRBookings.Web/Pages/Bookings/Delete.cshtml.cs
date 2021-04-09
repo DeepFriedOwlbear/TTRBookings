@@ -10,13 +10,14 @@ using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Bookings
 {
-    //TODO - FORM POST VERSION, Can't post from Index.cshtml if forgery token isn't inactive.
-    //[IgnoreAntiforgeryToken(Order = 1001)]
-
+    //TODO - FORM POST VERSION
     public class DeleteModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
+
+        [BindProperty]
+        public Guid bookingId { get; set; }
 
         //dear dependency Booking, if you know how to create an XYZ,
         //then please give me an XYZ.
@@ -48,8 +49,9 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public IActionResult OnPost()
         {
-            var bookingId = Request.Form["bookingId"];
-
+            //TODO - Work with posted FormData here.
+            Guid bookingId = Guid.Parse(Request.Form["bookingId"]);
+            
             if (DateTime.Now.Second % 2 == 0)
             {
                 return new JsonResult(new { Success = false });
