@@ -18,7 +18,7 @@
             <td>@booking.Room.Name</td>
             <td>
                 <a asp-page="./Details" asp-route-id="@booking.Id">Details</a> |
-                <form id="deleteEntry_@booking.Id" asp-page="./Delete" method="post">
+                <form id="deleteEntry_@booking.Id" asp-controller="Bookings" asp-action="Delete" method="post">
                     <input id="bookingId" name="bookingId" asp-for="@booking.Id" type="hidden" />
                     <button type="submit">Delete</button>
                 </form>
@@ -41,83 +41,137 @@
 @section Scripts
 {
     <script type="text/javascript">
-        //FORM POST VERSION
-        //TODO - there's a Content-Type mismatch so form doesn't get processed in Delete.cshtml.cs.
+        //see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+        //see https://simonplend.com/how-to-use-fetch-to-post-form-data-as-json-to-your-api/
 
-        const delBtns = document.querySelectorAll('[id^="deleteEntry_"]');
-
-        for (let i = 0; i < delBtns.length; i++) {
-            delBtns[i].addEventListener('submit', function () {
-                event.preventDefault();
-                const formData = Object.fromEntries(new FormData(delBtns[i]).entries());
-
-                fetchData(formData);
-                //deleteRow(delBtns[i]);
+        document.querySelectorAll('[id^="deleteEntry_"]')
+            .forEach((element) => {
+                element.addEventListener("submit", function () {
+                    handleFormSubmit(event, RemoveFromUI);
+                });
             });
+
+        function RemoveFromUI(success) {
+            if (success) {
+                console.log("this is the callback");
+            }
         }
 
-        async function fetchData(formData) {
-            let formDataJSON = JSON.stringify(formData)
-            let formDataParsed = JSON.parse(formDataJSON);
-            let token = formDataParsed['__RequestVerificationToken'];
+        // Event handler for a form submit event.
+        async function handleFormSubmit(event, callback) {
+            event.preventDefault();
 
-            console.log("FormData: " + JSON.stringify(formData));
-            console.log("Token: " + token);
+            // This gets the element which the event handler was attached to.
+            const form = event.currentTarget;
 
-            await fetch('../Bookings/Delete', {
-                method: 'POST',
-                headers: {
-                    //'Content-Type': 'application/json',
-                    "RequestVerificationToken": token
-                },
-                body: formDataJSON
-            }).then(function (response) {
-                console.log(response.text());
-            }).catch(function (error) {
-                console.log(error);
-            });
+            // This takes the API URL from the form's `action` attribute.
+            const url = form.action;
+
+            try {
+                // This takes all the fields in the form and makes their values
+                // available through a `FormData` instance.
+                const formData = new FormData(form);
+
+                const responseData = await fetch(url,
+                    {
+                        method: 'POST', // or 'PUT'
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify(Object.fromEntries(formData)),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        callback(data.success);
+                        //return data;
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            } catch (error) {
+                console.error(error);
+            }
         }
 
-        function deleteRow(button) {
-            var row = button.parentNode.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-        }
-        //END OF FORM POST VERSION
+                //FORM POST VERSION
+                //TODO - there's a Content-Type mismatch so form doesn't get processed in Delete.cshtml.cs.
 
-        //OLD VERSION (No Form Post)
-        //const delBtns = document.querySelectorAll('#deleteEntry');
+                //const delBtns = document.querySelectorAll('[id^="deleteEntry_"]');
 
-        //for (let i = 0; i < delBtns.length; i++) {
-        //    delBtns[i].addEventListener('click', function () {
-        //        event.preventDefault()
+                //for (let i = 0; i < delBtns.length; i++) {
+                //    delBtns[i].addEventListener('submit', function () {
+                //        event.preventDefault();
+                //        const formData = Object.fromEntries(new FormData(delBtns[i]).entries());
 
-        //        if (confirm("Are you sure you want to delete this entry?") == true) {
-        //            fetchData(delBtns[i].getAttribute("href"), delBtns[i]);
-        //        }
-        //    });
-        //}
+                //        fetchData(formData);
+                //        //deleteRow(delBtns[i]);
+                //    });
+                //}
 
-        //async function fetchData(url, button) {
-        //    //console.log("Posted URL: "+url);
-        //    let response = await fetch(url);
-        //    let data = await response.text();
-        //    //console.log("Response: " + data);
+                //async function fetchData(formData) {
+                //    let formDataJSON = JSON.stringify(formData)
+                //    let formDataParsed = JSON.parse(formDataJSON);
+                //    let token = formDataParsed['__RequestVerificationToken'];
 
-        //    var obj = JSON.parse(data);
-        //    if (obj["success"] == true) {
-        //        var row = button.parentNode.parentNode;
-        //        row.parentNode.removeChild(row);
-        //    }
-        //    else {
-        //        alert("Entry could not be deleted.");
-        //    }
-        //}
+                //    console.log("FormData: " + formDataJSON);
+                //    console.log("Token: " + token);
 
-        //function deleteRow(button) {
-        //    var row = button.parentNode.parentNode;
-        //    row.parentNode.removeChild(row);
-        //}
-        //END OF OLD VERSION
+                //    await fetch('api/Bookings/Delete', {
+                //        method: 'POST',
+                //        headers: {
+                //            //'Content-Type': 'application/json',
+                //            "RequestVerificationToken": token
+                //        },
+                //        body: formDataJSON
+                //    }).then(function (response) {
+                //        console.log(response.text());
+                //    }).catch(function (error) {
+                //        console.log(error);
+                //    });
+                //}
+
+                //function deleteRow(button) {
+                //    var row = button.parentNode.parentNode.parentNode;
+                //    row.parentNode.removeChild(row);
+                //}
+                //END OF FORM POST VERSION
+
+                //OLD VERSION (No Form Post)
+                //const delBtns = document.querySelectorAll('#deleteEntry');
+
+                //for (let i = 0; i < delBtns.length; i++) {
+                //    delBtns[i].addEventListener('click', function () {
+                //        event.preventDefault()
+
+                //        if (confirm("Are you sure you want to delete this entry?") == true) {
+                //            fetchData(delBtns[i].getAttribute("href"), delBtns[i]);
+                //        }
+                //    });
+                //}
+
+                //async function fetchData(url, button) {
+                //    //console.log("Posted URL: "+url);
+                //    let response = await fetch(url);
+                //    let data = await response.text();
+                //    //console.log("Response: " + data);
+
+                //    var obj = JSON.parse(data);
+                //    if (obj["success"] == true) {
+                //        var row = button.parentNode.parentNode;
+                //        row.parentNode.removeChild(row);
+                //    }
+                //    else {
+                //        alert("Entry could not be deleted.");
+                //    }
+                //}
+
+                //function deleteRow(button) {
+                //    var row = button.parentNode.parentNode;
+                //    row.parentNode.removeChild(row);
+                //}
+                //END OF OLD VERSION
 
     </script>
     <!--Clicked delete, if response from post to delete onpost method == success = true,

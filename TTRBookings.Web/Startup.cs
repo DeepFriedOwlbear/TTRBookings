@@ -37,6 +37,7 @@ namespace TTRBookings.Web
             });
             //Session Storage End
 
+            services.AddMvc();
             services.AddRazorPages();
 
             services.AddDbContext<TTRBookingsContext>(options =>
@@ -46,7 +47,6 @@ namespace TTRBookings.Web
                 );
 
             services.AddScoped<IRepository, Repository>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +76,7 @@ namespace TTRBookings.Web
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
             });
         }

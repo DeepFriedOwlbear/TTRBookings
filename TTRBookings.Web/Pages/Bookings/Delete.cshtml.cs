@@ -28,15 +28,8 @@ namespace TTRBookings.Web.Pages.Bookings
         }
 
         public IActionResult OnGet(Guid id)
-        {
-            if (repository.DeleteEntry(repository.ReadEntry<Booking>(id)) == true)
-            {
-                return new JsonResult(new { Success = true });
-            }
-            else 
-            { 
-                return new JsonResult(new { Success = false }); 
-            }
+        {            
+            return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Booking>(id)) });
 
             //return RedirectToPage("/Bookings/Index");
 
@@ -50,13 +43,16 @@ namespace TTRBookings.Web.Pages.Bookings
         public IActionResult OnPost()
         {
             //TODO - Work with posted FormData here.
-            Guid bookingId = Guid.Parse(Request.Form["bookingId"]);
-            
-            if (DateTime.Now.Second % 2 == 0)
+            bookingId = Guid.Parse(Request.Form["bookingId"]);
+
+            if (repository.DeleteEntry(repository.ReadEntry<Booking>(bookingId)) == true)
+            {
+                return new JsonResult(new { Success = true });
+            }
+            else
             {
                 return new JsonResult(new { Success = false });
             }
-            return new JsonResult(new { Success = true });
         }
     }
 }
