@@ -3,8 +3,15 @@
 
 <h2>Create Room</h2>
 <form asp-page="./Create" method="post">
-    <label asp-for="RoomVM.Name"></label>
-    <input asp-for="RoomVM.Name" /> <br />
-
-    <button type="submit">Submit</button>
+    <div class="form-row">
+        <div class="col col-lg-2">
+            <label class="col-form-label" asp-for="RoomVM.Name">Room Name</label>
+        </div>
+        <div class="col">
+            <input class="form-control" asp-for="RoomVM.Name" />
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary">Create Room</button>
+        </div>
+    </div>
 </form>

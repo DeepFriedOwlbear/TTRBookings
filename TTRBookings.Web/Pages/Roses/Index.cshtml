@@ -7,15 +7,54 @@
 <table class="table table-hover">
     <thead class="thead-dark">
         <tr>
-            <th>Rose</th>
-            <th>Details Page</th>
+            <th>Roses</th>
+            <th>Options</th>
         </tr>
     </thead>
     @foreach (var rose in Model.Roses)
     {
-    <tr>
-        <td>@rose.Name</td>
-        <td><a asp-page="./Details" asp-route-id="@rose.Id">Details</a></td>
-    </tr>
+        <tr>
+            <td>@rose.Name</td>
+            <td>
+                <a asp-page="./Details" asp-route-id="@rose.Id" class="btn btn-primary btn-sm">Details</a>
+                <form id="deleteEntry_@rose.Id" asp-controller="Roses" asp-action="Delete" method="post" style="display: inline;">
+                    <input id="roseId" name="roseId" asp-for="@rose.Id" type="hidden" />
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
     }
 </table>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+        //see https://simonplend.com/how-to-use-fetch-to-post-form-data-as-json-to-your-api/
+
+        //TODO - Make other Pages use the handleFormSubmit too
+
+        document.querySelectorAll('[id^="deleteEntry_"]')
+            .forEach((element) => {
+                element.addEventListener("submit", function () {
+                    handleFormSubmit(event, RemoveFromUI);
+                });
+            });
+
+        function RemoveFromUI(success, formData) {
+            if (success) {
+                console.log("ID: ", formData.get('roseId'));
+
+                let form = document.getElementById("deleteEntry_" + formData.get('roseId'));
+                console.log("FormID: ", form.id);
+
+                var row = form.parentNode.parentNode;
+                row.parentNode.removeChild(row);
+            }
+            else {
+                alert("Entry could not be deleted.");
+            }
+        }
+
+    </script>
+}

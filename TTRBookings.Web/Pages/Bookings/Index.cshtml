@@ -4,7 +4,7 @@
     ViewData["Title"] = "Bookings";
 }
 
-<table id="myTable" class="table table-hover">
+<table class="table table-hover">
     <thead class="thead-dark">
         <tr>
             <th>Booked Room</th>
@@ -32,7 +32,7 @@
         //see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
         //see https://simonplend.com/how-to-use-fetch-to-post-form-data-as-json-to-your-api/
 
-        //TODO - Make other Pages use the handleFormSubmit too, Make callback function delete the row from the UI
+        //TODO - Make other Pages use the handleFormSubmit too
 
         document.querySelectorAll('[id^="deleteEntry_"]')
             .forEach((element) => {

@@ -3,21 +3,26 @@
 @{
 }
 <h2>Booking Details</h2>
-<table style="width:75%">
-    <tr>
-        <th>Room</th>
-        <th>Rose</th>
-        <th>Tier</th>
-        <th>Timeslot Start</th>
-        <th>Timeslot End</th>
-        <th></th>
-    </tr>
+<table class="table table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Room</th>
+            <th>Rose</th>
+            <th>Tier</th>
+            <th>Timeslot Start</th>
+            <th>Timeslot End</th>
+            <th>Options</th>
+        </tr>
+    </thead>
     <tr>
         <td>@Model.Booking.Room.Name</td>
         <td>@Model.Booking.Rose.Name</td>
         <td>@Model.Booking.Tier.Rate</td>
         <td>@Model.Booking.TimeSlot.Start</td>
         <td>@Model.Booking.TimeSlot.End</td>
-        <th><a asp-page="./Edit" asp-route-id="@Model.Booking.Id">Edit</a> | <a asp-page="./Delete" asp-route-id="@Model.Booking.Id" >Delete</a></th>
+        <td>
+            <a asp-page="./Edit" asp-route-id="@Model.Booking.Id" class="btn btn-primary btn-sm">Edit</a>
+            <a asp-page="./Delete" asp-route-id="@Model.Booking.Id" class="btn btn-danger btn-sm">Delete</a>
+        </td>
     </tr>
 </table>

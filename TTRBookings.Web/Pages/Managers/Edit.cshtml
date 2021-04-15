@@ -2,11 +2,18 @@
 @model TTRBookings.Web.Pages.Managers.EditModel
 @{
 }
-<h2>Edit Booking</h2>
+<h2>Edit Manager</h2>
 <form asp-page="./Edit" method="post">
     <input asp-for="ManagerVM.Id" type="hidden" />
-    <label asp-for="ManagerVM.Name"></label>
-    <input asp-for="ManagerVM.Name" /> <br />
-
-    <button type="submit">Submit</button>
+    <div class="form-row">
+        <div class="col col-lg-2">
+            <label class="col-form-label" asp-for="ManagerVM.Name">Manager Name</label>
+        </div>
+        <div class="col">
+            <input class="form-control" asp-for="ManagerVM.Name" />
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
 </form>

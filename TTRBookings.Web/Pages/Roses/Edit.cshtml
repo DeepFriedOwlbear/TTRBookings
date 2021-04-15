@@ -2,11 +2,18 @@
 @model TTRBookings.Web.Pages.Roses.EditModel
 @{
 }
-<h2>Edit Booking</h2>
+<h2>Edit Rose</h2>
 <form asp-page="./Edit" method="post">
     <input asp-for="RoseVM.Id" type="hidden" />
-    <label asp-for="RoseVM.Name"></label>
-    <input asp-for="RoseVM.Name" /> <br />
-
-    <button type="submit">Submit</button>
+    <div class="form-row">
+        <div class="col col-lg-2">
+            <label class="col-form-label" asp-for="RoseVM.Name">Rose Name</label>
+        </div>
+        <div class="col">
+            <input class="form-control" asp-for="RoseVM.Name" />
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary">Create Rose</button>
+        </div>
+    </div>
 </form>
