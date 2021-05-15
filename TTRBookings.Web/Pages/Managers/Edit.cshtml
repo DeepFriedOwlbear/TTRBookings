@@ -2,18 +2,54 @@
 @model TTRBookings.Web.Pages.Managers.EditModel
 @{
 }
-<h2>Edit Manager</h2>
-<form asp-page="./Edit" method="post">
-    <input asp-for="ManagerVM.Id" type="hidden" />
-    <div class="form-row">
+<h2>Details</h2>
+<br />
+
+<form asp-page="./Edit" method="post" class="form-row">
+    <fieldset id="FormFieldset" class="col form-row" disabled>
+        <input asp-for="ManagerVM.Id" type="hidden" />
         <div class="col col-lg-2">
-            <label class="col-form-label" asp-for="ManagerVM.Name">Manager Name</label>
+            <label class="col-form-label" asp-for="ManagerVM.Name">Name</label>
         </div>
         <div class="col">
             <input class="form-control" asp-for="ManagerVM.Name" />
         </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
+    </fieldset>
+    <div class="col">
+        <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
+        <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
     </div>
 </form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        let el = document.getElementById("unlockFormButton");
+        el.addEventListener("click", UnlockFieldset);
+
+        //TODO - Change ManagerVM_Name when all values are renamed for portfolio
+        let originalName = document.getElementById("ManagerVM_Name").value;
+
+        function UnlockFieldset() {
+            let unlockButton = document.getElementById("unlockFormButton")
+            let fieldset = document.getElementById("FormFieldset");
+
+            if (fieldset.disabled == true) {
+                fieldset.disabled = false;
+                unlockButton.textContent = "Cancel";
+                unlockButton.className = "btn btn-danger";
+                document.getElementById("submitButton").hidden = false;
+            }
+            else {
+                fieldset.disabled = true;
+                unlockButton.textContent = "Edit";
+                unlockButton.className = "btn btn-secondary";
+                document.getElementById("submitButton").hidden = true;
+
+                //TODO - Change ManagerVM_Name when all values are renamed for portfolio
+                document.getElementById("ManagerVM_Name").value = originalName;
+            }
+        }
+    </script>
+}

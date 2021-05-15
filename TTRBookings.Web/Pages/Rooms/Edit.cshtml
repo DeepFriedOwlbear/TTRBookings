@@ -2,18 +2,54 @@
 @model TTRBookings.Web.Pages.Rooms.EditModel
 @{
 }
-<h2>Edit Room</h2>
-<form asp-page="./Edit" method="post">
-    <input asp-for="RoomVM.Id" type="hidden" />
-    <div class="form-row">
+<h2>Details</h2>
+<br />
+
+<form asp-page="./Edit" method="post" class="form-row">
+    <fieldset id="FormFieldset" class="col form-row" disabled>
+        <input asp-for="RoomVM.Id" type="hidden" />
         <div class="col col-lg-2">
-            <label class="col-form-label" asp-for="RoomVM.Name">Room Name</label>
+            <label class="col-form-label" asp-for="RoomVM.Name">Name</label>
         </div>
         <div class="col">
             <input class="form-control" asp-for="RoomVM.Name" />
         </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Create Room</button>
-        </div>
+    </fieldset>
+    <div class="col">
+        <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
+        <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
     </div>
 </form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        let el = document.getElementById("unlockFormButton");
+        el.addEventListener("click", UnlockFieldset);
+
+        //TODO - Change RoomVM_Name when all values are renamed for portfolio
+        let originalName = document.getElementById("RoomVM_Name").value;
+
+        function UnlockFieldset() {
+            let unlockButton = document.getElementById("unlockFormButton")
+            let fieldset = document.getElementById("FormFieldset");
+
+            if (fieldset.disabled == true) {
+                fieldset.disabled = false;
+                unlockButton.textContent = "Cancel";
+                unlockButton.className = "btn btn-danger";
+                document.getElementById("submitButton").hidden = false;
+            }
+            else {
+                fieldset.disabled = true;
+                unlockButton.textContent = "Edit";
+                unlockButton.className = "btn btn-secondary";
+                document.getElementById("submitButton").hidden = true;
+
+                //TODO - Change RoomVM_Name when all values are renamed for portfolio
+                document.getElementById("RoomVM_Name").value = originalName;
+            }
+        }
+    </script>
+}

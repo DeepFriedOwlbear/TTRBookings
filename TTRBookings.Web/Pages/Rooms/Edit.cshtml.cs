@@ -47,7 +47,7 @@ namespace TTRBookings.Web.Pages.Rooms
             repository.UpdateEntry(room);
 
             //return/redirect user to somewhere
-            return RedirectToPage("/Rooms/Details", new { room.Id });
+            return RedirectToPage("/Rooms/Edit", new { room.Id });
         }
     }
 }

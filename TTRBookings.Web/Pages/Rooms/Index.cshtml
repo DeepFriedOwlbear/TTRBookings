@@ -16,7 +16,7 @@
         <tr>
             <td>@room.Name</td>
             <td>
-                <a asp-page="./Details" asp-route-id="@room.Id" class="btn btn-primary btn-sm">Details</a>
+                <a asp-page="./Edit" asp-route-id="@room.Id" class="btn btn-primary btn-sm">Details</a>
                 <form id="deleteEntry_@room.Id" asp-controller="Rooms" asp-action="Delete" method="post" style="display: inline;">
                     <input id="roomId" name="roomId" asp-for="@room.Id" type="hidden" />
                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>

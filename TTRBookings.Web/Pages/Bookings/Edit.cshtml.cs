@@ -72,7 +72,7 @@ namespace TTRBookings.Web.Pages.Bookings
             repository.UpdateEntry(booking);
 
             //return/redirect user to somewhere
-            return RedirectToPage("/Bookings/Details", new { booking.Id });
+            return RedirectToPage("/Bookings/Edit", new { booking.Id });
         }
     }
 }

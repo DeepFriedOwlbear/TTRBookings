@@ -14,8 +14,7 @@ async function handleFormSubmit(event, callback) {
     const url = form.action;
 
     try {
-        // This takes all the fields in the form and makes their values
-        // available through a `FormData` instance.
+        // This takes all the fields in the form and makes their values available through a `FormData` instance.
         const formData = new FormData(form);
 
         const responseData = await fetch(url,
@@ -29,7 +28,7 @@ async function handleFormSubmit(event, callback) {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Success:', data);
+                //console.log('Success:', data);
                 //Use Callback function and give it the success state + submitted formData
                 callback(data.success, formData);
                 //return data;

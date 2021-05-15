@@ -47,7 +47,7 @@ namespace TTRBookings.Web.Pages.Roses
             repository.UpdateEntry(rose);
 
             //return/redirect user to somewhere
-            return RedirectToPage("/Roses/Details", new { rose.Id });
+            return RedirectToPage("/Roses/Edit", new { rose.Id });
         }
     }
 }

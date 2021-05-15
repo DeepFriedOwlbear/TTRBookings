@@ -2,32 +2,83 @@
 @model TTRBookings.Web.Pages.Bookings.EditModel
 @{
 }
-<h2>Edit Booking</h2>
+<h2>Details</h2>
+<br />
+
 <form asp-page="./Edit" method="post">
-    <input asp-for="BookingVM.Id" type="hidden" />
+    <fieldset id="FormFieldset" disabled>
+        <input asp-for="BookingVM.Id" type="hidden" />
+        <div class="form-row">
+            <div class="col">
+                <label asp-for="BookingVM.Rose.Name">Rose</label>
+                <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList"></select>
+            </div>
+            <div class="col">
+                <label asp-for="BookingVM.Room.Name">Room</label>
+                <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList"></select>
+            </div>
+            <div class="col">
+                <label asp-for="BookingVM.Tier.Rate"></label>
+                <input class="form-control" asp-for="BookingVM.Tier.Rate" step="10000" type="number" placeholder="10000" min="0" />
+            </div>
+        </div><br />
+        <div class="form-row">
+            <div class="col">
+                <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
+                <input class="form-control" asp-for="BookingVM.TimeSlot.Start" />
+            </div>
+            <div class="col">
+                <label asp-for="BookingVM.TimeSlot.End">End Time</label>
+                <input class="form-control" asp-for="BookingVM.TimeSlot.End" />
+            </div>
+        </div>
+    </fieldset>
+
+    <br />
+
     <div class="form-row">
-        <div class="col">
-            <label asp-for="BookingVM.Rose.Name">Rose</label>
-            <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList"></select>
-        </div>
-        <div class="col">
-            <label asp-for="BookingVM.Room.Name">Room</label>
-            <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList"></select>
-        </div>
-        <div class="col">
-            <label asp-for="BookingVM.Tier.Rate"></label>
-            <input class="form-control" asp-for="BookingVM.Tier.Rate" step="10000" type="number" placeholder="10000" min="0" />
-        </div>
-    </div><br />
-    <div class="form-row">
-        <div class="col">
-            <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
-            <input class="form-control" asp-for="BookingVM.TimeSlot.Start" />
-        </div>
-        <div class="col">
-            <label asp-for="BookingVM.TimeSlot.End">End Time</label>
-            <input class="form-control" asp-for="BookingVM.TimeSlot.End" />
-        </div>
-    </div><br />
-    <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
+        <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
+    </div>
 </form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        let el = document.getElementById("unlockFormButton");
+        el.addEventListener("click", UnlockFieldset);
+
+        //TODO - Change Values (BookingVM_XXX_XXX) here when all values are renamed for portfolio
+        let originalRose = document.getElementById("BookingVM_Rose_Id").value;
+        let originalRoom = document.getElementById("BookingVM_Room_Id").value;
+        let originalTier = document.getElementById("BookingVM_Tier_Rate").value;
+        let originalTimeStart = document.getElementById("BookingVM_TimeSlot_Start").value;
+        let originalTimeEnd = document.getElementById("BookingVM_TimeSlot_End").value;
+
+        function UnlockFieldset() {
+            let unlockButton = document.getElementById("unlockFormButton")
+            let fieldset = document.getElementById("FormFieldset");
+
+            if (fieldset.disabled == true) {
+                fieldset.disabled = false;
+                unlockButton.textContent = "Cancel";
+                unlockButton.className = "btn btn-danger";
+                document.getElementById("submitButton").hidden = false;
+            }
+            else {
+                fieldset.disabled = true;
+                unlockButton.textContent = "Edit";
+                unlockButton.className = "btn btn-secondary";
+                document.getElementById("submitButton").hidden = true;
+
+                //TODO - Change Values when all values are renamed for portfolio
+                document.getElementById("BookingVM_Rose_Id").value = originalRose;
+                document.getElementById("BookingVM_Room_Id").value = originalRoom;
+                document.getElementById("BookingVM_Tier_Rate").value = originalTier;
+                document.getElementById("BookingVM_TimeSlot_Start").value = originalTimeStart;
+                document.getElementById("BookingVM_TimeSlot_End").value = originalTimeEnd;
+            }
+        }
+    </script>
+}

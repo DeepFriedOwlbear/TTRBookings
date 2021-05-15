@@ -47,7 +47,7 @@ namespace TTRBookings.Web.Pages.Managers
             repository.UpdateEntry(manager);
 
             //return/redirect user to somewhere
-            return RedirectToPage("/Managers/Details", new { manager.Id });
+            return RedirectToPage("/Managers/Edit", new { manager.Id });
         }
     }
 }

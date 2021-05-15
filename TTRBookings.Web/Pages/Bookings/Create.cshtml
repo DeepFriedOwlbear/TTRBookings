@@ -20,11 +20,11 @@
     <div class="form-row">
         <div class="col">
             <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
-            <input class="form-control" asp-for="BookingVM.TimeSlot.Start" />
+            <input class="form-control" asp-for="BookingVM.TimeSlot.Start" asp-format="{0:dd/MM/yyyy HH:mm}" />
         </div>
         <div class="col">
             <label asp-for="BookingVM.TimeSlot.End">End Time</label>
-            <input class="form-control" asp-for="BookingVM.TimeSlot.End" />
+            <input class="form-control" asp-for="BookingVM.TimeSlot.End" asp-format="{0:dd/MM/yyyy HH:mm}" />
         </div>
     </div><br />
     <button type="submit" class="btn btn-primary">Create Booking</button>

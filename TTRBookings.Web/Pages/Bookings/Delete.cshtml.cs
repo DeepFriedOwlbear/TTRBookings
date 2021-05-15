@@ -10,7 +10,6 @@ using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Bookings
 {
-    //TODO - FORM POST VERSION
     public class DeleteModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
@@ -28,31 +27,26 @@ namespace TTRBookings.Web.Pages.Bookings
         }
 
         public IActionResult OnGet(Guid id)
-        {            
-            return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Booking>(id)) });
+        {
+            //return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Booking>(id)) });
 
             //return RedirectToPage("/Bookings/Index");
-
-            //if (DateTime.Now.Second % 2 == 0)
-            //{
-            //    return new JsonResult(new { Success = false });
-            //}
-            //return new JsonResult(new { Success = true });
+            return null;
         }
 
         public IActionResult OnPost()
         {
-            //TODO - Work with posted FormData here.
-            bookingId = Guid.Parse(Request.Form["bookingId"]);
+            //bookingId = Guid.Parse(Request.Form["bookingId"]);
 
-            if (repository.DeleteEntry(repository.ReadEntry<Booking>(bookingId)) == true)
-            {
-                return new JsonResult(new { Success = true });
-            }
-            else
-            {
-                return new JsonResult(new { Success = false });
-            }
+            //if (repository.DeleteEntry(repository.ReadEntry<Booking>(bookingId)) == true)
+            //{
+            //    return new JsonResult(new { Success = true });
+            //}
+            //else
+            //{
+            //    return new JsonResult(new { Success = false });
+            //}
+            return null;
         }
     }
 }
