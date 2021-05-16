@@ -4,18 +4,26 @@
     ViewData["Title"] = "Rooms";
 }
 
+<table class="table table-borderless table-dark w-auto">
+    <thead class="thead-dark">
+        <tr>
+            <th><a asp-page="./Create" class="btn btn-primary btn-sm">Create Room</a></th>
+        </tr>
+    </thead>
+</table>
+
 <table class="table table-hover">
     <thead class="thead-dark">
         <tr>
-            <th>Rooms</th>
-            <th>Options</th>
+            <th class="w-75">Rooms</th>
+            <th class="w-25 text-center">Options</th>
         </tr>
     </thead>
     @foreach (var room in Model.Rooms)
     {
         <tr>
-            <td>@room.Name</td>
-            <td>
+            <td class="w-75">@room.Name</td>
+            <td class="w-25 text-center">
                 <a asp-page="./Edit" asp-route-id="@room.Id" class="btn btn-primary btn-sm">Details</a>
                 <form id="deleteEntry_@room.Id" asp-controller="Rooms" asp-action="Delete" method="post" style="display: inline;">
                     <input id="roomId" name="roomId" asp-for="@room.Id" type="hidden" />

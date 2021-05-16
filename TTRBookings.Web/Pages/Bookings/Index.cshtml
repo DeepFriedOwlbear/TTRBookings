@@ -3,18 +3,26 @@
 @{
     ViewData["Title"] = "Bookings";
 }
+<table class="table table-borderless table-dark w-auto">
+    <thead class="thead-dark">
+        <tr>
+            <th><a asp-page="./Create" class="btn btn-primary btn-sm">Create Booking</a></th>
+        </tr>
+    </thead>
+</table>
+
 <table class="table table-hover">
     <thead class="thead-dark">
         <tr>
-            <th>Booked Room</th>
-            <th>Options</th>
+            <th class="w-75">Booked Room</th>
+            <th class="w-25 text-center">Options</th>
         </tr>
     </thead>
     @foreach (var booking in Model.Bookings)
     {
         <tr>
-            <td>@booking.Room.Name</td>
-            <td>
+            <td class="w-75">@booking.Room.Name</td>
+            <td class="w-25 text-center">
                 <a asp-page="./Edit" asp-route-id="@booking.Id" class="btn btn-primary btn-sm">Details</a>
                 <form id="deleteEntry_@booking.Id" asp-controller="Bookings" asp-action="Delete" method="post" style="display: inline;">
                     <input id="bookingId" name="bookingId" asp-for="@booking.Id" type="hidden" />

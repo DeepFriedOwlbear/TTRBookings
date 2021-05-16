@@ -4,18 +4,26 @@
     ViewData["Title"] = "Managers";
 }
 
+<table class="table table-borderless table-dark w-auto">
+    <thead class="thead-dark">
+        <tr>
+            <th><a asp-page="./Create" class="btn btn-primary btn-sm">Create Manager</a></th>
+        </tr>
+    </thead>
+</table>
+
 <table class="table table-hover">
     <thead class="thead-dark">
         <tr>
-            <th>Managers</th>
-            <th>Options</th>
+            <th class="w-75">Managers</th>
+            <th class="w-25 text-center">Options</th>
         </tr>
     </thead>
     @foreach (var manager in Model.Managers)
     {
         <tr>
-            <td>@manager.Name</td>
-            <td>
+            <td class="w-75">@manager.Name</td>
+            <td class="w-25 text-center">
                 <a asp-page="./Edit" asp-route-id="@manager.Id" class="btn btn-primary btn-sm">Details</a>
                 <form id="deleteEntry_@manager.Id" asp-controller="Managers" asp-action="Delete" method="post" style="display: inline;">
                     <input id="managerId" name="managerId" asp-for="@manager.Id" type="hidden" />
