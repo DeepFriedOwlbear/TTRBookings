@@ -1,12 +1,11 @@
 ﻿@page
 @model TTRBookings.Web.Pages.Bookings.EditModel
-@{
-}
+
 <h2>Details</h2>
 <br />
 
 <form asp-page="./Edit" method="post">
-    <fieldset id="FormFieldset" disabled>
+    <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
         <input asp-for="BookingVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
@@ -34,11 +33,13 @@
         </div>
     </fieldset>
 
-    <br />
-
     <div class="form-row">
-        <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
-        <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
+        <div class="col-auto">
+            <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
+        </div>
     </div>
 </form>
 
@@ -62,12 +63,14 @@
 
             if (fieldset.disabled == true) {
                 fieldset.disabled = false;
+                fieldset.className = "p-3 mb-2";
                 unlockButton.textContent = "Cancel";
                 unlockButton.className = "btn btn-danger";
                 document.getElementById("submitButton").hidden = false;
             }
             else {
                 fieldset.disabled = true;
+                fieldset.className = "p-3 mb-2 bg-secondary text-white";
                 unlockButton.textContent = "Edit";
                 unlockButton.className = "btn btn-secondary";
                 document.getElementById("submitButton").hidden = true;

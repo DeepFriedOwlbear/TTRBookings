@@ -2,16 +2,25 @@
 @model TTRBookings.Web.Pages.Rooms.CreateModel
 
 <h2>Create Room</h2>
+<br />
+
 <form asp-page="./Create" method="post">
+    <fieldset id="FormFieldset" class="p-3 mb-2">
+        <div class="form-row">
+            <div class="col">
+                <label asp-for="RoomVM.Name">Name</label>
+            </div>
+        </div>
+        <div class="form-row w-25">
+            <div class="col">
+                <input class="form-control" asp-for="RoomVM.Name" />
+            </div>
+        </div>
+    </fieldset>
+
     <div class="form-row">
-        <div class="col col-lg-2">
-            <label class="col-form-label" asp-for="RoomVM.Name">Room Name</label>
-        </div>
-        <div class="col">
-            <input class="form-control" asp-for="RoomVM.Name" />
-        </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Create Room</button>
+        <div class="col-auto align-content-center">
+            <button type="submit" id="submitButton" class="btn btn-success">Save Changes</button>
         </div>
     </div>
 </form>

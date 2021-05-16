@@ -2,30 +2,39 @@
 @model TTRBookings.Web.Pages.Bookings.CreateModel
 
 <h2>Create Booking</h2>
+<br />
+
 <form asp-page="./Create" method="post">
+    <fieldset id="FormFieldset" class="p-3 mb-2">
+        <div class="form-row">
+            <div class="col">
+                <label asp-for="BookingVM.Rose.Name">Rose</label>
+                <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList"></select>
+            </div>
+            <div class="col">
+                <label asp-for="BookingVM.Room.Name">Room</label>
+                <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList"></select>
+            </div>
+            <div class="col">
+                <label asp-for="BookingVM.Tier.Rate"></label>
+                <input class="form-control" asp-for="BookingVM.Tier.Rate" step="10000" type="number" placeholder="10000" min="0" />
+            </div>
+        </div><br />
+        <div class="form-row">
+            <div class="col">
+                <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
+                <input class="form-control" asp-for="BookingVM.TimeSlot.Start" />
+            </div>
+            <div class="col">
+                <label asp-for="BookingVM.TimeSlot.End">End Time</label>
+                <input class="form-control" asp-for="BookingVM.TimeSlot.End" />
+            </div>
+        </div>
+    </fieldset>
+
     <div class="form-row">
-        <div class="col">
-            <label asp-for="BookingVM.Rose.Name">Rose</label>
-            <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList"></select>
+        <div class="col-auto">
+            <button type="submit" id="submitButton" class="btn btn-success">Save Changes</button>
         </div>
-        <div class="col">
-            <label asp-for="BookingVM.Room.Name">Room</label>
-            <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList"></select>
-        </div>
-        <div class="col">
-            <label asp-for="BookingVM.Tier.Rate"></label>
-            <input class="form-control" asp-for="BookingVM.Tier.Rate" step="10000" type="number" placeholder="10000" min="0" />
-        </div>
-    </div><br />
-    <div class="form-row">
-        <div class="col">
-            <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
-            <input class="form-control" asp-for="BookingVM.TimeSlot.Start" asp-format="{0:dd/MM/yyyy HH:mm}" />
-        </div>
-        <div class="col">
-            <label asp-for="BookingVM.TimeSlot.End">End Time</label>
-            <input class="form-control" asp-for="BookingVM.TimeSlot.End" asp-format="{0:dd/MM/yyyy HH:mm}" />
-        </div>
-    </div><br />
-    <button type="submit" class="btn btn-primary">Create Booking</button>
+    </div>
 </form>

@@ -1,23 +1,31 @@
 ﻿@page
 @model TTRBookings.Web.Pages.Rooms.EditModel
-@{
-}
+
 <h2>Details</h2>
 <br />
 
-<form asp-page="./Edit" method="post" class="form-row">
-    <fieldset id="FormFieldset" class="col form-row" disabled>
+<form asp-page="./Edit" method="post">
+    <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
         <input asp-for="RoomVM.Id" type="hidden" />
-        <div class="col col-lg-2">
-            <label class="col-form-label" asp-for="RoomVM.Name">Name</label>
+        <div class="form-row">
+            <div class="col">
+                <label asp-for="RoomVM.Name">Name</label>
+            </div>
         </div>
-        <div class="col">
-            <input class="form-control" asp-for="RoomVM.Name" />
+        <div class="form-row w-25">
+            <div class="col">
+                <input class="form-control" asp-for="RoomVM.Name" />
+            </div>
         </div>
     </fieldset>
-    <div class="col">
-        <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
-        <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
+
+    <div class="form-row">
+        <div class="col-auto align-content-center">
+            <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
+        </div>
+        <div class="col-auto align-content-center">
+            <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
+        </div>
     </div>
 </form>
 
@@ -37,12 +45,14 @@
 
             if (fieldset.disabled == true) {
                 fieldset.disabled = false;
+                fieldset.className = "p-3 mb-2";
                 unlockButton.textContent = "Cancel";
                 unlockButton.className = "btn btn-danger";
                 document.getElementById("submitButton").hidden = false;
             }
             else {
                 fieldset.disabled = true;
+                fieldset.className = "p-3 mb-2 bg-secondary text-white";
                 unlockButton.textContent = "Edit";
                 unlockButton.className = "btn btn-secondary";
                 document.getElementById("submitButton").hidden = true;
