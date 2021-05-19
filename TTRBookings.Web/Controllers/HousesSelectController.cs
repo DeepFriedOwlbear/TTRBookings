@@ -24,11 +24,11 @@ namespace TTRBookings.Web.Controllers
         }
 
         [HttpPost]
-        [Route("select")]//< =  https://localhost:12345/api/bookings/delete
+        [Route("select")]//< =  https://localhost:12345/api/HousesSelect/Select
                          //starting a NESTED route WITHOUT a '/' as initial character will mean append to current build-up route
         public IActionResult Select([FromForm] HousesSelectDTO house, [FromForm] string currentPath)
         {
-            //TODO - Session HouseId gets set, but only displays a json result now.
+            //TODO - need to trim currentPath.
             //Can't use JavaScript in ViewComponent, so have to reroute to the page that the request was made from.
             //@Context.Request.Path is sent in the Form from "Shared/Components/Houses/Default.cshtml" via CurrentPath
             //need to trim the @Context.Request.Path.
