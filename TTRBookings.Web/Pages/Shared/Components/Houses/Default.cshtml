@@ -3,14 +3,11 @@
 <form id="HousesSelectForm" method="post" asp-controller="HousesSelect" asp-action="Select">
     <input id="CurrentPath" name="CurrentPath" type="hidden" value="@Context.Request.Path" />
     <div class="form-row">
-        <div class="col col-lg-2">
-            <label class="col-form-label">Active House</label>
+        <div class="col-auto">
+            <select asp-for="HouseId" asp-items="Model.Houses" class="custom-select custom-select-sm"></select>
         </div>
-        <div class="col">
-            <select asp-for="HouseId" asp-items="Model.Houses" class="custom-select"></select>
-        </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Select</button>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-sm btn-primary">Select</button>
         </div>
     </div>
 </form>

@@ -28,14 +28,11 @@ namespace TTRBookings.Web.Controllers
                          //starting a NESTED route WITHOUT a '/' as initial character will mean append to current build-up route
         public IActionResult Select([FromForm] HousesSelectDTO house, [FromForm] string currentPath)
         {
-            //TODO - need to trim currentPath.
-            //Can't use JavaScript in ViewComponent, so have to reroute to the page that the request was made from.
-            //@Context.Request.Path is sent in the Form from "Shared/Components/Houses/Default.cshtml" via CurrentPath
-            //need to trim the @Context.Request.Path.
-            //For example: "/", "/Bookings", "/Roses" is alright; "/Bookings/Edit", "/Roses/Details" needs to be trimmed to redirect to "/Bookings" or "/Roses" respectively.
-
+            //Sets the HouseId for the Session when picked through Shared/Components/Houses/Default.cshtml
             HttpContext.Session.SetString("HouseId", house.HouseId);
-            return Redirect(currentPath);
+
+            //splits the route from the posted Form to the base level. "/Bookings/Edit" gets redirected to "/Bookings" etc.
+            return Redirect("/" + currentPath.Split("/")[1]);
         }
     }
 
