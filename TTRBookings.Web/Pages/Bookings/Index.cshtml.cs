@@ -18,7 +18,7 @@ namespace TTRBookings.Web.Pages.Bookings
         private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
 
-        public IList<Booking> Bookings { get; set; }
+        public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
         public IndexModel(ILogger<IndexModel> logger, IRepository repository)
         {
@@ -29,6 +29,10 @@ namespace TTRBookings.Web.Pages.Bookings
         public void OnGet()
         {
             Bookings = repository.ListWithIncludes<Booking>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")), _ => _.Room);
+        }
+        public void OnPost()
+        {
+            OnGet();
         }
     }
 }
