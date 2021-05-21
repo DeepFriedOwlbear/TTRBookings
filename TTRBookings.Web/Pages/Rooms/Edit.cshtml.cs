@@ -15,11 +15,17 @@ namespace TTRBookings.Web.Pages.Rooms
 {
     public class EditModel : PageModel
     {
-        private readonly ILogger<DetailsModel> _logger;
+        //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
         
         [BindProperty]
         public RoomVM RoomVM { get; set; }
+
+        //public EditModel(ILogger<EditModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
 
         public EditModel(IRepository repository)
         {

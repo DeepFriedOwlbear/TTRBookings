@@ -13,14 +13,19 @@ namespace TTRBookings.Web.Pages.Managers
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        //private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
 
         public IList<Manager> Managers { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, IRepository repository)
+        //public IndexModel(ILogger<IndexModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
+
+        public IndexModel(IRepository repository)
         {
-            _logger = logger;
             this.repository = repository;
         }
 

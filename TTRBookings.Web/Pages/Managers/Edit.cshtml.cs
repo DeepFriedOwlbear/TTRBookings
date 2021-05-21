@@ -15,12 +15,18 @@ namespace TTRBookings.Web.Pages.Managers
 {
     public class EditModel : PageModel
     {
-        private readonly ILogger<DetailsModel> _logger;
+        //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
         
         [BindProperty]
         public ManagerVM ManagerVM { get; set; }
 
+        //public EditModel(ILogger<IndexModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
+        
         public EditModel(IRepository repository)
         {
             this.repository = repository;

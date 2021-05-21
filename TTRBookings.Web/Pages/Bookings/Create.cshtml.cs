@@ -18,13 +18,19 @@ namespace TTRBookings.Web.Pages.Bookings
 {
     public class CreateModel : PageModel
     {
-        private readonly ILogger<DetailsModel> _logger;
+        //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
 
         public List<SelectListItem> RoomList { get; } = new List<SelectListItem> { };
         public List<SelectListItem> RoseList { get; } = new List<SelectListItem> { };
 
         [BindProperty] public BookingVM BookingVM { get; set; }
+
+        //public CreateModel(ILogger<CreateModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
 
         public CreateModel(IRepository repository)
         {
@@ -70,7 +76,7 @@ namespace TTRBookings.Web.Pages.Bookings
             repository.CreateEntry(booking);
 
             //return/redirect user to somewhere
-            return RedirectToPage("/Bookings/Details", new { booking.Id });
+            return Redirect("/Bookings/");
         }
     }
 

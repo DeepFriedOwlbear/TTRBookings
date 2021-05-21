@@ -17,7 +17,7 @@ namespace TTRBookings.Web.Pages.Bookings
 {
     public class EditModel : PageModel
     {
-        private readonly ILogger<DetailsModel> _logger;
+        //private readonly ILogger<EditModel> _logger;
         private readonly IRepository repository;
         
         [BindProperty]
@@ -25,6 +25,12 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public List<SelectListItem> RoomList { get; } = new List<SelectListItem>();
         public List<SelectListItem> RoseList { get; } = new List<SelectListItem>();
+
+        //public EditModel(ILogger<EditModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
 
         public EditModel(IRepository repository)
         {

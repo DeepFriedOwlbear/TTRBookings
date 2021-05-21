@@ -17,19 +17,20 @@ namespace TTRBookings.Web.Pages.Roses
 {
     public class CreateModel : PageModel
     {
-        private readonly ILogger<CreateModel> _logger;
+        //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
 
         [BindProperty] public RoseVM RoseVM { get; set; }
 
+        //public CreateModel(ILogger<CreateModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
+
         public CreateModel(IRepository repository)
         {
             this.repository = repository;
-        }
-
-        public void OnGet()
-        {
-
         }
 
         public IActionResult OnPost()
@@ -44,7 +45,7 @@ namespace TTRBookings.Web.Pages.Roses
 
             repository.CreateEntry(rose);
 
-            return RedirectToPage("/Roses/Details", new { rose.Id });
+            return Redirect("/Roses");
         }
     }
 }

@@ -14,14 +14,22 @@
 <table class="table table-hover">
     <thead class="thead-dark">
         <tr>
-            <th class="w-75">Booked Room</th>
+            <th class="w-auto">Room</th>
+            <th class="w-auto">Rose</th>
+            <th class="w-auto">Tier</th>
+            <th class="w-auto">Start</th>
+            <th class="w-auto">End</th>
             <th class="w-25 text-center">Options</th>
         </tr>
     </thead>
     @foreach (var booking in Model.Bookings)
     {
         <tr>
-            <td class="w-75">@booking.Room.Name</td>
+            <td class="w-auto">@booking.Room.Name</td>
+            <td class="w-auto">@booking.Rose.Name</td>
+            <td class="w-auto">@booking.Tier.Rate</td>
+            <td class="w-auto">@booking.TimeSlot.Start.ToString("g")</td>
+            <td class="w-auto">@booking.TimeSlot.End.ToString("g")</td>
             <td class="w-25 text-center">
                 <a asp-page="./Edit" asp-route-id="@booking.Id" class="btn btn-primary btn-sm">Details</a>
                 <form id="deleteEntry_@booking.Id" asp-controller="Bookings" asp-action="Delete" method="post" style="display: inline;">

@@ -15,11 +15,17 @@ namespace TTRBookings.Web.Pages.Roses
 {
     public class EditModel : PageModel
     {
-        private readonly ILogger<DetailsModel> _logger;
+        //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
         
         [BindProperty]
         public RoseVM RoseVM { get; set; }
+
+        //public EditModel(ILogger<EditModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
 
         public EditModel(IRepository repository)
         {

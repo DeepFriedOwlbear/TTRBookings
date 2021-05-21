@@ -12,12 +12,17 @@ namespace TTRBookings.Web.Pages.Roses
 {
     public class DeleteModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        //private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
 
-        public DeleteModel(ILogger<IndexModel> logger, IRepository repository)
+        //public DeleteModel(ILogger<DeleteModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
+
+        public DeleteModel(IRepository repository)
         {
-            _logger = logger;
             this.repository = repository;
         }
 

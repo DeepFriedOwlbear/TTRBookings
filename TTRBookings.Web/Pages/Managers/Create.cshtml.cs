@@ -17,19 +17,20 @@ namespace TTRBookings.Web.Pages.Managers
 {
     public class CreateModel : PageModel
     {
-        private readonly ILogger<CreateModel> _logger;
+        //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
 
         [BindProperty] public ManagerVM ManagerVM { get; set; }
 
+        //public CreateModel(ILogger<IndexModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
+
         public CreateModel(IRepository repository)
         {
             this.repository = repository;
-        }
-
-        public void OnGet()
-        {
-
         }
 
         public IActionResult OnPost()
@@ -44,7 +45,7 @@ namespace TTRBookings.Web.Pages.Managers
 
             repository.CreateEntry(manager);
 
-            return RedirectToPage("/Managers/Details", new { manager.Id });
+            return Redirect("/Managers");
         }
     }
 }

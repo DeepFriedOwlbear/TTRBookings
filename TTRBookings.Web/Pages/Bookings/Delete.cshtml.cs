@@ -12,7 +12,7 @@ namespace TTRBookings.Web.Pages.Bookings
 {
     public class DeleteModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        //private readonly ILogger<DeleteModel> _logger;
         private readonly IRepository repository;
 
         [BindProperty]
@@ -20,33 +20,16 @@ namespace TTRBookings.Web.Pages.Bookings
 
         //dear dependency Booking, if you know how to create an XYZ,
         //then please give me an XYZ.
-        public DeleteModel(ILogger<IndexModel> logger, IRepository repository)
+
+        //public DeleteModel(ILogger<DeleteModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
+        
+        public DeleteModel(IRepository repository)
         {
-            _logger = logger;
             this.repository = repository;
-        }
-
-        public IActionResult OnGet(Guid id)
-        {
-            //return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Booking>(id)) });
-
-            //return RedirectToPage("/Bookings/Index");
-            return null;
-        }
-
-        public IActionResult OnPost()
-        {
-            //bookingId = Guid.Parse(Request.Form["bookingId"]);
-
-            //if (repository.DeleteEntry(repository.ReadEntry<Booking>(bookingId)) == true)
-            //{
-            //    return new JsonResult(new { Success = true });
-            //}
-            //else
-            //{
-            //    return new JsonResult(new { Success = false });
-            //}
-            return null;
         }
     }
 }

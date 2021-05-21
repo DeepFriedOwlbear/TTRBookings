@@ -15,24 +15,25 @@ namespace TTRBookings.Web.Pages.Bookings
     
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        //private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
 
         public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
-        public IndexModel(ILogger<IndexModel> logger, IRepository repository)
+        //public IndexModel(ILogger<IndexModel> logger, IRepository repository)
+        //{
+        //    _logger = logger;
+        //    this.repository = repository;
+        //}
+
+        public IndexModel(IRepository repository)
         {
-            _logger = logger;
             this.repository = repository;
         }
 
         public void OnGet()
         {
-            Bookings = repository.ListWithIncludes<Booking>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")), _ => _.Room);
-        }
-        public void OnPost()
-        {
-            OnGet();
+            Bookings = repository.ListWithIncludes<Booking>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")), _ => _.Room, _ => _.Rose, _ => _.Tier, _ => _.TimeSlot);
         }
     }
 }
