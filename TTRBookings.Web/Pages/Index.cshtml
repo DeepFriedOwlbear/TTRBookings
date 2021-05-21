@@ -3,16 +3,3 @@
 @{
     ViewData["Title"] = "Home page";
 }
-<form asp-page="./Index" method="post">
-    <div class="form-row">
-        <div class="col col-lg-2">
-            <label class="col-form-label">Active House</label>
-        </div>
-        <div class="col">
-            <select asp-for="HouseId" asp-items="Model.Houses" class="custom-select"></select>
-         </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Select</button>
-        </div>
-    </div>
-</form>

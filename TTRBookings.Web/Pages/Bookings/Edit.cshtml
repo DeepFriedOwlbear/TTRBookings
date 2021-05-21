@@ -24,11 +24,11 @@
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
-                <input class="form-control" asp-for="BookingVM.TimeSlot.Start" />
+                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select Date Time" data-input>
             </div>
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.End">End Time</label>
-                <input class="form-control" asp-for="BookingVM.TimeSlot.End" />
+                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.End" placeholder="Please select Date Time" data-input>
             </div>
         </div>
     </fieldset>
@@ -46,6 +46,25 @@
 @section Scripts
 {
     <script type="text/javascript">
+        //Timepicker
+        $("#BookingVM_TimeSlot_Start").flatpickr({
+            altInput: true,
+            enableTime: true,
+            time_24hr: true,
+            dateFormat: "d.m.Y H:i:S",
+            altFormat: "D., d-m-Y H:i",
+            minuteIncrement: 15
+        });
+
+        $("#BookingVM_TimeSlot_End").flatpickr({
+            altInput: true,
+            enableTime: true,
+            time_24hr: true,
+            dateFormat: "d.m.Y H:i:S",
+            altFormat: "D., d-m-Y H:i",
+            minuteIncrement: 15
+        });
+        //Timepicker End
 
         let el = document.getElementById("unlockFormButton");
         el.addEventListener("click", UnlockFieldset);
