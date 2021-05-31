@@ -21,6 +21,8 @@ namespace TTRBookings.Web.Pages.Bookings
         //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
 
+        public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
+
         public List<SelectListItem> RoomList { get; } = new List<SelectListItem> { };
         public List<SelectListItem> RoseList { get; } = new List<SelectListItem> { };
 
@@ -57,6 +59,19 @@ namespace TTRBookings.Web.Pages.Bookings
 
             if (!ModelState.IsValid)
             {
+                //Select previous inputs
+                RoomList.AddRange(SelectListHelper.PopulateList<Room>(
+                    repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+                    e => e.Name,
+                    BookingVM.Room.Id
+                ));
+
+                RoseList.AddRange(SelectListHelper.PopulateList<Rose>(
+                    repository.List<Rose>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+                    e => e.Name,
+                    BookingVM.Rose.Id
+                ));
+
                 return Page();
             }
 
@@ -85,19 +100,18 @@ namespace TTRBookings.Web.Pages.Bookings
 
         private void CheckAgainstBusinessRules()
         {
+            //Bookings can't be made in the past.
             if (BookingVM.TimeSlot.Start < DateTime.Now)
             {
                 ModelState.AddModelError("StartDateBeforeCurrentDate", "[StartDate]: Cannot be in the past.");
+                ToastrErrors.Add("Invalid Start Date", "Start Date can't be in the past.");
             }
+            //TimeSlot Start can't be after TimeSlot End
             if (BookingVM.TimeSlot.Start > BookingVM.TimeSlot.End)
             {
                 ModelState.AddModelError("EndDateBeforeStartDate", "[EndDate]: Cannot be before [StartDate]");
+                ToastrErrors.Add("Invalid End Date", "End Date can't be before Start Date.");
             }
-
-            //Check Database for bookings with Rose & Room that happen at or between TimeSlot.Start and TimeSlot.End
-            //Why check rose?
-            //Why check room?
-            //Why check both start and end?
 
             IList<Booking> existing = repository.ListWithIncludes<Booking>(
                 //the filter
@@ -117,6 +131,7 @@ namespace TTRBookings.Web.Pages.Bookings
                     && BookingVM.TimeSlot.Start < booking.TimeSlot.End).Any())//check case X of overlap schema.
                 {
                     ModelState.AddModelError("NewTimeslotStartContainedWithinExistingTimeslot", "[StartDate]: Cannot be within timeslot of existing booking.");
+                    ToastrErrors.Add("Start Time Scheduling Issue", "The Start Time overlaps with an existing booking.");
                 }
 
                 //Is End time of NEW booking within timeslot of EXISTING booking?
@@ -125,6 +140,7 @@ namespace TTRBookings.Web.Pages.Bookings
                     && BookingVM.TimeSlot.End < booking.TimeSlot.End).Any())//check case X of overlap schema.
                 {
                     ModelState.AddModelError("NewTimeslotEndContainedWithinExistingTimeslot", "[EndDate]: Cannot be within timeslot of existing booking.");
+                    ToastrErrors.Add("End Time Scheduling Issue", "The End Time overlaps with an existing booking.");
                 }
 
                 //Is Start time & End Time of EXISTING booking contained within timeslot of NEW booking?
@@ -135,6 +151,7 @@ namespace TTRBookings.Web.Pages.Bookings
                     && booking.TimeSlot.End < BookingVM.TimeSlot.End).Any())//check case X of overlap schema.
                 {
                     ModelState.AddModelError("ExistingTimeslotStartAndEndContainedWithinNewTimeslot", "[ExistingStartDate] and [ExistingEndDate]: Cannot be within timeslot of new booking.");
+                    ToastrErrors.Add("Existing Booking Overlap", "A booking that uses that timeslot already exists.");
                 }
 
                 //Is Start time & End Time of NEW booking within timeslot of EXISTING booking?
@@ -147,6 +164,10 @@ namespace TTRBookings.Web.Pages.Bookings
                     ModelState.AddModelError("NewTimeslotStartAndEndContainedWithinExistingTimeslot", "[StartDate] and [EndDate]: Cannot be within timeslot of existing booking.");
                     ModelState.Remove("NewTimeslotStartContainedWithinExistingTimeslot");
                     ModelState.Remove("NewTimeslotEndContainedWithinExistingTimeslot");
+
+                    ToastrErrors.Add("New Booking Overlap", "The new booking overlaps an existing booking.");
+                    ToastrErrors.Remove("Start Time Scheduling Issue");
+                    ToastrErrors.Remove("End Time Scheduling Issue");
                 }
 
                 //Is Start time of NEW booking within timeslot of EXISTING booking X, and End time of NEW booking within timeslot of EXISTING booking Y?
@@ -164,6 +185,7 @@ namespace TTRBookings.Web.Pages.Bookings
                     if (condition2)//check case X of overlap schema.
                     {
                         ModelState.AddModelError("NewBookingOverlapsWithinMultipleExistingTimeslots", "[StartDate and EndDate]: Cannot overlap with existing bookings.");
+                        ToastrErrors.Add("New Booking Overlaps Multiple Bookings", "The new booking overlaps at least two existing booking.");
                     }
                 }
             }

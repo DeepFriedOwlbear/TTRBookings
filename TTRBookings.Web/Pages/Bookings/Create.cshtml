@@ -43,6 +43,16 @@
 {
     <script type="text/javascript">
 
+        var toastrErrors = [];
+
+        @foreach (var d in Model.ToastrErrors)
+        {
+            //@:toastrErrors.push("@d");
+            @:toastr.error("@d.Value", "@d.Key");
+        }
+
+        //console.log("toastrError", toastrErrors);
+
         var today = new Date();
 
         function getRoundedDate(minutes, d = new Date(), offsetMinutes = 0) {
