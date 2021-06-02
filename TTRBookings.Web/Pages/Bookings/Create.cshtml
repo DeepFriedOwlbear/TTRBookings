@@ -4,30 +4,60 @@
 <h2>Create Booking</h2>
 <br />
 
-<form asp-page="./Create" method="post">    
+<form asp-page="./Create" method="post" class="needs-validation" novalidate>    
     <fieldset id="FormFieldset" class="p-3 mb-2">
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.Rose.Name">Rose</label>
-                <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList"></select>
+                <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList" required></select>
+                <div class="invalid-feedback">
+                    Please provide a Rose.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Room.Name">Room</label>
-                <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList"></select>
+                <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList" required></select>
+                <div class="invalid-feedback">
+                    Please provide a Room.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Tier.Rate"></label>
-                <input class="form-control" asp-for="BookingVM.Tier.Rate" step="10000" type="number" value="10000" min="0" />
+                <input class="form-control" asp-for="BookingVM.Tier.Rate" step="10000" type="number" min="0" placeholder="Please select a Rate" required />
+                <div class="invalid-feedback">
+                    Please provide a Rate.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
         </div><br />
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
-                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select Date Time" data-input>
+                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select a Start Date" required />
+                <div class="invalid-feedback">
+                    Please provide a Start Date.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.End">End Time</label>
-                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.End" placeholder="Please select Date Time" data-input>
+                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.End" placeholder="Please select an End Date" required />
+                <div class="invalid-feedback">
+                    Please provide an End Date.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
         </div>
     </fieldset>
@@ -43,6 +73,28 @@
 {
     <script type="text/javascript">
 
+        // Bootstrap Client-Side Validation
+        (function () {
+            'use strict'
+
+            // Fetch all the forms to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+
+        //Toastr Error display
         var toastrErrors = [];
 
         @foreach (var d in Model.ToastrErrors)
@@ -51,17 +103,15 @@
             @:toastr.error("@d.Value", "@d.Key");
         }
 
-        //console.log("toastrError", toastrErrors);
-
+        //Flatpickr function to round date
         var today = new Date();
-
         function getRoundedDate(minutes, d = new Date(), offsetMinutes = 0) {
             let ms = 1000 * 60 * minutes; //minutes to milliseconds
             let roundedDate = new Date(Math.round(d.getTime() / ms) * ms + offsetMinutes * 60000); //round Date and add offsetMinutes
             return roundedDate
         }
 
-        //Timepicker
+        //Flatpickr Setup
         $("#BookingVM_TimeSlot_Start").flatpickr({
             altInput: true,
             enableTime: true,
@@ -69,7 +119,18 @@
             dateFormat: "d.m.Y H:i:S",
             altFormat: "D., d-m-Y H:i",
             minuteIncrement: 15,
-            defaultDate: getRoundedDate(15, today)
+            //Flatpickr blocks input by default, but data validation needs the input allowed to validate
+            //Input is now allowed by default or when the picker is open
+            //Input is blocked when the picker is closed
+            allowInput: true,
+            onOpen: function (selectedDates, dateStr, instance) {
+                $(instance.altInput).prop('readonly', true);
+            },
+            onClose: function (selectedDates, dateStr, instance) {
+                $(instance.altInput).prop('readonly', false);
+                $(instance.altInput).blur();
+            }
+            //defaultDate: getRoundedDate(15, today)
         });
 
         $("#BookingVM_TimeSlot_End").flatpickr({
@@ -79,8 +140,18 @@
             dateFormat: "d.m.Y H:i:S",
             altFormat: "D., d-m-Y H:i",
             minuteIncrement: 15,
-            defaultDate: getRoundedDate(15, today, 30)
+            //Flatpickr blocks input by default, but data validation needs the input allowed to validate
+            //Input is now allowed by default, and when the picker is open
+            //Input is blocked when the picker is closed
+            allowInput: true,
+            onOpen: function (selectedDates, dateStr, instance) {
+                $(instance.altInput).prop('readonly', true);
+            },
+            onClose: function (selectedDates, dateStr, instance) {
+                $(instance.altInput).prop('readonly', false);
+                $(instance.altInput).blur();
+            }
+            //defaultDate: getRoundedDate(15, today, 30)
         });
-        //Timepicker End
     </script>
 }

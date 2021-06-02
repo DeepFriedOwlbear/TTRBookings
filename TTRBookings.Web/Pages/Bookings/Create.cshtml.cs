@@ -41,6 +41,7 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public void OnGet()
         {
+            //Load Lists
             RoomList.AddRange(SelectListHelper.PopulateList<Room>(
                 repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
                 e => e.Name
@@ -59,7 +60,7 @@ namespace TTRBookings.Web.Pages.Bookings
 
             if (!ModelState.IsValid)
             {
-                //Select previous inputs
+                //Load Lists before returning the Page
                 RoomList.AddRange(SelectListHelper.PopulateList<Room>(
                     repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
                     e => e.Name,
@@ -75,6 +76,7 @@ namespace TTRBookings.Web.Pages.Bookings
                 return Page();
             }
 
+            //Set booking values from BookingVM
             Tier tier = new Tier()
             {
                 Unit = BookingVM.Tier.Unit,

@@ -4,31 +4,61 @@
 <h2>Details</h2>
 <br />
 
-<form asp-page="./Edit" method="post">
+<form asp-page="./Edit" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
         <input asp-for="BookingVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.Rose.Name">Rose</label>
-                <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList"></select>
+                <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList" required></select>
+                <div class="invalid-feedback">
+                    Please provide a Rose.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Room.Name">Room</label>
-                <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList"></select>
+                <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList" required></select>
+                <div class="invalid-feedback">
+                    Please provide a Room.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Tier.Rate"></label>
-                <input class="form-control" asp-for="BookingVM.Tier.Rate" step="10000" type="number" placeholder="10000" min="0" />
+                <input class="form-control" asp-for="BookingVM.Tier.Rate" step="10000" type="number" min="0" placeholder="Please select a Rate" required />
+                <div class="invalid-feedback">
+                    Please provide a Rate.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
         </div><br />
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
-                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select Date Time" data-input>
+                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select Date Time" required />
+                <div class="invalid-feedback">
+                    Please provide a Start Date.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.End">End Time</label>
-                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.End" placeholder="Please select Date Time" data-input>
+                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.End" placeholder="Please select Date Time" required />
+                <div class="invalid-feedback">
+                    Please provide an End Date.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
         </div>
     </fieldset>
@@ -46,14 +76,47 @@
 @section Scripts
 {
     <script type="text/javascript">
-        //Timepicker
+
+        // Bootstrap Client-Side Validation
+        (function () {
+            'use strict'
+
+            // Fetch all the forms to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+
+        //Flatpickr Setup
         $("#BookingVM_TimeSlot_Start").flatpickr({
             altInput: true,
             enableTime: true,
             time_24hr: true,
             dateFormat: "d.m.Y H:i:S",
             altFormat: "D., d-m-Y H:i",
-            minuteIncrement: 15
+            minuteIncrement: 15,
+            //Flatpickr blocks input by default, but data validation needs the input allowed to validate
+            //Input is now allowed by default or when the picker is open
+            //Input is blocked when the picker is closed
+            allowInput: true,
+            onOpen: function (selectedDates, dateStr, instance) {
+                $(instance.altInput).prop('readonly', true);
+            },
+            onClose: function (selectedDates, dateStr, instance) {
+                $(instance.altInput).prop('readonly', false);
+                $(instance.altInput).blur();
+            }
         });
 
         $("#BookingVM_TimeSlot_End").flatpickr({
@@ -62,24 +125,39 @@
             time_24hr: true,
             dateFormat: "d.m.Y H:i:S",
             altFormat: "D., d-m-Y H:i",
-            minuteIncrement: 15
+            minuteIncrement: 15,
+            //Flatpickr blocks input by default, but data validation needs the input allowed to validate
+            //Input is now allowed by default, and when the picker is open
+            //Input is blocked when the picker is closed
+            allowInput: true,
+            onOpen: function (selectedDates, dateStr, instance) {
+                $(instance.altInput).prop('readonly', true);
+            },
+            onClose: function (selectedDates, dateStr, instance) {
+                $(instance.altInput).prop('readonly', false);
+                $(instance.altInput).blur();
+            }
         });
-        //Timepicker End
 
+        //JS for unlock button
         let el = document.getElementById("unlockFormButton");
         el.addEventListener("click", UnlockFieldset);
 
         //TODO - Change Values (BookingVM_XXX_XXX) here when all values are renamed for portfolio
+
+        //Save original values
         let originalRose = document.getElementById("BookingVM_Rose_Id").value;
         let originalRoom = document.getElementById("BookingVM_Room_Id").value;
         let originalTier = document.getElementById("BookingVM_Tier_Rate").value;
         let originalTimeStart = document.getElementById("BookingVM_TimeSlot_Start").value;
         let originalTimeEnd = document.getElementById("BookingVM_TimeSlot_End").value;
 
+        //Unlock Fieldset within Form
         function UnlockFieldset() {
             let unlockButton = document.getElementById("unlockFormButton")
             let fieldset = document.getElementById("FormFieldset");
 
+            //If fieldset is disabled, enable the fieldset
             if (fieldset.disabled == true) {
                 fieldset.disabled = false;
                 fieldset.className = "p-3 mb-2";
@@ -87,6 +165,7 @@
                 unlockButton.className = "btn btn-danger";
                 document.getElementById("submitButton").hidden = false;
             }
+            //if fieldset is enabled, disable the fieldset and load original values
             else {
                 fieldset.disabled = true;
                 fieldset.className = "p-3 mb-2 bg-secondary text-white";
