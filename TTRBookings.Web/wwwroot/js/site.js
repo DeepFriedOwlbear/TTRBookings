@@ -16,6 +16,55 @@ toastr.options = {
     "hideMethod": "fadeOut"
 }
 
+//flatpickr config
+flatpickr.setDefaults({
+    altInput: true,
+    enableTime: true,
+    time_24hr: true,
+    dateFormat: "d.m.Y H:i:S",
+    altFormat: "D., d-m-Y H:i",
+    minuteIncrement: 15,
+    //Flatpickr blocks input by default, but client-side data validation needs the input allowed to validate
+    //Input is now allowed by default and when the picker is open, Input is blocked when the picker is closed
+    allowInput: true,
+    onOpen: function (selectedDates, dateStr, instance) {
+        $(instance.altInput).prop('readonly', true);
+    },
+    onClose: function (selectedDates, dateStr, instance) {
+        $(instance.altInput).prop('readonly', false);
+        $(instance.altInput).blur();
+    }
+});
+
+////function to round date for flatpickr
+//var today = new Date();
+//function getRoundedDate(minutes, d = new Date(), offsetMinutes = 0) {
+//    let ms = 1000 * 60 * minutes; //minutes to milliseconds
+//    let roundedDate = new Date(Math.round(d.getTime() / ms) * ms + offsetMinutes * 60000); //round Date and add offsetMinutes
+//    return roundedDate
+//}
+
+// Bootstrap Client-Side Validation
+(function () {
+    'use strict'
+
+    // Fetch all the forms to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+        })
+})();
+
 // Event handler for a form submit event.
 async function handleFormSubmit(event, callback) {
     event.preventDefault();

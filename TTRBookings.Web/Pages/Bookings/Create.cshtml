@@ -71,87 +71,18 @@
 
 @section Scripts
 {
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        // Bootstrap Client-Side Validation
-        (function () {
-            'use strict'
+    //Toastr Error display
+    var toastrErrors = [];
+    @foreach (var d in Model.ToastrErrors)
+    {
+        //@:toastrErrors.push("@d");
+        @:toastr.error("@d.Value", "@d.Key");
+    }
 
-            // Fetch all the forms to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-
-        //Toastr Error display
-        var toastrErrors = [];
-
-        @foreach (var d in Model.ToastrErrors)
-        {
-            //@:toastrErrors.push("@d");
-            @:toastr.error("@d.Value", "@d.Key");
-        }
-
-        //Flatpickr function to round date
-        var today = new Date();
-        function getRoundedDate(minutes, d = new Date(), offsetMinutes = 0) {
-            let ms = 1000 * 60 * minutes; //minutes to milliseconds
-            let roundedDate = new Date(Math.round(d.getTime() / ms) * ms + offsetMinutes * 60000); //round Date and add offsetMinutes
-            return roundedDate
-        }
-
-        //Flatpickr Setup
-        $("#BookingVM_TimeSlot_Start").flatpickr({
-            altInput: true,
-            enableTime: true,
-            time_24hr: true,
-            dateFormat: "d.m.Y H:i:S",
-            altFormat: "D., d-m-Y H:i",
-            minuteIncrement: 15,
-            //Flatpickr blocks input by default, but data validation needs the input allowed to validate
-            //Input is now allowed by default or when the picker is open
-            //Input is blocked when the picker is closed
-            allowInput: true,
-            onOpen: function (selectedDates, dateStr, instance) {
-                $(instance.altInput).prop('readonly', true);
-            },
-            onClose: function (selectedDates, dateStr, instance) {
-                $(instance.altInput).prop('readonly', false);
-                $(instance.altInput).blur();
-            }
-            //defaultDate: getRoundedDate(15, today)
-        });
-
-        $("#BookingVM_TimeSlot_End").flatpickr({
-            altInput: true,
-            enableTime: true,
-            time_24hr: true,
-            dateFormat: "d.m.Y H:i:S",
-            altFormat: "D., d-m-Y H:i",
-            minuteIncrement: 15,
-            //Flatpickr blocks input by default, but data validation needs the input allowed to validate
-            //Input is now allowed by default, and when the picker is open
-            //Input is blocked when the picker is closed
-            allowInput: true,
-            onOpen: function (selectedDates, dateStr, instance) {
-                $(instance.altInput).prop('readonly', true);
-            },
-            onClose: function (selectedDates, dateStr, instance) {
-                $(instance.altInput).prop('readonly', false);
-                $(instance.altInput).blur();
-            }
-            //defaultDate: getRoundedDate(15, today, 30)
-        });
-    </script>
+    //Flatpickr Setup
+    $("#BookingVM_TimeSlot_Start").flatpickr({});
+    $("#BookingVM_TimeSlot_End").flatpickr({});
+</script>
 }
