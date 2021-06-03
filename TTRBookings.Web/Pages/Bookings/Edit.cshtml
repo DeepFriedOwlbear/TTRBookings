@@ -98,6 +98,15 @@
                 })
         })()
 
+        //Toastr Error display
+        var toastrErrors = [];
+
+        @foreach (var d in Model.ToastrErrors)
+        {
+            //@:toastrErrors.push("@d");
+            @:toastr.error("@d.Value", "@d.Key");
+        }
+
         //Flatpickr Setup
         $("#BookingVM_TimeSlot_Start").flatpickr({
             altInput: true,
@@ -154,31 +163,46 @@
 
         //Unlock Fieldset within Form
         function UnlockFieldset() {
-            let unlockButton = document.getElementById("unlockFormButton")
-            let fieldset = document.getElementById("FormFieldset");
 
-            //If fieldset is disabled, enable the fieldset
-            if (fieldset.disabled == true) {
-                fieldset.disabled = false;
-                fieldset.className = "p-3 mb-2";
-                unlockButton.textContent = "Cancel";
-                unlockButton.className = "btn btn-danger";
-                document.getElementById("submitButton").hidden = false;
+            //Set default format for moment.js and parse DateTimes to comparable formats
+            moment.defaultFormat = "DD.MM.YYYY HH:mm";
+            var originalTimeParsed = moment(originalTimeStart, moment.defaultFormat).toDate();
+            var currentTimeParsed = moment(new Date(), moment.defaultFormat).toDate();
+
+            //console.log("Original Time", originalTimeParsed);
+            //console.log("Current Time", currentTimeParsed);
+
+            //Only allow editing of bookings that haven't happened yet
+            if (originalTimeParsed < currentTimeParsed) {
+                toastr.warning("Can't edit past Bookings.", "Old Booking");
             }
-            //if fieldset is enabled, disable the fieldset and load original values
             else {
-                fieldset.disabled = true;
-                fieldset.className = "p-3 mb-2 bg-secondary text-white";
-                unlockButton.textContent = "Edit";
-                unlockButton.className = "btn btn-secondary";
-                document.getElementById("submitButton").hidden = true;
+                let unlockButton = document.getElementById("unlockFormButton")
+                let fieldset = document.getElementById("FormFieldset");
 
-                //TODO - Change Values when all values are renamed for portfolio
-                document.getElementById("BookingVM_Rose_Id").value = originalRose;
-                document.getElementById("BookingVM_Room_Id").value = originalRoom;
-                document.getElementById("BookingVM_Tier_Rate").value = originalTier;
-                document.getElementById("BookingVM_TimeSlot_Start").value = originalTimeStart;
-                document.getElementById("BookingVM_TimeSlot_End").value = originalTimeEnd;
+                //If fieldset is disabled, enable the fieldset
+                if (fieldset.disabled == true) {
+                    fieldset.disabled = false;
+                    fieldset.className = "p-3 mb-2";
+                    unlockButton.textContent = "Cancel";
+                    unlockButton.className = "btn btn-danger";
+                    document.getElementById("submitButton").hidden = false;
+                }
+                //if fieldset is enabled, disable the fieldset and load original values
+                else {
+                    fieldset.disabled = true;
+                    fieldset.className = "p-3 mb-2 bg-secondary text-white";
+                    unlockButton.textContent = "Edit";
+                    unlockButton.className = "btn btn-secondary";
+                    document.getElementById("submitButton").hidden = true;
+
+                    //TODO - Change Values when all values are renamed for portfolio
+                    document.getElementById("BookingVM_Rose_Id").value = originalRose;
+                    document.getElementById("BookingVM_Room_Id").value = originalRoom;
+                    document.getElementById("BookingVM_Tier_Rate").value = originalTier;
+                    document.getElementById("BookingVM_TimeSlot_Start").value = originalTimeStart;
+                    document.getElementById("BookingVM_TimeSlot_End").value = originalTimeEnd;
+                }
             }
         }
     </script>
