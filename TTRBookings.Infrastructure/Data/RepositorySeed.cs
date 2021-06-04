@@ -32,9 +32,6 @@ namespace TTRBookings.Infrastructure.Data
             //--input for calculations
             House house = new House("House_1");
 
-            TierRate tierRate1 = house.CreateTierRate("1_Tier1", 50000);
-            TierRate tierRate2 = house.CreateTierRate("1_Tier2", 100000);
-
             Rose rose1 = house.CreateRose("1_Rose1");
             Rose rose2 = house.CreateRose("1_Rose2");
 
@@ -57,10 +54,10 @@ namespace TTRBookings.Infrastructure.Data
             TimeSlot timeslot3 = new TimeSlot(timeslot_start.AddHours(15), timeslot_end.AddHours(18));
             TimeSlot timeslot4 = new TimeSlot(timeslot_start.AddHours(2), timeslot_end.AddHours(1));
 
-            house.AddBooking(rose1, tierRate1, room1, timeslot1);
-            house.AddBooking(rose2, tierRate2, room2, timeslot2);
-            house.AddBooking(rose1, tierRate2, room1, timeslot3);
-            house.AddBooking(rose2, tierRate1, room3, timeslot4);
+            house.AddBooking(rose1, 50000, room1, timeslot1);
+            house.AddBooking(rose2, 100000, room2, timeslot2);
+            house.AddBooking(rose1, 100000, room1, timeslot3);
+            house.AddBooking(rose2, 50000, room3, timeslot4);
 
             return house;
             //--end of input for calculation
@@ -70,10 +67,6 @@ namespace TTRBookings.Infrastructure.Data
         {
             //--input for calculations
             House house = new House("House_2");
-
-            TierRate tierRate1 = house.CreateTierRate("2_Tier1", 20000);
-            TierRate tierRate2 = house.CreateTierRate("2_Tier2", 50000);
-            TierRate tierRate3 = house.CreateTierRate("2_Tier2", 75000);
 
             Rose rose1 = house.CreateRose("2_Rose1");
             Rose rose2 = house.CreateRose("2_Rose2");
@@ -98,10 +91,10 @@ namespace TTRBookings.Infrastructure.Data
             TimeSlot timeslot3 = new TimeSlot(timeslot_start.AddHours(12), timeslot_end.AddHours(15));
             TimeSlot timeslot4 = new TimeSlot(timeslot_start.AddHours(3), timeslot_end.AddHours(4));
 
-            house.AddBooking(rose1, tierRate1, room1, timeslot1);
-            house.AddBooking(rose2, tierRate2, room2, timeslot2);
-            house.AddBooking(rose3, tierRate3, room3, timeslot3);
-            house.AddBooking(rose2, tierRate1, room4, timeslot4);
+            house.AddBooking(rose1, 20000, room1, timeslot1);
+            house.AddBooking(rose2, 50000, room2, timeslot2);
+            house.AddBooking(rose3, 75000, room3, timeslot3);
+            house.AddBooking(rose2, 20000, room4, timeslot4);
 
             return house;
             //--end of input for calculation

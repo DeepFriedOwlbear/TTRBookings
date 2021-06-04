@@ -3,6 +3,7 @@ using TTRBookings.Core.Entities;
 
 namespace TTRBookings.Infrastructure.Data
 {
+    //Package Manager Console: Tools > NuGet Package Manager > Package Manager Console
     //for a complete list of package manager console commands see: https://docs.microsoft.com/en-us/ef/core/cli/powershell
     //add-migration Initial -p TTRBookings.Infrastructure -s TTRBookings.Web -o Data/Migrations
     //remove-migration -s TTRBookings.Web -p TTRBookings.Infrastructure -context TTRBookingsContext
@@ -13,7 +14,6 @@ namespace TTRBookings.Infrastructure.Data
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Rose> Roses { get; set; }
         public DbSet<Room> Rooms { get; set; }
-        public DbSet<TierRate> TierRates { get; set; }
         public DbSet<Tier> Tiers { get; set; }
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<Booking> Bookings { get; set; }

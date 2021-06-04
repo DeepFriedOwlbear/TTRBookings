@@ -15,7 +15,6 @@ namespace TTRBookings.Core.Entities
         public IList<Rose> Roses { get; set; } = new List<Rose>();
         public IList<Manager> Managers { get; set; } = new List<Manager>();
         public IList<Room> Rooms { get; set; } = new List<Room>();
-        public IList<TierRate> TierRates { get; set; } = new List<TierRate>();
         public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
         public decimal ManagerCut => Calculator.DoManagerCalculation(Managers.Count, TotalRoseRevenue());
@@ -48,19 +47,12 @@ namespace TTRBookings.Core.Entities
             return room;
         }
 
-        public TierRate CreateTierRate(string tier, int value)
-        {
-            TierRate tierRate = new TierRate(tier, value);
-            TierRates.Add(tierRate);
-            return tierRate;
-        }
-
-        public void AddBooking(Rose rose, TierRate tierRate, Room room, TimeSlot timeslot)
+        public void AddBooking(Rose rose, int tierRate, Room room, TimeSlot timeslot)
         {
             Tier tier = new Tier()
             {
                 Discount = 1,
-                Rate = tierRate.Value,
+                Rate = tierRate,
                 Unit = (int)((timeslot.End - timeslot.Start) / Calculator.TimeUnit)
             };
             Booking booking = Booking.Create(Id, rose, tier, room, timeslot);
