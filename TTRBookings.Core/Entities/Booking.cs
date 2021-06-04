@@ -31,17 +31,19 @@ namespace TTRBookings.Core.Entities
             return booking;
         }
 
-        public void Update(Rose rose, Room room, Tier tier, TimeSlot timeSlot)
+        private Booking Update(Rose rose, Room room, Tier tier, TimeSlot timeSlot)
         {
             Rose = rose ?? throw new ArgumentNullException(nameof(rose));
             Room = room ?? throw new ArgumentNullException(nameof(room));
             Tier = tier ?? throw new ArgumentNullException(nameof(tier));
             TimeSlot = timeSlot ?? throw new ArgumentNullException(nameof(timeSlot));
+
+            return this;
         }
 
-        public void Update(Rose rose) { Rose = rose ?? throw new ArgumentNullException(nameof(rose)); }
-        public void Update(Room room) { Room = room ?? throw new ArgumentNullException(nameof(room)); }
-        public void Update(Tier tier) { Tier = tier ?? throw new ArgumentNullException(nameof(tier)); }
-        public void Update(TimeSlot timeSlot) { TimeSlot = timeSlot ?? throw new ArgumentNullException(nameof(timeSlot)); }
+        public Booking Update(Rose rose) { return Update(rose, Room, Tier, TimeSlot); }
+        public Booking Update(Room room) { return Update(Rose, room, Tier, TimeSlot); }
+        public Booking Update(Tier tier) { return Update(Rose, Room, tier, TimeSlot); }
+        public Booking Update(TimeSlot timeSlot) { return Update(Rose, Room, Tier, timeSlot); }
     }
 }
