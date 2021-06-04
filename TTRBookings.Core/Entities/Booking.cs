@@ -31,49 +31,17 @@ namespace TTRBookings.Core.Entities
             return booking;
         }
 
-        //public void Edit<TEntity>(params TEntity[] edits)
-        //    where TEntity : BaseEntity
-        //{
-        //    foreach(TEntity entity in edits)
-        //    {
-        //        switch (entity)
-        //        {
-        //            case Room x:
-        //                Room = x;
-        //                break;
-        //            case Rose x:
-        //                Rose = x;
-        //                break;
-        //            case Tier x:
-        //                Tier = x;
-        //                break;
-        //            case TimeSlot x:
-        //                TimeSlot = x;
-        //                break;
-        //            default: break;
-        //        }
-        //    }
-        //}
-
-        public void Edit<TEntity>(TEntity entity)
-            where TEntity : BaseEntity
-        {            
-            switch (entity)
-            {
-                case Room x:
-                    Room = x;
-                    break;
-                case Rose x:
-                    Rose = x;
-                    break;
-                case Tier x:
-                    Tier = x;
-                    break;
-                case TimeSlot x:
-                    TimeSlot = x;
-                    break;
-                default: break;
-            }
+        public void Update(Rose rose, Room room, Tier tier, TimeSlot timeSlot)
+        {
+            Rose = rose ?? throw new ArgumentNullException(nameof(rose));
+            Room = room ?? throw new ArgumentNullException(nameof(room));
+            Tier = tier ?? throw new ArgumentNullException(nameof(tier));
+            TimeSlot = timeSlot ?? throw new ArgumentNullException(nameof(timeSlot));
         }
+
+        public void Update(Rose rose) { Rose = rose ?? throw new ArgumentNullException(nameof(rose)); }
+        public void Update(Room room) { Room = room ?? throw new ArgumentNullException(nameof(room)); }
+        public void Update(Tier tier) { Tier = tier ?? throw new ArgumentNullException(nameof(tier)); }
+        public void Update(TimeSlot timeSlot) { TimeSlot = timeSlot ?? throw new ArgumentNullException(nameof(timeSlot)); }
     }
 }

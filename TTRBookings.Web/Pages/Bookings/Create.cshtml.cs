@@ -113,6 +113,12 @@ namespace TTRBookings.Web.Pages.Bookings
                 ModelState.AddModelError("EndDateBeforeStartDate", "[EndDate]: Cannot be before [StartDate]");
                 ToastrErrors.Add("Invalid End Date", "End Date can't be before Start Date.");
             }
+            //Duration between TimeSlot Start and TimeSlot End can't be longer than 24 hours
+            if ((BookingVM.TimeSlot.End - BookingVM.TimeSlot.Start).TotalHours >= 24)
+            {
+                ModelState.AddModelError("BookingDurationLongerThan24Hours", "[EndDate]: Duration between [StartDate] and [EndDate] cannot be longer than 24 hours.");
+                ToastrErrors.Add("Invalid Booking Duration", "Booking duration can't be longer than 24 hours.");
+            }
 
             IList<Booking> existing = repository.ListWithIncludes<Booking>(
                 //the filter
