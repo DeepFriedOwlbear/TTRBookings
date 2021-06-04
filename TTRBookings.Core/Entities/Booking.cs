@@ -9,9 +9,9 @@ namespace TTRBookings.Core.Entities
     public class Booking : BaseEntity
     {
         public Guid HouseId { get; private set; }
-        public Rose Rose { get; set; }
-        public Room Room { get; set; }
-        public Tier Tier { get; set; }
+        public Rose Rose { get; private set; }
+        public Room Room { get; private set; }
+        public Tier Tier { get; private set; }
         public TimeSlot TimeSlot { get; private set; }
 
         private Booking() { } //needed by EntityFramework
@@ -29,6 +29,51 @@ namespace TTRBookings.Core.Entities
             var booking = new Booking(rose, tier, room, timeslot);
             booking.HouseId = houseId;
             return booking;
+        }
+
+        //public void Edit<TEntity>(params TEntity[] edits)
+        //    where TEntity : BaseEntity
+        //{
+        //    foreach(TEntity entity in edits)
+        //    {
+        //        switch (entity)
+        //        {
+        //            case Room x:
+        //                Room = x;
+        //                break;
+        //            case Rose x:
+        //                Rose = x;
+        //                break;
+        //            case Tier x:
+        //                Tier = x;
+        //                break;
+        //            case TimeSlot x:
+        //                TimeSlot = x;
+        //                break;
+        //            default: break;
+        //        }
+        //    }
+        //}
+
+        public void Edit<TEntity>(TEntity entity)
+            where TEntity : BaseEntity
+        {            
+            switch (entity)
+            {
+                case Room x:
+                    Room = x;
+                    break;
+                case Rose x:
+                    Rose = x;
+                    break;
+                case Tier x:
+                    Tier = x;
+                    break;
+                case TimeSlot x:
+                    TimeSlot = x;
+                    break;
+                default: break;
+            }
         }
     }
 }
