@@ -86,6 +86,8 @@ namespace TTRBookings.Web.Pages.Bookings
             Booking booking = repository.ReadEntryWithIncludes<Booking>(BookingVM.Id, _ => _.Room, _ => _.Rose, _ => _.TimeSlot, _ => _.Tier);
 
             //assign bookingVM values to booking
+
+            //TODO - create method to update booking given parameters
             booking.Room = repository.ReadEntry<Room>(BookingVM.Room.Id);
             booking.Rose = repository.ReadEntry<Rose>(BookingVM.Rose.Id);
             booking.Tier.Rate = BookingVM.Tier.Rate;

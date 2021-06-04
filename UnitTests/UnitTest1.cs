@@ -3,44 +3,10 @@ using System.Linq;
 using TTRBookings.Core.Entities;
 using Xunit;
 
-namespace UnitTests
+namespace CoreUnitTests
 {
-    public class UnitTest1
+    public class ManagerUnitTests
     {
-        [Fact]
-        public void Test1()
-        {
-            //House house = new House();
-
-            //Rose rose1 = house.CreateRose("TestRose1");
-            //Rose rose2 = house.CreateRose("TestRose2");
-
-            //Manager manager1 = house.CreateManager("Alice");
-            //Manager manager2 = house.CreateManager("Bob");
-
-            //add tiers to house later
-            //int tier1 = 50000;
-            //int tier2 = 100000;
-            //int tier3 = 150000;
-
-            //rose1.AddTier(tier1, 2);
-            //rose1.AddTier(tier2, 3);
-
-            //rose2.AddTier(tier1, 1);
-            //rose2.AddTier(tier3, 4);
-
-
-            //DateTime dtime1 = new DateTime(2021, 1, 4, 20, 00, 00, DateTimeKind.Utc);
-            //DateTime dtime2 = new DateTime(2021, 1, 4, 19, 30, 00, DateTimeKind.Utc);
-            //TimeSlot timeslot1 = new TimeSlot(dtime1);
-            //TimeSlot timeslot2 = new TimeSlot(dtime2);
-
-            //house.AddBooking(rose1, TierLevel.Tier1, timeslot1, 1);
-            //house.AddBooking(rose2, TierLevel.Tier2, timeslot2, 3);
-
-            //Assert.Equal(3, house.Bookings.Count);
-        }
-
         [Fact]
         public void CreateManager_ShouldAddToManagers_GivenCreateManagerCalled()
         {
@@ -48,6 +14,41 @@ namespace UnitTests
             Manager manager1 = house.CreateManager("Alice");
 
             Assert.Equal(manager1, house.Managers.First());
+        }
+    }
+
+    public class BookingUnitTests
+    {
+        [Fact]
+        public void CreateBooking_ShouldBeValidBooking_GivenSensibleParameters()
+        {
+            var timeSlot = new TimeSlot(DateTime.Now.AddHours(1), DateTime.Now.AddHours(2));
+            Booking booking = Booking.Create(Guid.NewGuid(), new Rose(null), new Tier(), new Room(null), timeSlot);
+            Assert.False(booking.IsDeleted);
+            Assert.NotEqual(Guid.Empty, booking.HouseId);
+            Assert.Equal(booking.TimeSlot, timeSlot);
+        }
+    }
+
+    public class TimeSlotUnitTests
+    {
+        [Theory]
+        [InlineData(1)]
+        public void CreateTimeslot_ShouldThrow_GivenStartAfterEnd(int hourOffset)
+        {
+            Assert.Throws<BookingStartTimeAfterEndTime>(() => new TimeSlot(DateTime.Now.AddHours(hourOffset), DateTime.Now));
+        }
+
+        [Fact]
+        public void CreateTimeslot_ShouldThrow_GivenStartInThePast()
+        {
+            Assert.Throws<BookingStartTimeInThePast>(() => new TimeSlot(DateTime.Now.AddHours(-1), DateTime.Now));
+        }
+
+        [Fact]
+        public void CreateTimeslot_ShouldThrow_GivenDurationMoreThan24Hours()
+        {
+            Assert.Throws<BookingDurationLongerThan24Hours>(() => new TimeSlot(DateTime.Now.AddHours(1), DateTime.Now.AddHours(25)));
         }
     }
 }

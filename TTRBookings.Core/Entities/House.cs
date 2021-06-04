@@ -63,7 +63,7 @@ namespace TTRBookings.Core.Entities
                 Rate = tierRate.Value,
                 Unit = (int)((timeslot.End - timeslot.Start) / Calculator.TimeUnit)
             };
-            Booking booking = Booking.Create(rose, tier, room, timeslot);
+            Booking booking = Booking.Create(Id, rose, tier, room, timeslot);
 
             Bookings.Add(booking);
 

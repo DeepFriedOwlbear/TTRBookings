@@ -76,7 +76,6 @@
 @section Scripts
 {
 <script type="text/javascript">
-
     //Toastr Error display
     var toastrErrors = [];
     @foreach (var d in Model.ToastrErrors)
@@ -89,7 +88,7 @@
     $("#BookingVM_TimeSlot_Start").flatpickr({});
     $("#BookingVM_TimeSlot_End").flatpickr({});
 
-    //Add js-event to edit button
+    //Add js-event for locking/unlocking to edit button
     let el = document.getElementById("unlockFormButton");
     el.addEventListener("click", UnlockFieldset);
 

@@ -8,11 +8,11 @@ namespace TTRBookings.Core.Entities
 {
     public class Booking : BaseEntity
     {
-        public Guid HouseId { get; set; }
+        public Guid HouseId { get; private set; }
         public Rose Rose { get; set; }
         public Room Room { get; set; }
         public Tier Tier { get; set; }
-        public TimeSlot TimeSlot { get; set; }
+        public TimeSlot TimeSlot { get; private set; }
 
         private Booking() { } //needed by EntityFramework
 
@@ -24,9 +24,11 @@ namespace TTRBookings.Core.Entities
             TimeSlot = timeSlot ?? throw new ArgumentNullException(nameof(timeSlot));
         }
 
-        public static Booking Create(Rose rose, Tier tier, Room room, TimeSlot timeslot)
+        public static Booking Create(Guid houseId, Rose rose, Tier tier, Room room, TimeSlot timeslot)
         {
-            return new Booking(rose, tier, room, timeslot);
+            var booking = new Booking(rose, tier, room, timeslot);
+            booking.HouseId = houseId;
+            return booking;
         }
     }
 }

@@ -84,13 +84,12 @@ namespace TTRBookings.Web.Pages.Bookings
             };
 
             Booking booking = Booking.Create(
+                Guid.Parse(HttpContext.Session.GetString("HouseId")),
                 repository.ReadEntry<Rose>(BookingVM.Rose.Id),
                 tier,
                 repository.ReadEntry<Room>(BookingVM.Room.Id),
                 new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End)
             );
-
-            booking.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
 
             //store in database
             repository.CreateEntry(booking);

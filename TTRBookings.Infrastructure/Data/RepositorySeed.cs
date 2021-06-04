@@ -46,10 +46,21 @@ namespace TTRBookings.Infrastructure.Data
             Room room3 = house.CreateRoom("1_Room3");
             Room room4 = house.CreateRoom("1_Room4");
 
-            house.AddBooking(rose1, tierRate1, room1, new TimeSlot(new DateTime(2021, 1, 4, 20, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 4, 22, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose2, tierRate2, room2, new TimeSlot(new DateTime(2021, 1, 4, 19, 30, 00, DateTimeKind.Utc), new DateTime(2021, 1, 4, 23, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose1, tierRate2, room1, new TimeSlot(new DateTime(2021, 1, 4, 22, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 5, 01, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose2, tierRate1, room3, new TimeSlot(new DateTime(2021, 1, 4, 23, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 5, 00, 30, 00, DateTimeKind.Utc)));
+            DateTime timeslot_start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 20, 00, 00, DateTimeKind.Utc);
+            DateTime timeslot_end = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 22, 00, 00, DateTimeKind.Utc);
+
+            timeslot_start = timeslot_start.AddDays(1);
+            timeslot_end = timeslot_end.AddDays(1);
+
+            TimeSlot timeslot1 = new TimeSlot(timeslot_start, timeslot_end);
+            TimeSlot timeslot2 = new TimeSlot(timeslot_start.AddHours(12), timeslot_end.AddHours(14));
+            TimeSlot timeslot3 = new TimeSlot(timeslot_start.AddHours(15), timeslot_end.AddHours(18));
+            TimeSlot timeslot4 = new TimeSlot(timeslot_start.AddHours(2), timeslot_end.AddHours(1));
+
+            house.AddBooking(rose1, tierRate1, room1, timeslot1);
+            house.AddBooking(rose2, tierRate2, room2, timeslot2);
+            house.AddBooking(rose1, tierRate2, room1, timeslot3);
+            house.AddBooking(rose2, tierRate1, room3, timeslot4);
 
             return house;
             //--end of input for calculation
@@ -76,10 +87,21 @@ namespace TTRBookings.Infrastructure.Data
             Room room3 = house.CreateRoom("2_Room3");
             Room room4 = house.CreateRoom("2_Room4");
 
-            house.AddBooking(rose1, tierRate1, room1, new TimeSlot(new DateTime(2021, 1, 4, 14, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 4, 16, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose2, tierRate2, room2, new TimeSlot(new DateTime(2021, 1, 4, 15, 30, 00, DateTimeKind.Utc), new DateTime(2021, 1, 4, 18, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose3, tierRate3, room3, new TimeSlot(new DateTime(2021, 1, 4, 16, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 5, 17, 00, 00, DateTimeKind.Utc)));
-            house.AddBooking(rose2, tierRate1, room4, new TimeSlot(new DateTime(2021, 1, 4, 19, 00, 00, DateTimeKind.Utc), new DateTime(2021, 1, 5, 01, 30, 00, DateTimeKind.Utc)));
+            DateTime timeslot_start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 17, 00, 00, DateTimeKind.Utc);
+            DateTime timeslot_end = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 19, 00, 00, DateTimeKind.Utc);
+
+            timeslot_start = timeslot_start.AddDays(1);
+            timeslot_end = timeslot_end.AddDays(1);
+
+            TimeSlot timeslot1 = new TimeSlot(timeslot_start, timeslot_end);
+            TimeSlot timeslot2 = new TimeSlot(timeslot_start.AddHours(3), timeslot_end.AddHours(4));
+            TimeSlot timeslot3 = new TimeSlot(timeslot_start.AddHours(12), timeslot_end.AddHours(15));
+            TimeSlot timeslot4 = new TimeSlot(timeslot_start.AddHours(3), timeslot_end.AddHours(4));
+
+            house.AddBooking(rose1, tierRate1, room1, timeslot1);
+            house.AddBooking(rose2, tierRate2, room2, timeslot2);
+            house.AddBooking(rose3, tierRate3, room3, timeslot3);
+            house.AddBooking(rose2, tierRate1, room4, timeslot4);
 
             return house;
             //--end of input for calculation
