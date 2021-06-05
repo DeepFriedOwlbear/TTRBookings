@@ -17,15 +17,20 @@ namespace TTRBookings.Core.Entities
 
         public void AddTier(Tier tier)
         {
-            Tier present = Tiers.FirstOrDefault(t => t.Rate == tier.Rate);
+            Tier currentTier = Tiers.FirstOrDefault(t => t.Rate == tier.Rate);
 
-            if (present != null)
+            if (currentTier != null) currentTier.Unit += tier.Unit;
+            else Tiers.Add(tier);
+        }
+
+        public void RemoveTier(Tier tier)
+        {
+            Tier currentTier = Tiers.FirstOrDefault(t => t.Rate == tier.Rate);
+
+            if(currentTier != null)
             {
-                present.Unit += tier.Unit;
-            }
-            else
-            {
-                Tiers.Add(tier);
+                if (currentTier.Unit > tier.Unit) currentTier.Unit -= tier.Unit;
+                else if (currentTier.Unit == tier.Unit) Tiers.Remove(currentTier);
             }
         }
 

@@ -61,6 +61,15 @@ namespace TTRBookings.Core.Entities
             rose.AddTier(tier);
         }
 
+        public void RemoveBooking(Booking booking)
+        {
+            Booking currentBooking = Bookings.FirstOrDefault(b => b == booking);
+            Bookings.Remove(currentBooking);
+
+            Rose currentRose = Roses.FirstOrDefault(r => r == booking.Rose);
+            currentRose.RemoveTier(booking.Tier);
+        }
+
         private decimal TotalRoseRevenue()
         {
             return Roses.Sum(a => a.TotalRevenue());
