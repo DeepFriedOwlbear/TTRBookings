@@ -49,10 +49,9 @@ namespace TTRBookings.Core.Entities
 
         public void AddBooking(Rose rose, int tierRate, Room room, TimeSlot timeslot)
         {
-            Tier tier = new Tier()
+            Tier tier = new Tier(tierRate)
             {
                 Discount = 1,
-                Rate = tierRate,
                 Unit = (int)((timeslot.End - timeslot.Start) / Calculator.TimeUnit)
             };
             Booking booking = Booking.Create(Id, rose, tier, room, timeslot);

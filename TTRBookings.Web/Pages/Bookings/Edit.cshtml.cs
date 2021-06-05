@@ -88,7 +88,7 @@ namespace TTRBookings.Web.Pages.Bookings
             //assign bookingVM values to booking
             booking.Update(repository.ReadEntry<Rose>(BookingVM.Rose.Id))
                 .Update(repository.ReadEntry<Room>(BookingVM.Room.Id))
-                .Update(new Tier() { Rate = BookingVM.Tier.Rate })
+                .Update(new Tier(BookingVM.Tier.Rate))
                 .Update(new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End));
 
             //store in database

@@ -77,10 +77,9 @@ namespace TTRBookings.Web.Pages.Bookings
             }
 
             //Set booking values from BookingVM
-            Tier tier = new Tier()
+            Tier tier = new Tier(BookingVM.Tier.Rate)
             {
-                Unit = BookingVM.Tier.Unit,
-                Rate = BookingVM.Tier.Rate
+                Unit = BookingVM.Tier.Unit                
             };
 
             Booking booking = Booking.Create(
