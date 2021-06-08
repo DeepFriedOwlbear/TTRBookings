@@ -9,14 +9,14 @@ using Microsoft.Extensions.Logging;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 
-namespace TTRBookings.Web.Pages.Roses
+namespace TTRBookings.Web.Pages.Staff
 {
     public class IndexModel : PageModel
     {
         //private readonly ILogger<IndexModel> _logger;
         private readonly IRepository repository;
 
-        public IList<Rose> Roses { get; set; }
+        public IList<Core.Entities.Staff> Staff { get; set; }
 
         //public IndexModel(ILogger<IndexModel> logger, IRepository repository)
         //{
@@ -31,7 +31,7 @@ namespace TTRBookings.Web.Pages.Roses
 
         public void OnGet()
         {
-            Roses = repository.List<Rose>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")));
+            Staff = repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")));
         }
     }
 }

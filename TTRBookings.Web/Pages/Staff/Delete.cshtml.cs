@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 
-namespace TTRBookings.Web.Pages.Roses
+namespace TTRBookings.Web.Pages.Staff
 {
     public class DeleteModel : PageModel
     {
@@ -28,8 +28,8 @@ namespace TTRBookings.Web.Pages.Roses
 
         public IActionResult OnGet(Guid id)
         {
-            repository.DeleteEntry(repository.ReadEntry<Rose>(id));
-            return RedirectToPage("/Roses/Index");
+            repository.DeleteEntry(repository.ReadEntry<Core.Entities.Staff>(id));
+            return RedirectToPage("/Staff/Index");
         }
     }
 }

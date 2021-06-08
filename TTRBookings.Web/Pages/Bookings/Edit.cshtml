@@ -9,10 +9,10 @@
         <input asp-for="BookingVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
-                <label asp-for="BookingVM.Rose.Name">Rose</label>
-                <select class="custom-select" asp-for="BookingVM.Rose.Id" asp-items="Model.RoseList" required></select>
+                <label asp-for="BookingVM.Staff.Name">Staff</label>
+                <select class="custom-select" asp-for="BookingVM.Staff.Id" asp-items="Model.StaffList" required></select>
                 <div class="invalid-feedback">
-                    Please provide a Rose.
+                    Please provide a Staff.
                 </div>
                 <div class="valid-feedback">
                     Looks good!
@@ -94,7 +94,7 @@
 
     //TODO - Change Values (BookingVM_XXX_XXX) here when all values are renamed for portfolio
     //Save original values
-    let originalRose = document.getElementById("BookingVM_Rose_Id").value;
+    let originalStaff = document.getElementById("BookingVM_Staff_Id").value;
     let originalRoom = document.getElementById("BookingVM_Room_Id").value;
     let originalTier = document.getElementById("BookingVM_Tier_Rate").value;
     let originalTimeStart = document.getElementById("BookingVM_TimeSlot_Start").value;
@@ -135,7 +135,7 @@
                 document.getElementById("submitButton").hidden = true;
 
                 //TODO - Change Values when all values are renamed for portfolio
-                document.getElementById("BookingVM_Rose_Id").value = originalRose;
+                document.getElementById("BookingVM_Staff_Id").value = originalStaff;
                 document.getElementById("BookingVM_Room_Id").value = originalRoom;
                 document.getElementById("BookingVM_Tier_Rate").value = originalTier;
                 document.getElementById("BookingVM_TimeSlot_Start").value = originalTimeStart;

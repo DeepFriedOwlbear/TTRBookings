@@ -5,12 +5,12 @@ using System.Linq;
 
 namespace TTRBookings.Core.Entities
 {
-    public class Rose : BaseEntity
+    public class Staff : BaseEntity
     {
         public string Name { get; set; }
         public Guid HouseId { get; set; }
         public IList<Tier> Tiers { get; set; } = new List<Tier>();
-        public Rose(string name)
+        public Staff(string name)
         {
             Name = name;
         }

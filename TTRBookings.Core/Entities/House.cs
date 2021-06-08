@@ -9,28 +9,28 @@ namespace TTRBookings.Core.Entities
     {
         public string Name { get; set; }
 
-        public decimal RoseCut { get; set; } = 0.7M; //0.7M = 70%
+        public decimal StaffCut { get; set; } = 0.7M; //0.7M = 70%
         public decimal HouseCut { get; set; } = 0.3M; //0.3M = 30%
 
-        public IList<Rose> Roses { get; set; } = new List<Rose>();
+        public IList<Staff> Staff { get; set; } = new List<Staff>();
         public IList<Manager> Managers { get; set; } = new List<Manager>();
         public IList<Room> Rooms { get; set; } = new List<Room>();
         public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
-        public decimal ManagerCut => Calculator.DoManagerCalculation(Managers.Count, TotalRoseRevenue());
+        public decimal ManagerCut => Calculator.DoManagerCalculation(Managers.Count, TotalStaffRevenue());
 
         public House(string name)
         {
             Name = name;
         }
 
-        public Rose CreateRose(string name)
+        public Staff CreateStaff(string name)
         {
-            Rose rose = new Rose(name);
-            rose.HouseId = Id;
-            Roses.Add(rose);
+            Staff staff = new Staff(name);
+            staff.HouseId = Id;
+            Staff.Add(staff);
             
-            return rose;
+            return staff;
         }
 
         public Manager CreateManager(string name)
@@ -47,18 +47,18 @@ namespace TTRBookings.Core.Entities
             return room;
         }
 
-        public void AddBooking(Rose rose, int tierRate, Room room, TimeSlot timeslot)
+        public void AddBooking(Staff staff, int tierRate, Room room, TimeSlot timeslot)
         {
             Tier tier = new Tier(tierRate)
             {
                 Discount = 1,
                 Unit = (int)((timeslot.End - timeslot.Start) / Calculator.TimeUnit)
             };
-            Booking booking = Booking.Create(Id, rose, tier, room, timeslot);
+            Booking booking = Booking.Create(Id, staff, tier, room, timeslot);
 
             Bookings.Add(booking);
 
-            rose.AddTier(tier);
+            staff.AddTier(tier);
         }
 
         public void RemoveBooking(Booking booking)
@@ -66,13 +66,13 @@ namespace TTRBookings.Core.Entities
             Booking currentBooking = Bookings.FirstOrDefault(b => b == booking);
             Bookings.Remove(currentBooking);
 
-            Rose currentRose = Roses.FirstOrDefault(r => r == booking.Rose);
-            currentRose.RemoveTier(booking.Tier);
+            Staff currentStaff = Staff.FirstOrDefault(r => r == booking.Staff);
+            currentStaff.RemoveTier(booking.Tier);
         }
 
-        private decimal TotalRoseRevenue()
+        private decimal TotalStaffRevenue()
         {
-            return Roses.Sum(a => a.TotalRevenue());
+            return Staff.Sum(a => a.TotalRevenue());
         }
     }
 }

@@ -32,8 +32,8 @@ namespace TTRBookings.Infrastructure.Data
             //--input for calculations
             House house = new House("House_1");
 
-            Rose rose1 = house.CreateRose("1_Rose1");
-            Rose rose2 = house.CreateRose("1_Rose2");
+            Staff staff1 = house.CreateStaff("1_Staff1");
+            Staff staff2 = house.CreateStaff("1_Staff2");
 
             house.CreateManager("1_Alice");
             house.CreateManager("1_Bob");
@@ -54,10 +54,10 @@ namespace TTRBookings.Infrastructure.Data
             TimeSlot timeslot3 = new TimeSlot(timeslot_start.AddHours(15), timeslot_end.AddHours(18));
             TimeSlot timeslot4 = new TimeSlot(timeslot_start.AddHours(2), timeslot_end.AddHours(1));
 
-            house.AddBooking(rose1, 50000, room1, timeslot1);
-            house.AddBooking(rose2, 100000, room2, timeslot2);
-            house.AddBooking(rose1, 100000, room1, timeslot3);
-            house.AddBooking(rose2, 50000, room3, timeslot4);
+            house.AddBooking(staff1, 50000, room1, timeslot1);
+            house.AddBooking(staff2, 100000, room2, timeslot2);
+            house.AddBooking(staff1, 100000, room1, timeslot3);
+            house.AddBooking(staff2, 50000, room3, timeslot4);
 
             return house;
             //--end of input for calculation
@@ -68,9 +68,9 @@ namespace TTRBookings.Infrastructure.Data
             //--input for calculations
             House house = new House("House_2");
 
-            Rose rose1 = house.CreateRose("2_Rose1");
-            Rose rose2 = house.CreateRose("2_Rose2");
-            Rose rose3 = house.CreateRose("2_Rose3");
+            Staff staff1 = house.CreateStaff("2_Staff1");
+            Staff staff2 = house.CreateStaff("2_Staff2");
+            Staff staff3 = house.CreateStaff("2_Staff3");
 
             house.CreateManager("2_Alice");
             house.CreateManager("2_Bob");
@@ -91,10 +91,10 @@ namespace TTRBookings.Infrastructure.Data
             TimeSlot timeslot3 = new TimeSlot(timeslot_start.AddHours(12), timeslot_end.AddHours(15));
             TimeSlot timeslot4 = new TimeSlot(timeslot_start.AddHours(3), timeslot_end.AddHours(4));
 
-            house.AddBooking(rose1, 20000, room1, timeslot1);
-            house.AddBooking(rose2, 50000, room2, timeslot2);
-            house.AddBooking(rose3, 75000, room3, timeslot3);
-            house.AddBooking(rose2, 20000, room4, timeslot4);
+            house.AddBooking(staff1, 20000, room1, timeslot1);
+            house.AddBooking(staff2, 50000, room2, timeslot2);
+            house.AddBooking(staff3, 75000, room3, timeslot3);
+            house.AddBooking(staff2, 20000, room4, timeslot4);
 
             return house;
             //--end of input for calculation

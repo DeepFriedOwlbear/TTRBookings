@@ -11,7 +11,7 @@ using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
 
-namespace TTRBookings.Web.Pages.Roses
+namespace TTRBookings.Web.Pages.Staff
 {
     public class EditModel : PageModel
     {
@@ -19,7 +19,7 @@ namespace TTRBookings.Web.Pages.Roses
         private readonly IRepository repository;
         
         [BindProperty]
-        public RoseVM RoseVM { get; set; }
+        public StaffVM StaffVM { get; set; }
 
         //public EditModel(ILogger<EditModel> logger, IRepository repository)
         //{
@@ -34,10 +34,10 @@ namespace TTRBookings.Web.Pages.Roses
 
         public void OnGet(Guid id)
         {
-            var rose = repository.ReadEntry<Rose>(id);
+            var staff = repository.ReadEntry<Core.Entities.Staff>(id);
 
             //convert booking to bookingvm here;
-            RoseVM = RoseVM.Create(rose);
+            StaffVM = StaffVM.Create(staff);
         }
         public IActionResult OnPost()
         {
@@ -46,14 +46,14 @@ namespace TTRBookings.Web.Pages.Roses
                 return Page();
             }
 
-            Rose rose = repository.ReadEntry<Rose>(RoseVM.Id);
-            rose.Name = RoseVM.Name;
+            Core.Entities.Staff staff = repository.ReadEntry<Core.Entities.Staff>(StaffVM.Id);
+            staff.Name = StaffVM.Name;
 
             //store in database
-            repository.UpdateEntry(rose);
+            repository.UpdateEntry(staff);
 
             //return/redirect user to somewhere
-            return RedirectToPage("/Roses/Edit", new { rose.Id });
+            return RedirectToPage("/Staff/Edit", new { staff.Id });
         }
     }
 }

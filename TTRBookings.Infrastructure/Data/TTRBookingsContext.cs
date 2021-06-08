@@ -12,7 +12,7 @@ namespace TTRBookings.Infrastructure.Data
     {
         public DbSet<House> Houses { get; set; }
         public DbSet<Manager> Managers { get; set; }
-        public DbSet<Rose> Roses { get; set; }
+        public DbSet<Staff> Staff { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Tier> Tiers { get; set; }
         public DbSet<TimeSlot> TimeSlots { get; set; }
@@ -25,7 +25,7 @@ namespace TTRBookings.Infrastructure.Data
             base.OnModelCreating(builder);
 
             builder.Entity<House>()
-                .HasMany(o => o.Roses)
+                .HasMany(o => o.Staff)
                 .WithOne()
                 .HasForeignKey(o => o.HouseId);
         }

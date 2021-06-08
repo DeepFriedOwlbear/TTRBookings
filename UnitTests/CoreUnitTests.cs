@@ -23,7 +23,7 @@ namespace CoreUnitTests
         public void CreateBooking_ShouldBeValidBooking_GivenSensibleParameters()
         {
             var timeSlot = new TimeSlot(DateTime.Now.AddHours(1), DateTime.Now.AddHours(2));
-            Booking booking = Booking.Create(Guid.NewGuid(), new Rose(null), new Tier(10000), new Room(null), timeSlot);
+            Booking booking = Booking.Create(Guid.NewGuid(), new Staff(null), new Tier(10000), new Room(null), timeSlot);
             Assert.False(booking.IsDeleted);
             Assert.NotEqual(Guid.Empty, booking.HouseId);
             Assert.Equal(booking.TimeSlot, timeSlot);

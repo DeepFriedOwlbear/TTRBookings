@@ -13,14 +13,14 @@ using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
 
-namespace TTRBookings.Web.Pages.Roses
+namespace TTRBookings.Web.Pages.Staff
 {
     public class CreateModel : PageModel
     {
         //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
 
-        [BindProperty] public RoseVM RoseVM { get; set; }
+        [BindProperty] public StaffVM StaffVM { get; set; }
 
         //public CreateModel(ILogger<CreateModel> logger, IRepository repository)
         //{
@@ -40,12 +40,12 @@ namespace TTRBookings.Web.Pages.Roses
                 return Page();
             }
 
-            Rose rose = new Rose(RoseVM.Name);
-            rose.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
+            Core.Entities.Staff staff = new Core.Entities.Staff(StaffVM.Name);
+            staff.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
 
-            repository.CreateEntry(rose);
+            repository.CreateEntry(staff);
 
-            return Redirect("/Roses");
+            return Redirect("/Staff");
         }
     }
 }

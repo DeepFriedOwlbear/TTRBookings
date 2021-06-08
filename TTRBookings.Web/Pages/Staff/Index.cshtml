@@ -1,13 +1,13 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Roses";
+    ViewData["Title"] = "Staff";
 }
 
 <table class="table table-borderless table-dark w-auto">
     <thead class="thead-dark">
         <tr>
-            <th><a asp-page="./Create" class="btn btn-primary btn-sm">Create Rose</a></th>
+            <th><a asp-page="./Create" class="btn btn-primary btn-sm">Create Staff</a></th>
         </tr>
     </thead>
 </table>
@@ -15,18 +15,18 @@
 <table class="table table-hover">
     <thead class="thead-dark">
         <tr>
-            <th class="w-75">Roses</th>
+            <th class="w-75">Staff</th>
             <th class="w-25 text-center">Options</th>
         </tr>
     </thead>
-    @foreach (var rose in Model.Roses)
+    @foreach (var staff in Model.Staff)
     {
         <tr>
-            <td class="w-75">@rose.Name</td>
+            <td class="w-75">@staff.Name</td>
             <td class="w-25 text-center">
-                <a asp-page="./Edit" asp-route-id="@rose.Id" class="btn btn-primary btn-sm">Details</a>
-                <form id="deleteEntry_@rose.Id" asp-controller="Roses" asp-action="Delete" method="post" style="display: inline;">
-                    <input id="roseId" name="roseId" asp-for="@rose.Id" type="hidden" />
+                <a asp-page="./Edit" asp-route-id="@staff.Id" class="btn btn-primary btn-sm">Details</a>
+                <form id="deleteEntry_@staff.Id" asp-controller="Staff" asp-action="Delete" method="post" style="display: inline;">
+                    <input id="staffId" name="staffId" asp-for="@staff.Id" type="hidden" />
                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                 </form>
             </td>
@@ -51,9 +51,9 @@
 
         function RemoveFromUI(success, formData) {
             if (success) {
-                console.log("ID: ", formData.get('roseId'));
+                console.log("ID: ", formData.get('staffId'));
 
-                let form = document.getElementById("deleteEntry_" + formData.get('roseId'));
+                let form = document.getElementById("deleteEntry_" + formData.get('staffId'));
                 console.log("FormID: ", form.id);
 
                 var row = form.parentNode.parentNode;

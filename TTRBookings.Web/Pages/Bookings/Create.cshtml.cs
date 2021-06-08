@@ -24,7 +24,7 @@ namespace TTRBookings.Web.Pages.Bookings
         public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
 
         public List<SelectListItem> RoomList { get; } = new List<SelectListItem> { };
-        public List<SelectListItem> RoseList { get; } = new List<SelectListItem> { };
+        public List<SelectListItem> StaffList { get; } = new List<SelectListItem> { };
 
         [BindProperty] public BookingVM BookingVM { get; set; }
 
@@ -47,8 +47,8 @@ namespace TTRBookings.Web.Pages.Bookings
                 e => e.Name
             ));
 
-            RoseList.AddRange(SelectListHelper.PopulateList<Rose>(
-                repository.List<Rose>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+            StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
+                repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
                 e => e.Name
             ));
         }
@@ -67,10 +67,10 @@ namespace TTRBookings.Web.Pages.Bookings
                     BookingVM.Room.Id
                 ));
 
-                RoseList.AddRange(SelectListHelper.PopulateList<Rose>(
-                    repository.List<Rose>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+                StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
+                    repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
                     e => e.Name,
-                    BookingVM.Rose.Id
+                    BookingVM.Staff.Id
                 ));
 
                 return Page();
@@ -84,7 +84,7 @@ namespace TTRBookings.Web.Pages.Bookings
 
             Booking booking = Booking.Create(
                 Guid.Parse(HttpContext.Session.GetString("HouseId")),
-                repository.ReadEntry<Rose>(BookingVM.Rose.Id),
+                repository.ReadEntry<Core.Entities.Staff>(BookingVM.Staff.Id),
                 tier,
                 repository.ReadEntry<Room>(BookingVM.Room.Id),
                 new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End)
@@ -124,10 +124,10 @@ namespace TTRBookings.Web.Pages.Bookings
                 booking => !booking.IsDeleted
                 && booking.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
                 && booking.Room.Id == BookingVM.Room.Id
-                && booking.Rose.Id == BookingVM.Rose.Id
+                && booking.Staff.Id == BookingVM.Staff.Id
                 ,
                 //the includes
-                _ => _.Room, _ => _.Rose, _ => _.TimeSlot);
+                _ => _.Room, _ => _.Staff, _ => _.TimeSlot);
 
             if (existing.Any()) // input data from database, to check against input from frontend
             {

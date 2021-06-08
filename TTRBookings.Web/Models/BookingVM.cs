@@ -11,7 +11,7 @@ namespace TTRBookings.Web.Models
     public class BookingVM
     {
         public Guid Id { get; set; }
-        public RoseVM Rose { get; set; }
+        public StaffVM Staff { get; set; }
         public RoomVM Room { get; set; }
         public TierVM Tier { get; set; }
         public TimeSlotVM TimeSlot { get; set; }
@@ -21,7 +21,7 @@ namespace TTRBookings.Web.Models
             return new BookingVM()
             {
                 Id = booking.Id,
-                Rose = RoseVM.Create(booking.Rose),
+                Staff = StaffVM.Create(booking.Staff),
                 Room = RoomVM.Create(booking.Room),
                 Tier = TierVM.Create(booking.Tier),
                 TimeSlot = TimeSlotVM.Create(booking.TimeSlot)
@@ -29,7 +29,7 @@ namespace TTRBookings.Web.Models
         }
     }
 
-    public class RoseVM
+    public class StaffVM
     {
         public Guid Id { get; set; }
         public Guid HouseId { get; set; }
@@ -37,14 +37,14 @@ namespace TTRBookings.Web.Models
         public decimal TotalRevenue { get; set; }
         public IList<Tier> Tiers { get; set; } = new List<Tier>();
 
-        public static RoseVM Create(Rose rose)
+        public static StaffVM Create(Staff staff)
         {
-            return new RoseVM()
+            return new StaffVM()
             {
-                Id = rose.Id,
-                HouseId = rose.HouseId,
-                Name = rose.Name,
-                TotalRevenue = rose.TotalRevenue()
+                Id = staff.Id,
+                HouseId = staff.HouseId,
+                Name = staff.Name,
+                TotalRevenue = staff.TotalRevenue()
             };
         }
     }

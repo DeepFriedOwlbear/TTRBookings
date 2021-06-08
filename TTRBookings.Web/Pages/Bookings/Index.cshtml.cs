@@ -33,7 +33,7 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public void OnGet()
         {
-            Bookings = repository.ListWithIncludes<Booking>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")), _ => _.Room, _ => _.Rose, _ => _.Tier, _ => _.TimeSlot);
+            Bookings = repository.ListWithIncludes<Booking>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")), _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot);
         }
     }
 }

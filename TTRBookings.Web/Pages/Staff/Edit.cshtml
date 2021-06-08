@@ -1,20 +1,20 @@
 ﻿@page
-@model TTRBookings.Web.Pages.Roses.EditModel
+@model TTRBookings.Web.Pages.Staff.EditModel
 
 <h2>Details</h2>
 <br />
 
 <form asp-page="./Edit" method="post">
     <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-        <input asp-for="RoseVM.Id" type="hidden" />
+        <input asp-for="StaffVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
-                <label asp-for="RoseVM.Name">Name</label>
+                <label asp-for="StaffVM.Name">Name</label>
             </div>
         </div>
         <div class="form-row w-25">
             <div class="col">
-                <input class="form-control" asp-for="RoseVM.Name" />
+                <input class="form-control" asp-for="StaffVM.Name" />
             </div>
         </div>
     </fieldset>
@@ -36,8 +36,8 @@
         let el = document.getElementById("unlockFormButton");
         el.addEventListener("click", UnlockFieldset);
 
-        //TODO - Change RoseVM_Name when all values are renamed for portfolio
-        let originalName = document.getElementById("RoseVM_Name").value;
+        //TODO - Change StaffVM_Name when all values are renamed for portfolio
+        let originalName = document.getElementById("StaffVM_Name").value;
 
         function UnlockFieldset() {
             let unlockButton = document.getElementById("unlockFormButton")
@@ -57,8 +57,8 @@
                 unlockButton.className = "btn btn-secondary";
                 document.getElementById("submitButton").hidden = true;
 
-                //TODO - Change RoseVM_Name when all values are renamed for portfolio
-                document.getElementById("RoseVM_Name").value = originalName;
+                //TODO - Change StaffVM_Name when all values are renamed for portfolio
+                document.getElementById("StaffVM_Name").value = originalName;
             }
         }
     </script>
