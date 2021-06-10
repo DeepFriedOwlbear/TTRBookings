@@ -40,7 +40,7 @@ namespace TTRBookings.Core.Entities
 
         private string GetDebuggerDisplay()
         {
-            return $"{Start:yyyy-MM-dd HH:mm}";
+            return $"{Start:dd-MM-yyyy HH:mm} - {End:dd-MM-yyyy HH:mm}";
         }
     }
 

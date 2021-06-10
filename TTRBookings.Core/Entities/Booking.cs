@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 
 
 namespace TTRBookings.Core.Entities
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class Booking : BaseEntity
     {
         public Guid HouseId { get; private set; }
@@ -45,5 +47,10 @@ namespace TTRBookings.Core.Entities
         public Booking Update(Room room) { return Update(Staff, room, Tier, TimeSlot); }
         public Booking Update(Tier tier) { return Update(Staff, Room, tier, TimeSlot); }
         public Booking Update(TimeSlot timeSlot) { return Update(Staff, Room, Tier, timeSlot); }
+
+        private string GetDebuggerDisplay()
+        {
+            return Staff.Name + "; " + Room.Name + "; " + Tier.Rate.ToString();
+        }
     }
 }

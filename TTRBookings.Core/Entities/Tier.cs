@@ -1,8 +1,9 @@
 ﻿using System;
-
+using System.Diagnostics;
 
 namespace TTRBookings.Core.Entities
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class Tier : BaseEntity
     {
         public Guid HouseId { get; set; }
@@ -16,5 +17,10 @@ namespace TTRBookings.Core.Entities
 
         public decimal Discount { get; set; } = 1;
         public decimal Revenue => Calculator.DoBaseCalculation(this);
+
+        private string GetDebuggerDisplay()
+        {
+            return Rate;
+        }
     }
 }

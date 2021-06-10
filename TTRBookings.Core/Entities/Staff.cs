@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 
 namespace TTRBookings.Core.Entities
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class Staff : BaseEntity
     {
         public string Name { get; set; }
@@ -37,6 +39,11 @@ namespace TTRBookings.Core.Entities
         public decimal TotalRevenue()
         {
             return Tiers.Sum(t => t.Revenue);
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return Name;
         }
     }
 }

@@ -70,6 +70,23 @@ namespace TTRBookings.Core.Entities
             currentStaff.RemoveTier(booking.Tier);
         }
 
+        public void UpdateBooking(Booking booking, Tier tier, Staff staff, Room room, TimeSlot timeSlot)
+        {
+            //Recalculate Tier
+            tier.Discount = 1;
+            tier.Unit = (int)((timeSlot.End - timeSlot.Start) / Calculator.TimeUnit);
+
+            //Add and Remove tiers
+            booking.Staff.RemoveTier(booking.Tier);
+            staff.AddTier(tier);
+
+            //update booking
+            booking.Update(staff)
+                .Update(room)
+                .Update(tier)
+                .Update(timeSlot);
+        }
+
         private decimal TotalStaffRevenue()
         {
             return Staff.Sum(a => a.TotalRevenue());

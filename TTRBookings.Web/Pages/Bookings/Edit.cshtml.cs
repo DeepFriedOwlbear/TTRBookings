@@ -84,15 +84,26 @@ namespace TTRBookings.Web.Pages.Bookings
 
             //retrieve original from database.
             Booking booking = repository.ReadEntryWithIncludes<Booking>(BookingVM.Id, _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
+            House house = repository.ReadEntryWithIncludes<House>(booking.HouseId, _ => _.Managers, _ => _.Rooms, _ => _.Staff, _ => _.Bookings, _ => _.Bookings[0].Tier, _ => _.Bookings[0].TimeSlot);
 
-            //assign bookingVM values to booking
-            booking.Update(repository.ReadEntry<Core.Entities.Staff>(BookingVM.Staff.Id))
-                .Update(repository.ReadEntry<Room>(BookingVM.Room.Id))
-                .Update(new Tier(BookingVM.Tier.Rate))
-                .Update(new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End));
 
-            //store in database
-            repository.UpdateEntry(booking);
+            ////assign bookingVM values to booking
+            //booking.Update(repository.ReadEntry<Core.Entities.Staff>(BookingVM.Staff.Id))
+            //    .Update(repository.ReadEntry<Room>(BookingVM.Room.Id))
+            //    .Update(new Tier(BookingVM.Tier.Rate))
+            //    .Update(new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End));
+
+            house.UpdateBooking(
+                booking,
+                new Tier(BookingVM.Tier.Rate),
+                repository.ReadEntry<Core.Entities.Staff>(BookingVM.Staff.Id),
+                repository.ReadEntry<Room>(BookingVM.Room.Id),
+                new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End));
+
+            repository.UpdateEntry(house);
+
+            ////store in database
+            //repository.UpdateEntry(booking);
 
             //return/redirect user to somewhere
             return RedirectToPage("/Bookings/Edit", new { booking.Id });
@@ -119,6 +130,7 @@ namespace TTRBookings.Web.Pages.Bookings
                 ToastrErrors.Add("Invalid Booking Duration", "Booking duration can't be longer than 24 hours.");
             }
 
+            //TODO - existing has wrong list of bookings if Staff & Room changed during booking. Makes it possible to have overlapping timeslot.
             IList<Booking> existing = repository.ListWithIncludes<Booking>(
                 //the filter
                 booking => !booking.IsDeleted
@@ -128,7 +140,7 @@ namespace TTRBookings.Web.Pages.Bookings
                 && booking.Id != BookingVM.Id
                 ,
                 //the includes
-                _ => _.Room, _ => _.Staff, _ => _.TimeSlot);
+                _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
 
             if (existing.Any()) // input data from database, to check against input from frontend
             {
