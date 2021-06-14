@@ -20,7 +20,7 @@ namespace TTRBookings.Core.Entities
 
         private string GetDebuggerDisplay()
         {
-            return Rate;
+            return Rate.ToString();
         }
     }
 }

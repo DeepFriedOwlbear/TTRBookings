@@ -41,19 +41,11 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public void OnGet(Guid id)
         {
+            //Load booking matching Id
             var booking = repository.ReadEntryWithIncludes<Booking>(id, _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
 
-            RoomList.AddRange(SelectListHelper.PopulateList<Room>(
-                repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                e=>e.Name,
-                booking.Room.Id
-            ));
-
-            StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
-                repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))), 
-                e=>e.Name, 
-                booking.Staff.Id
-            ));
+            //Populate drop-down lists
+            PopulateLists(booking.Id);
 
             //convert booking to bookingvm here;
             BookingVM = BookingVM.Create(booking);
@@ -61,24 +53,12 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public IActionResult OnPost()
         {
-            //place backend validation logic here.
+            //Back-End validation
             CheckAgainstBusinessRules();
 
             if (!ModelState.IsValid)
             {
-                //Load Lists before returning the Page
-                RoomList.AddRange(SelectListHelper.PopulateList<Room>(
-                    repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                    e => e.Name,
-                    BookingVM.Room.Id
-                ));
-
-                StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
-                    repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                    e => e.Name,
-                    BookingVM.Staff.Id
-                ));
-
+                PopulateLists(BookingVM.Id);
                 return Page();
             }
 
@@ -86,13 +66,7 @@ namespace TTRBookings.Web.Pages.Bookings
             Booking booking = repository.ReadEntryWithIncludes<Booking>(BookingVM.Id, _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
             House house = repository.ReadEntryWithIncludes<House>(booking.HouseId, _ => _.Managers, _ => _.Rooms, _ => _.Staff, _ => _.Bookings, _ => _.Bookings[0].Tier, _ => _.Bookings[0].TimeSlot);
 
-
-            ////assign bookingVM values to booking
-            //booking.Update(repository.ReadEntry<Core.Entities.Staff>(BookingVM.Staff.Id))
-            //    .Update(repository.ReadEntry<Room>(BookingVM.Room.Id))
-            //    .Update(new Tier(BookingVM.Tier.Rate))
-            //    .Update(new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End));
-
+            //assign bookingVM values to booking
             house.UpdateBooking(
                 booking,
                 new Tier(BookingVM.Tier.Rate),
@@ -100,13 +74,26 @@ namespace TTRBookings.Web.Pages.Bookings
                 repository.ReadEntry<Room>(BookingVM.Room.Id),
                 new TimeSlot(BookingVM.TimeSlot.Start, BookingVM.TimeSlot.End));
 
+            //store in database
             repository.UpdateEntry(house);
 
-            ////store in database
-            //repository.UpdateEntry(booking);
-
-            //return/redirect user to somewhere
+            //return/redirect user
             return RedirectToPage("/Bookings/Edit", new { booking.Id });
+        }
+
+        private void PopulateLists(Guid bookingId)
+        {
+            RoomList.AddRange(SelectListHelper.PopulateList(
+                repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+                e => e.Name,
+                bookingId
+            ));
+
+            StaffList.AddRange(SelectListHelper.PopulateList(
+                repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+                e => e.Name,
+                bookingId
+            ));
         }
 
         private void CheckAgainstBusinessRules()

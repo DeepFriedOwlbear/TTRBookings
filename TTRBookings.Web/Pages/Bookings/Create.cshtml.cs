@@ -41,16 +41,8 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public void OnGet()
         {
-            //Load Lists
-            RoomList.AddRange(SelectListHelper.PopulateList<Room>(
-                repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                e => e.Name
-            ));
-
-            StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
-                repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                e => e.Name
-            ));
+            //populate drop-down lists
+            PopulateLists(null);
         }
 
         public IActionResult OnPost()
@@ -59,19 +51,9 @@ namespace TTRBookings.Web.Pages.Bookings
             CheckAgainstBusinessRules();
 
             if (!ModelState.IsValid)
-            {
-                //Load Lists before returning the Page
-                RoomList.AddRange(SelectListHelper.PopulateList<Room>(
-                    repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                    e => e.Name,
-                    BookingVM.Room.Id
-                ));
-
-                StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
-                    repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                    e => e.Name,
-                    BookingVM.Staff.Id
-                ));
+            {                
+                //Populate drop-down lists
+                PopulateLists(BookingVM.Id);
 
                 return Page();
             }
@@ -97,6 +79,21 @@ namespace TTRBookings.Web.Pages.Bookings
             return Redirect("/Bookings/");
         }
 
+        private void PopulateLists(Guid? bookingId)
+        {
+            //Load Lists before returning the Page
+            RoomList.AddRange(SelectListHelper.PopulateList<Room>(
+                repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+                e => e.Name,
+                bookingId
+            ));
+
+            StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
+                repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+                e => e.Name,
+                bookingId
+            ));
+        }
 
         private void CheckAgainstBusinessRules()
         {
