@@ -56,6 +56,7 @@ namespace TTRBookings.Web.Pages.Bookings
             //Back-End validation
             CheckAgainstBusinessRules();
 
+            //if ModelState is invalid, populate drop-down lists and reload the page
             if (!ModelState.IsValid)
             {
                 PopulateLists(BookingVM.Id);
@@ -118,6 +119,7 @@ namespace TTRBookings.Web.Pages.Bookings
             }
 
             //TODO - existing has wrong list of bookings if Staff & Room changed during booking. Makes it possible to have overlapping timeslot.
+            //Load all bookings where the HouseId, RoomId and StaffId matches
             IList<Booking> existing = repository.ListWithIncludes<Booking>(
                 //the filter
                 booking => !booking.IsDeleted

@@ -47,18 +47,18 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public IActionResult OnPost()
         {
-            //place backend validation logic here.
+            //Back-End validation
             CheckAgainstBusinessRules();
 
+            //if ModelState is invalid, populate drop-down lists and reload the page
             if (!ModelState.IsValid)
-            {                
-                //Populate drop-down lists
+            {
                 PopulateLists(BookingVM.Id);
 
                 return Page();
             }
 
-            //Set booking values from BookingVM
+            //assign bookingVM values to booking
             Tier tier = new Tier(BookingVM.Tier.Rate)
             {
                 Unit = BookingVM.Tier.Unit                
@@ -116,6 +116,7 @@ namespace TTRBookings.Web.Pages.Bookings
                 ToastrErrors.Add("Invalid Booking Duration", "Booking duration can't be longer than 24 hours.");
             }
 
+            //Load all bookings where the HouseId, RoomId and StaffId matches
             IList<Booking> existing = repository.ListWithIncludes<Booking>(
                 //the filter
                 booking => !booking.IsDeleted
