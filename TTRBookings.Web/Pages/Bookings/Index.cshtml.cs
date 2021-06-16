@@ -20,12 +20,6 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
-        //public IndexModel(ILogger<IndexModel> logger, IRepository repository)
-        //{
-        //    _logger = logger;
-        //    this.repository = repository;
-        //}
-
         public IndexModel(IRepository repository)
         {
             this.repository = repository;
