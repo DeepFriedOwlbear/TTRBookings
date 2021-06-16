@@ -72,6 +72,11 @@
         </div>
     </div>
 </form>
+<br/>
+<form id="deleteEntry_@Model.BookingVM.Id" asp-controller="Bookings" asp-action="Delete" method="post" style="display: inline;">
+    <input id="bookingId" name="bookingId" asp-for="@Model.BookingVM.Id" type="hidden" />
+    <button type="submit" class="btn btn-danger">Delete Booking</button>
+</form>
 
 @section Scripts
 {
@@ -141,6 +146,22 @@
                 document.getElementById("BookingVM_TimeSlot_Start").value = originalTimeStart;
                 document.getElementById("BookingVM_TimeSlot_End").value = originalTimeEnd;
             }
+        }
+    }
+
+    document.querySelectorAll('[id^="deleteEntry_"]')
+        .forEach((element) => {
+            element.addEventListener("submit", function () {
+                handleFormSubmit(event, RemoveFromUI);
+            });
+        });
+
+    function RemoveFromUI(success, formData) {
+        if (success) {
+            window.location.replace("/Bookings/");
+        }
+        else {
+            alert("Entry could not be deleted.");
         }
     }
 </script>

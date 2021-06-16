@@ -36,7 +36,9 @@ namespace TTRBookings.Web.Pages.Staff
 
         public void OnGet(Guid id)
         {
-            var staff = repository.ReadEntry<Core.Entities.Staff>(id);
+            var staff = repository.ReadEntryWithIncludes<Core.Entities.Staff>(
+                id,
+                _ => _.Tiers);
             StaffVM = StaffVM.Create(staff);
 
             //load bookings for the staff

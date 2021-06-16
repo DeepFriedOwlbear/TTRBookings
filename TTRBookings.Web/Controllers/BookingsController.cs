@@ -17,8 +17,6 @@ namespace TTRBookings.Web.Controllers
         private readonly ILogger<BookingsController> _logger;
         private readonly IRepository repository;
 
-        //dear dependency Booking, if you know how to create an XYZ,
-        //then please give me an XYZ.
         public BookingsController(ILogger<BookingsController> logger, IRepository repository)
         {
             _logger = logger;
@@ -30,39 +28,16 @@ namespace TTRBookings.Web.Controllers
                          //starting a NESTED route WITHOUT a '/' as initial character will mean append to current build-up route
         public IActionResult Delete(BookingDeleteDTO booking)
         {
-            //TODO - Work with posted FormData here.
-            //Guid bookingId = Guid.Parse(Request.Form["bookingId"]);
-            
-            return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Booking>(booking.BookingId)) });
+            //retrieve originals from database.
+            Booking bookingDB = repository.ReadEntryWithIncludes<Booking>(booking.BookingId, _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
+            House house = repository.ReadEntryWithIncludes<House>(bookingDB.HouseId, _ => _.Managers, _ => _.Rooms, _ => _.Staff, _ => _.Bookings, _ => _.Bookings[0].Tier, _ => _.Bookings[0].TimeSlot);
+
+            //remove booking from house
+            house.RemoveBooking(bookingDB);
+
+            //store in database and return success state
+            return new JsonResult(new { Success = repository.UpdateEntry(house) });
         }
-
-        //public IActionResult OnGet(Guid id)
-        //{
-        //    return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Booking>(id)) });
-
-        //    //return RedirectToPage("/Bookings/Index");
-
-        //    //if (DateTime.Now.Second % 2 == 0)
-        //    //{
-        //    //    return new JsonResult(new { Success = false });
-        //    //}
-        //    //return new JsonResult(new { Success = true });
-        //}
-
-        //public IActionResult OnPost()
-        //{
-        //    //TODO - Work with posted FormData here.
-        //    bookingId = Guid.Parse(Request.Form["bookingId"]);
-
-        //    if (repository.DeleteEntry(repository.ReadEntry<Booking>(bookingId)) == true)
-        //    {
-        //        return new JsonResult(new { Success = true });
-        //    }
-        //    else
-        //    {
-        //        return new JsonResult(new { Success = false });
-        //    }
-        //}
     }
 
     public sealed class BookingDeleteDTO

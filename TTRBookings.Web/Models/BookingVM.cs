@@ -44,6 +44,7 @@ namespace TTRBookings.Web.Models
                 Id = staff.Id,
                 HouseId = staff.HouseId,
                 Name = staff.Name,
+                Tiers = staff.Tiers,
                 TotalRevenue = staff.TotalRevenue()
             };
         }
