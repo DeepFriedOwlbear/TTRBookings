@@ -90,8 +90,8 @@
     }
 
     //Flatpickr Setup
-    $("#BookingVM_TimeSlot_Start").flatpickr({});
-    $("#BookingVM_TimeSlot_End").flatpickr({});
+    $("#BookingVM_TimeSlot_Start").flatpickr();
+    $("#BookingVM_TimeSlot_End").flatpickr();
 
     //Add js-event for locking/unlocking to edit button
     let el = document.getElementById("unlockFormButton");
@@ -112,15 +112,12 @@
         var originalTimeParsed = moment(originalTimeStart, moment.defaultFormat).toDate();
         var currentTimeParsed = moment(new Date(), moment.defaultFormat).toDate();
 
-        //console.log("Original Time", originalTimeParsed);
-        //console.log("Current Time", currentTimeParsed);
-
         //Only allow editing of bookings that haven't happened yet
         if (originalTimeParsed < currentTimeParsed) {
             toastr.warning("Can't edit past Bookings.", "Old Booking");
         }
         else {
-            let unlockButton = document.getElementById("unlockFormButton")
+            let unlockButton = document.getElementById("unlockFormButton");
             let fieldset = document.getElementById("FormFieldset");
 
             //If fieldset is disabled, enable the fieldset
@@ -139,12 +136,14 @@
                 unlockButton.className = "btn btn-secondary";
                 document.getElementById("submitButton").hidden = true;
 
-                //TODO - Change Values when all values are renamed for portfolio
                 document.getElementById("BookingVM_Staff_Id").value = originalStaff;
                 document.getElementById("BookingVM_Room_Id").value = originalRoom;
                 document.getElementById("BookingVM_Tier_Rate").value = originalTier;
                 document.getElementById("BookingVM_TimeSlot_Start").value = originalTimeStart;
                 document.getElementById("BookingVM_TimeSlot_End").value = originalTimeEnd;
+
+                $("#BookingVM_TimeSlot_Start").flatpickr().setDate(originalTimeStart);
+                $("#BookingVM_TimeSlot_End").flatpickr().setDate(originalTimeEnd);
             }
         }
     }

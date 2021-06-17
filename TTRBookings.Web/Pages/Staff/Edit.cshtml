@@ -68,31 +68,14 @@
 {
     <script type="text/javascript">
 
-        let el = document.getElementById("unlockFormButton");
-        el.addEventListener("click", UnlockFieldset);
+        //save defaultValue of input field so it can be restored if editing is cancelled
+        let defaultFieldName = "StaffVM_Name";
+        let defaultValue = document.getElementById(defaultFieldName).value;
 
-        let originalName = document.getElementById("StaffVM_Name").value;
+        //add eventListener to lock / unlock form field
+        document.getElementById("unlockFormButton").addEventListener("click", function () {
+            UnlockFieldset(defaultFieldName, defaultValue);
+        });
 
-        function UnlockFieldset() {
-            let unlockButton = document.getElementById("unlockFormButton")
-            let fieldset = document.getElementById("FormFieldset");
-
-            if (fieldset.disabled == true) {
-                fieldset.disabled = false;
-                fieldset.className = "p-3 mb-2";
-                unlockButton.textContent = "Cancel";
-                unlockButton.className = "btn btn-danger";
-                document.getElementById("submitButton").hidden = false;
-            }
-            else {
-                fieldset.disabled = true;
-                fieldset.className = "p-3 mb-2 bg-secondary text-white";
-                unlockButton.textContent = "Edit";
-                unlockButton.className = "btn btn-secondary";
-                document.getElementById("submitButton").hidden = true;
-
-                document.getElementById("StaffVM_Name").value = originalName;
-            }
-        }
     </script>
 }

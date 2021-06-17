@@ -102,3 +102,29 @@ async function handleFormSubmit(event, callback) {
         console.error(error);
     }
 }
+
+//unlock Fieldset function for locked form fields
+function UnlockFieldset(fieldName, originalName) {
+    let unlockButton = document.getElementById("unlockFormButton");
+    let fieldset = document.getElementById("FormFieldset");
+
+    //if fieldset is disabled:
+    //lock fieldset, change look of fieldset, rename and change look of edit button to cancel button, show save changes button
+    if (fieldset.disabled == true) {
+        fieldset.disabled = false;
+        fieldset.className = "p-3 mb-2";
+        unlockButton.textContent = "Cancel";
+        unlockButton.className = "btn btn-danger";
+        document.getElementById("submitButton").hidden = false;
+    }
+    //if fieldset is active:
+    //restore fieldset to original look and restore original values
+    else {
+        fieldset.disabled = true;
+        fieldset.className = "p-3 mb-2 bg-secondary text-white";
+        unlockButton.textContent = "Edit";
+        unlockButton.className = "btn btn-secondary";
+        document.getElementById("submitButton").hidden = true;
+        document.getElementById(fieldName).value = originalName;
+    }
+}
