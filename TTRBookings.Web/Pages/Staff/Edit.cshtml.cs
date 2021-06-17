@@ -1,13 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
@@ -16,18 +10,11 @@ namespace TTRBookings.Web.Pages.Staff
 {
     public class EditModel : PageModel
     {
-        //private readonly ILogger<CreateModel> _logger;
         private readonly IRepository repository;
         
         [BindProperty]
         public StaffVM StaffVM { get; set; }
         public IList<Booking> Bookings { get; set; } = new List<Booking>();
-
-        //public EditModel(ILogger<EditModel> logger, IRepository repository)
-        //{
-        //    _logger = logger;
-        //    this.repository = repository;
-        //}
 
         public EditModel(IRepository repository)
         {
@@ -36,7 +23,9 @@ namespace TTRBookings.Web.Pages.Staff
 
         public void OnGet(Guid id)
         {
-            var staff = repository.ReadEntry<Core.Entities.Staff>(id);
+            var staff = repository.ReadEntryWithIncludes<Core.Entities.Staff>(
+                id,
+                _ => _.Tiers);
             StaffVM = StaffVM.Create(staff);
 
             //load bookings for the staff

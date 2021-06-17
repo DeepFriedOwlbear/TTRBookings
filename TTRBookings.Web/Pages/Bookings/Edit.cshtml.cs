@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Helpers;
@@ -17,7 +14,6 @@ namespace TTRBookings.Web.Pages.Bookings
 {
     public class EditModel : PageModel
     {
-        //private readonly ILogger<EditModel> _logger;
         private readonly IRepository repository;
         
         [BindProperty]
@@ -27,12 +23,6 @@ namespace TTRBookings.Web.Pages.Bookings
 
         public List<SelectListItem> RoomList { get; } = new List<SelectListItem>();
         public List<SelectListItem> StaffList { get; } = new List<SelectListItem>();
-
-        //public EditModel(ILogger<EditModel> logger, IRepository repository)
-        //{
-        //    _logger = logger;
-        //    this.repository = repository;
-        //}
 
         public EditModel(IRepository repository)
         {

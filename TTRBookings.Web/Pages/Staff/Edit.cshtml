@@ -4,31 +4,38 @@
 <h2>Details</h2>
 <br />
 
-<form asp-page="./Edit" method="post">
-    <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-        <input asp-for="StaffVM.Id" type="hidden" />
-        <div class="form-row">
-            <div class="col">
-                <label asp-for="StaffVM.Name">Name</label>
-            </div>
-        </div>
-        <div class="form-row w-25">
-            <div class="col">
-                <input class="form-control" asp-for="StaffVM.Name" />
-            </div>
-        </div>
-    </fieldset>
+<div class="row">
+    <div class="col">
+        <form asp-page="./Edit" method="post">
+            <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
+                <input asp-for="StaffVM.Id" type="hidden" />
+                <div class="form-row">
+                    <div class="col">
+                        <label asp-for="StaffVM.Name">Name</label>
+                    </div>
+                </div>
+                <div class="form-row w-25">
+                    <div class="col">
+                        <input class="form-control" asp-for="StaffVM.Name" />
+                    </div>
+                </div>
+            </fieldset>
 
-    <div class="form-row">
-        <div class="col-auto align-content-center">
-            <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
-        </div>
-        <div class="col-auto align-content-center">
-            <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
-        </div>
+            <div class="form-row">
+                <div class="col-auto align-content-center">
+                    <button type="button" id="unlockFormButton" class="btn btn-secondary">Edit</button>
+                </div>
+                <div class="col-auto align-content-center">
+                    <button type="submit" id="submitButton" class="btn btn-success" hidden>Save Changes</button>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
-
+    <div class="col">
+        <label>Total Bookings: @Model.Bookings.Count</label><br />
+        <label>Total Revenue: @Model.StaffVM.TotalRevenue</label>
+    </div>
+</div>
 <br />
 
 <table class="table table-hover">
@@ -52,10 +59,6 @@
             <td class="w-auto">@booking.TimeSlot.End.ToString("g")</td>
             <td class="w-25 text-center">
                 <a asp-page="../Bookings/Edit" asp-route-id="@booking.Id" class="btn btn-primary btn-sm">Details</a>
-                <form id="deleteEntry_@booking.Id" asp-controller="Bookings" asp-action="Delete" method="post" style="display: inline;">
-                    <input id="bookingId" name="bookingId" asp-for="@booking.Id" type="hidden" />
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
             </td>
         </tr>
     }
@@ -65,57 +68,14 @@
 {
     <script type="text/javascript">
 
-        let el = document.getElementById("unlockFormButton");
-        el.addEventListener("click", UnlockFieldset);
+        //save defaultValue of input field so it can be restored if editing is cancelled
+        let defaultFieldName = "StaffVM_Name";
+        let defaultValue = document.getElementById(defaultFieldName).value;
 
-        //TODO - Change StaffVM_Name when all values are renamed for portfolio
-        let originalName = document.getElementById("StaffVM_Name").value;
-
-        function UnlockFieldset() {
-            let unlockButton = document.getElementById("unlockFormButton")
-            let fieldset = document.getElementById("FormFieldset");
-
-            if (fieldset.disabled == true) {
-                fieldset.disabled = false;
-                fieldset.className = "p-3 mb-2";
-                unlockButton.textContent = "Cancel";
-                unlockButton.className = "btn btn-danger";
-                document.getElementById("submitButton").hidden = false;
-            }
-            else {
-                fieldset.disabled = true;
-                fieldset.className = "p-3 mb-2 bg-secondary text-white";
-                unlockButton.textContent = "Edit";
-                unlockButton.className = "btn btn-secondary";
-                document.getElementById("submitButton").hidden = true;
-
-                //TODO - Change StaffVM_Name when all values are renamed for portfolio
-                document.getElementById("StaffVM_Name").value = originalName;
-            }
-        }
-
-        //delete button behaviour
-        document.querySelectorAll('[id^="deleteEntry_"]')
-            .forEach((element) => {
-                element.addEventListener("submit", function () {
-                    handleFormSubmit(event, RemoveFromUI);
-                });
-            });
-
-        function RemoveFromUI(success, formData) {
-            if (success) {
-                //console.log("ID: ", formData.get('bookingId'));
-
-                let form = document.getElementById("deleteEntry_" + formData.get('bookingId'));
-                //console.log("FormID: ", form.id);
-
-                var row = form.parentNode.parentNode;
-                row.parentNode.removeChild(row);
-            }
-            else {
-                alert("Entry could not be deleted.");
-            }
-        }
+        //add eventListener to lock / unlock form field
+        document.getElementById("unlockFormButton").addEventListener("click", function () {
+            UnlockFieldset(defaultFieldName, defaultValue);
+        });
 
     </script>
 }

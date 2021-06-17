@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
-using TTRBookings.Core;
 using TTRBookings.Core.Entities;
 
 namespace TTRBookings.Web.Models
@@ -44,6 +40,7 @@ namespace TTRBookings.Web.Models
                 Id = staff.Id,
                 HouseId = staff.HouseId,
                 Name = staff.Name,
+                Tiers = staff.Tiers,
                 TotalRevenue = staff.TotalRevenue()
             };
         }
