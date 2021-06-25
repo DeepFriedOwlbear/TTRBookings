@@ -23,7 +23,7 @@ namespace TTRBookings.Infrastructure.Data
         public void CreateEntry<TEntity>(TEntity entry)
             where TEntity : BaseEntity
         {
-            //TODO: change this to be a local method so we can share a single context within a 'session'
+            //TODO - change this to be a local method so we can share a single context within a 'session'
             context.Add(entry);
             context.SaveChanges();
         }

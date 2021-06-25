@@ -7,10 +7,10 @@ namespace TTRBookings.Core.Entities
     public class Tier : BaseEntity
     {
         public Guid HouseId { get; set; }
-        public int Rate { get; set; }
+        public decimal Rate { get; set; }
         public int Unit { get; set; }
 
-        public Tier(int rate)
+        public Tier(decimal rate)
         {
             Rate = rate;
         }

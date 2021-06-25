@@ -46,7 +46,7 @@ namespace TTRBookings.Core.Entities
             return room;
         }
 
-        public void AddBooking(Staff staff, int tierRate, Room room, TimeSlot timeslot)
+        public void AddBooking(Staff staff, decimal tierRate, Room room, TimeSlot timeslot)
         {
             Tier tier = new Tier(tierRate)
             {
