@@ -54,10 +54,10 @@ namespace TTRBookings.Infrastructure.Data
             TimeSlot timeslot3 = new TimeSlot(timeslot_start.AddHours(15), timeslot_end.AddHours(18));
             TimeSlot timeslot4 = new TimeSlot(timeslot_start.AddHours(2), timeslot_end.AddHours(1));
 
-            house.AddBooking(staff1, 50000, room1, timeslot1);
-            house.AddBooking(staff2, 100000, room2, timeslot2);
-            house.AddBooking(staff1, 100000, room1, timeslot3);
-            house.AddBooking(staff2, 50000, room3, timeslot4);
+            house.AddBooking(staff1, 39.99M, room1, timeslot1);
+            house.AddBooking(staff2, 59.99M, room2, timeslot2);
+            house.AddBooking(staff1, 59.99M, room1, timeslot3);
+            house.AddBooking(staff2, 39.99M, room3, timeslot4);
 
             return house;
             //--end of input for calculation
@@ -91,10 +91,10 @@ namespace TTRBookings.Infrastructure.Data
             TimeSlot timeslot3 = new TimeSlot(timeslot_start.AddHours(12), timeslot_end.AddHours(15));
             TimeSlot timeslot4 = new TimeSlot(timeslot_start.AddHours(3), timeslot_end.AddHours(4));
 
-            house.AddBooking(staff1, 20000, room1, timeslot1);
-            house.AddBooking(staff2, 50000, room2, timeslot2);
-            house.AddBooking(staff3, 75000, room3, timeslot3);
-            house.AddBooking(staff2, 20000, room4, timeslot4);
+            house.AddBooking(staff1, 19.95M, room1, timeslot1);
+            house.AddBooking(staff2, 39.99M, room2, timeslot2);
+            house.AddBooking(staff3, 69.99M, room3, timeslot3);
+            house.AddBooking(staff2, 19.95M, room4, timeslot4);
 
             return house;
             //--end of input for calculation

@@ -74,7 +74,7 @@ namespace TTRBookings.Web.Models
     public class TierVM
     {
         public Guid Id { get; set; }
-        public int Rate { get; set; }
+        public decimal Rate { get; set; }
         public int Unit { get; set; }
         public decimal Discount { get; set; }
         public decimal Revenue { get; set; }
