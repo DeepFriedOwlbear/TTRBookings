@@ -4,13 +4,13 @@
 <h2>Details</h2>
 <br />
 
-<form asp-page="./Edit" method="post" class="needs-validation" novalidate>
+<form id="editForm" asp-controller="Bookings" asp-action="Edit" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-        <input asp-for="BookingVM.Id" type="hidden" />
+        <input name="BookingId" asp-for="BookingVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.Staff.Name">Staff</label>
-                <select class="custom-select" asp-for="BookingVM.Staff.Id" asp-items="Model.StaffList" required></select>
+                <select class="custom-select" name="StaffId" asp-for="BookingVM.Staff.Id" asp-items="Model.StaffList" required></select>
                 <div class="invalid-feedback">
                     Please provide a Staff.
                 </div>
@@ -20,7 +20,7 @@
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Room.Name">Room</label>
-                <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList" required></select>
+                <select class="custom-select" name="RoomId" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList" required></select>
                 <div class="invalid-feedback">
                     Please provide a Room.
                 </div>
@@ -30,7 +30,7 @@
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Tier.Rate"></label>
-                <input class="form-control decimal_input" asp-for="BookingVM.Tier.Rate" step="0.01" inputmode="decimal" min="0" placeholder="Please select a valid Rate" required />
+                <input class="form-control decimal_input" name="TierRate" asp-for="BookingVM.Tier.Rate" step="0.01" inputmode="decimal" min="0" placeholder="Please select a valid Rate" required />
                 <div class="invalid-feedback">
                     Please provide a Rate.
                 </div>
@@ -42,7 +42,7 @@
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
-                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select Date Time" required />
+                <input type="text" class="form-control" name="TimeStart" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select Date Time" required />
                 <div class="invalid-feedback">
                     Please provide a Start Date.
                 </div>
@@ -52,7 +52,7 @@
             </div>
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.End">End Time</label>
-                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.End" placeholder="Please select Date Time" required />
+                <input type="text" class="form-control" name="TimeEnd" asp-for="BookingVM.TimeSlot.End" placeholder="Please select Date Time" required />
                 <div class="invalid-feedback">
                     Please provide an End Date.
                 </div>
@@ -73,7 +73,7 @@
     </div>
 </form>
 <br/>
-<form id="deleteEntry_@Model.BookingVM.Id" asp-controller="Bookings" asp-action="Delete" method="post" style="display: inline;">
+<form id="deleteEntry" asp-controller="Bookings" asp-action="Delete" method="post" style="display: inline;">
     <input id="bookingId" name="bookingId" asp-for="@Model.BookingVM.Id" type="hidden" />
     <button type="submit" class="btn btn-danger">Delete Booking</button>
 </form>
@@ -81,6 +81,17 @@
 @section Scripts
 {
 <script type="text/javascript">
+
+    //Hook in custom form submit for the edit button
+    document.getElementById("editForm").addEventListener("submit", function () {
+        handleFormSubmit(event, SuccessRedirect, "../Bookings/Edit?id=@Model.BookingVM.Id");
+    });
+
+    //Hook in custom form submit for the delete button
+    document.getElementById("deleteEntry").addEventListener("submit", function () {
+        handleFormSubmit(event, SuccessRedirect, "../Bookings/");
+    });
+
     //jQuery - Only allow numbers 0-9 and "," in the field.
     $(".decimal_input").on("input", function (evt) {
         var self = $(this);
@@ -89,7 +100,6 @@
     });
 
     //Toastr Error display
-    var toastrErrors = [];
     @foreach (var d in Model.ToastrErrors)
     {
         //@:toastrErrors.push("@d");
@@ -151,22 +161,6 @@
                 $("#BookingVM_TimeSlot_Start").flatpickr().setDate(originalTimeStart);
                 $("#BookingVM_TimeSlot_End").flatpickr().setDate(originalTimeEnd);
             }
-        }
-    }
-
-    document.querySelectorAll('[id^="deleteEntry_"]')
-        .forEach((element) => {
-            element.addEventListener("submit", function () {
-                handleFormSubmit(event, RemoveFromUI);
-            });
-        });
-
-    function RemoveFromUI(success, formData) {
-        if (success) {
-            window.location.replace("/Bookings/");
-        }
-        else {
-            alert("Entry could not be deleted.");
         }
     }
 </script>

@@ -66,16 +66,16 @@
 
 @section Scripts
 {
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        //save defaultValue of input field so it can be restored if editing is cancelled
-        let defaultFieldName = "StaffVM_Name";
-        let defaultValue = document.getElementById(defaultFieldName).value;
+    //save defaultValue of input field so it can be restored if editing is cancelled
+    let defaultFieldName = "StaffVM_Name";
+    let defaultValue = document.getElementById(defaultFieldName).value;
 
-        //add eventListener to lock / unlock form field
-        document.getElementById("unlockFormButton").addEventListener("click", function () {
-            UnlockFieldset(defaultFieldName, defaultValue);
-        });
+    //add eventListener to lock / unlock form field
+    document.getElementById("unlockFormButton").addEventListener("click", function () {
+        UnlockFieldset(defaultFieldName, defaultValue);
+    });
 
-    </script>
+</script>
 }

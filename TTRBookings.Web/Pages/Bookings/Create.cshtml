@@ -73,24 +73,10 @@
 {
 <script type="text/javascript">
 
+    //Hook in custom Form Submit
     document.getElementById("createForm").addEventListener("submit", function () {
         handleFormSubmit(event, SuccessRedirect, "../Bookings");
     });
-
-    function SuccessRedirect(data, redirectString) {
-        if (data.success) {
-            window.location.replace(redirectString);
-        }
-        else {
-            let toastrErrors = JSON.parse(data.toastrJSON);
-
-            for (let [key, value] of Object.entries(toastrErrors)) {
-                //console.log(`${key}: ${value}`);
-                toastr.error(value, key);
-                //$("#createForm").removeClass("was-validated");
-            }
-        }
-    }
 
     //jQuery - Only allow numbers 0-9 and "," in the field.
     $(".decimal_input").on("input", function (evt) {

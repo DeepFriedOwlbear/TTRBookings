@@ -25,27 +25,134 @@ namespace TTRBookings.Web.Controllers
             this.repository = repository;
         }
 
-        [HttpPost]
-        [Route("delete")]//< =  https://localhost:12345/api/bookings/delete
-                         //starting a NESTED route WITHOUT a '/' as initial character will mean append to current build-up route
-        public IActionResult Delete(BookingDeleteDTO booking)
+        //------------------------------------------------------------------------------------------------------------
+        //--API Calls-------------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------------
+
+        [HttpPost]          //starting a NESTED route WITHOUT a '/' as initial character will mean append to current build-up route
+        [Route("create")]   //< =  https://localhost:12345/api/bookings/create
+        public IActionResult Create(BookingDTO bookingDTO)
         {
-            //retrieve originals from database.
-            Booking bookingDB = repository.ReadEntryWithIncludes<Booking>(booking.BookingId, _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
-            House house = repository.ReadEntryWithIncludes<House>(bookingDB.HouseId, _ => _.Managers, _ => _.Rooms, _ => _.Staff, _ => _.Bookings, _ => _.Bookings[0].Tier, _ => _.Bookings[0].TimeSlot);
-
-            //remove booking from house
-            house.RemoveBooking(bookingDB);
-
-            //store in database and return success state
-            return new JsonResult(new { Success = repository.UpdateEntry(house) });
+            return HandleBooking(bookingDTO, "create");
         }
 
         [HttpPost]
-        [Route("create")]
-        public IActionResult Create(BookingCreateDTO bookingDTO)
+        [Route("edit")]
+        public IActionResult Edit(BookingDTO bookingDTO)
         {
-            if(bookingDTO.StaffId == null || bookingDTO.RoomId == null
+            return HandleBooking(bookingDTO, "edit");
+        }
+
+        [HttpPost]
+        [Route("delete")]
+        public IActionResult Delete(BookingDTO bookingDTO)
+        {
+            return HandleBooking(bookingDTO, "delete");
+        }
+
+        //------------------------------------------------------------------------------------------------------------
+        //--Booking Methods-------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------------
+
+        public JsonResult HandleBooking(BookingDTO bookingDTO, string action)
+        {
+            //check if form fields are filled in
+            if(action != "delete")
+            {
+                CheckFormFields(bookingDTO);
+
+                //if form fields were filled correctly, check against business logic
+                if (ToastrErrors.Count == 0)
+                    CheckAgainstBusinessRules(bookingDTO);
+
+                //if form fields or business logic threw errors, return a failed success state and toastr errors
+                if (ToastrErrors.Count > 0)
+                    return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+            }
+
+            switch (action) 
+            {
+                case "create": 
+                    return CreateBooking(bookingDTO);
+                case "edit":
+                    return EditBooking(bookingDTO);
+                case "delete":
+                    return DeleteBooking(bookingDTO);
+                default:
+                    ModelState.AddModelError("ErrorOccured", "An error occured while performing this operation.");
+                    ToastrErrors.Add("An error occured", "An error occured while performing this operation.");
+                    return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+            }
+        }
+
+        public JsonResult EditBooking(BookingDTO bookingDTO)
+        {
+            //retrieve original from database.
+            Booking booking = repository.ReadEntryWithIncludes<Booking>(bookingDTO.BookingId, _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
+            House house = repository.ReadEntryWithIncludes<House>(booking.HouseId, _ => _.Managers, _ => _.Rooms, _ => _.Staff, _ => _.Bookings, _ => _.Bookings[0].Tier, _ => _.Bookings[0].TimeSlot);
+
+            //assign bookingVM values to booking
+            house.UpdateBooking(
+                booking,
+                new Tier(Decimal.Parse(bookingDTO.TierRate)),
+                repository.ReadEntry<Staff>(bookingDTO.StaffId),
+                repository.ReadEntry<Room>(bookingDTO.RoomId),
+                new TimeSlot(DateTime.Parse(bookingDTO.TimeStart), DateTime.Parse(bookingDTO.TimeEnd))
+            );
+
+            return new JsonResult(new { Success = repository.UpdateEntry(house) });
+        }
+
+        public JsonResult CreateBooking(BookingDTO bookingDTO)
+        {
+            //assign bookingVM values to booking
+            Tier tier = new Tier(Decimal.Parse(bookingDTO.TierRate));
+
+            Booking booking = Booking.Create(
+            Guid.Parse(HttpContext.Session.GetString("HouseId")),
+                repository.ReadEntry<Staff>(bookingDTO.StaffId),
+                tier,
+                repository.ReadEntry<Room>(bookingDTO.RoomId),
+                new TimeSlot(DateTime.Parse(bookingDTO.TimeStart), DateTime.Parse(bookingDTO.TimeEnd))
+            );
+
+            return new JsonResult(new { Success = repository.CreateEntry(booking) });
+        }
+
+        public JsonResult DeleteBooking(BookingDTO bookingDTO)
+        {
+            //retrieve originals from database.
+            Booking booking = repository.ReadEntryWithIncludes<Booking>(bookingDTO.BookingId, _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
+            House house = repository.ReadEntryWithIncludes<House>(booking.HouseId, _ => _.Managers, _ => _.Rooms, _ => _.Staff, _ => _.Bookings, _ => _.Bookings[0].Tier, _ => _.Bookings[0].TimeSlot);
+
+            //remove booking from house
+            house.RemoveBooking(booking);
+
+            return new JsonResult(new { Success = repository.UpdateEntry(house) });
+        }
+
+        //------------------------------------------------------------------------------------------------------------
+        //--Data Transfer Object--------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------------
+
+        public sealed class BookingDTO
+        {
+            public Guid BookingId { get; set; }
+            public Guid StaffId { get; set; }
+            public Guid RoomId { get; set; }
+            public string TierRate { get; set; }
+            public string TimeStart { get; set; }
+            public string TimeEnd { get; set; }
+        }
+
+        //------------------------------------------------------------------------------------------------------------
+        //--Business Logic checks-------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------------
+
+        //Checks if form fields are filled in
+        private void CheckFormFields(BookingDTO bookingDTO)
+        {
+            if (bookingDTO.StaffId == null || bookingDTO.RoomId == null
                 || bookingDTO.TierRate == null || bookingDTO.TierRate == ""
                 || bookingDTO.TimeStart == null || bookingDTO.TimeStart == ""
                 || bookingDTO.TimeEnd == null || bookingDTO.TimeEnd == "")
@@ -53,44 +160,19 @@ namespace TTRBookings.Web.Controllers
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
             }
-
-            if(ToastrErrors.Count == 0)
-            {
-                BookingVM bookingVM = new BookingVM();
-                bookingVM.Staff = new StaffVM() { Id = bookingDTO.StaffId };
-                bookingVM.Tier = new TierVM() { Rate = Decimal.Parse(bookingDTO.TierRate) };
-                bookingVM.Room = new RoomVM() { Id = bookingDTO.RoomId };
-                bookingVM.TimeSlot = new TimeSlotVM() { Start = DateTime.Parse(bookingDTO.TimeStart), End = DateTime.Parse(bookingDTO.TimeEnd) };
-
-                CheckAgainstBusinessRules(bookingVM);
-            }
-
-            if(ToastrErrors.Count > 0)
-            {
-                var toastrJson = JsonConvert.SerializeObject(ToastrErrors);
-                return new JsonResult(new { Success = false, ToastrJSON = toastrJson });
-            }
-            else
-            {
-                //assign bookingVM values to booking
-                Tier tier = new Tier(Decimal.Parse(bookingDTO.TierRate));
-
-                Booking booking = Booking.Create(
-                Guid.Parse(HttpContext.Session.GetString("HouseId")),
-                    repository.ReadEntry<Staff>(bookingDTO.StaffId),
-                    tier,
-                    repository.ReadEntry<Room>(bookingDTO.RoomId),
-                    new TimeSlot(DateTime.Parse(bookingDTO.TimeStart), DateTime.Parse(bookingDTO.TimeEnd))
-                );
-
-                //store in database
-                //Return success state
-                return new JsonResult(new { Success = repository.CreateEntry(booking) });
-            }
         }
 
-        private void CheckAgainstBusinessRules(BookingVM bookingVM)
+        //Checks the "business rules" of a booking
+        private void CheckAgainstBusinessRules(BookingDTO bookingDTO)
         {
+            //Assign BookingVM values
+            BookingVM bookingVM = new BookingVM();
+            bookingVM.Id = bookingDTO.BookingId;
+            bookingVM.Staff = new StaffVM() { Id = bookingDTO.StaffId };
+            bookingVM.Tier = new TierVM() { Rate = Decimal.Parse(bookingDTO.TierRate) };
+            bookingVM.Room = new RoomVM() { Id = bookingDTO.RoomId };
+            bookingVM.TimeSlot = new TimeSlotVM() { Start = DateTime.Parse(bookingDTO.TimeStart), End = DateTime.Parse(bookingDTO.TimeEnd) };
+
             //Bookings can't be made in the past.
             if (bookingVM.TimeSlot.Start < DateTime.Now)
             {
@@ -111,15 +193,34 @@ namespace TTRBookings.Web.Controllers
             }
 
             //Load all bookings where the HouseId, RoomId and StaffId matches
-            IList<Booking> existing = repository.ListWithIncludes<Booking>(
-                //the filter
-                booking => !booking.IsDeleted
-                && booking.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
-                && booking.Room.Id == bookingVM.Room.Id
-                && booking.Staff.Id == bookingVM.Staff.Id
-                ,
-                //the includes
-                _ => _.Room, _ => _.Staff, _ => _.TimeSlot);
+            IList<Booking> existing = new List<Booking>();
+            if(bookingVM.Id != Guid.Empty)
+            {
+                existing = repository.ListWithIncludes<Booking>(
+                    //the filter
+                    booking => !booking.IsDeleted
+                    && booking.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                    && booking.Room.Id == bookingVM.Room.Id
+                    && booking.Staff.Id == bookingVM.Staff.Id
+                    && booking.Id != bookingVM.Id
+                    ,
+                    //the includes
+                    _ => _.Room, _ => _.Staff, _ => _.TimeSlot);
+            } 
+            else
+            {
+                existing = repository.ListWithIncludes<Booking>(
+                    //the filter
+                    booking => !booking.IsDeleted
+                    && booking.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                    && booking.Room.Id == bookingVM.Room.Id
+                    && booking.Staff.Id == bookingVM.Staff.Id
+                    ,
+                    //the includes
+                    _ => _.Room, _ => _.Staff, _ => _.TimeSlot);
+            }
+
+            //&& booking.Id != BookingVM.Id
 
             if (existing.Any()) // input data from database, to check against input from frontend
             {
@@ -188,19 +289,5 @@ namespace TTRBookings.Web.Controllers
                 }
             }
         }
-    }
-
-    public sealed class BookingDeleteDTO
-    {
-        public Guid BookingId { get; set; }
-    }
-
-    public sealed class BookingCreateDTO
-    {
-        public Guid StaffId { get; set; }
-        public Guid RoomId { get; set; }
-        public string TierRate { get; set; }
-        public string TimeStart { get; set; }
-        public string TimeEnd { get; set; }
     }
 }

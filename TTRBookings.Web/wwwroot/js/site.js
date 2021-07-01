@@ -68,6 +68,8 @@ async function handleFormSubmit(event, callback, redirectString) {
     event.preventDefault();
     // This gets the element which the event handler was attached to.
     const form = event.currentTarget;
+    const myFormId = event.target.id;
+
     // This takes the API URL from the form's `action` attribute.
     const url = form.action;
     try {
@@ -84,11 +86,13 @@ async function handleFormSubmit(event, callback, redirectString) {
             })
             .then(response => response.json())
             .then(data => {
-                //Use Callback function and give it the success state + redirect String or success state + submitted formData
-                if (redirectString != "") {
+                //Use Callback function
+                if (redirectString != undefined) {
+                    //send success state and redirect string
                     callback(data, redirectString);
                 } else {
-                    callback(data, formData);
+                    //send success state and form data
+                    callback(data, myFormId);
                 }
             })
             .catch((error) => {
@@ -96,6 +100,43 @@ async function handleFormSubmit(event, callback, redirectString) {
             });
     } catch (error) {
         console.error(error);
+    }
+}
+
+//Selects all deleteEntry forms on the site and attaches the handleFormSubmit function
+function AddEventListenerToDeleteEntries() {
+    document.querySelectorAll('[id^="deleteEntry_"]')
+        .forEach((element) => {
+            element.addEventListener("submit", function () {
+                handleFormSubmit(event, RemoveFromUI);
+            });
+        });
+}
+
+//Callback function that checks if handleFormSubmit was a success. Redirects or shows toastr errors depending on the success state
+function SuccessRedirect(data, redirectString) {
+    if (data.success) {
+        //if success, redirect to specified page
+        window.location.replace(redirectString);
+    }
+    else {
+        //if failure, display toastr errors
+        let toastrErrors = JSON.parse(data.toastrJSON);
+        for (let [key, value] of Object.entries(toastrErrors)) {
+            toastr.error(value, key);
+        }
+    }
+}
+
+//Callback function that removes a row in the Index lists (Bookings/Index, Managers/Index, etc)
+function RemoveFromUI(data, myFormId) {
+    if (data.success) {
+        let form = document.getElementById(myFormId);
+        var row = form.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+    else {
+        toastr.error("Entry could not be deleted.", "Warning");
     }
 }
 
