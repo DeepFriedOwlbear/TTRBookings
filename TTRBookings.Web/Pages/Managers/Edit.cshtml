@@ -4,9 +4,9 @@
 <h2>Details</h2>
 <br />
 
-<form asp-page="./Edit" method="post">
+<form id="editForm" asp-controller="Managers" asp-action="Edit" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-        <input asp-for="ManagerVM.Id" type="hidden" />
+        <input name="ManagerId" asp-for="ManagerVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
                 <label asp-for="ManagerVM.Name">Name</label>
@@ -14,7 +14,13 @@
         </div>
         <div class="form-row w-25">
             <div class="col">
-                <input class="form-control" asp-for="ManagerVM.Name" />
+                <input class="form-control" name="ManagerName" asp-for="ManagerVM.Name" required />
+            </div>
+            <div class="invalid-feedback">
+                Please provide a Manager name.
+            </div>
+            <div class="valid-feedback">
+                Looks good!
             </div>
         </div>
     </fieldset>
@@ -28,19 +34,34 @@
         </div>
     </div>
 </form>
+<br />
+<form id="deleteEntry" asp-controller="Managers" asp-action="Delete" method="post" style="display: inline;">
+    <input id="managerId" name="managerId" asp-for="@Model.ManagerVM.Id" type="hidden" />
+    <button type="submit" class="btn btn-danger">Delete Manager</button>
+</form>
 
 @section Scripts
 {
     <script type="text/javascript">
 
-        //save defaultValue of input field so it can be restored if editing is cancelled
-        let defaultFieldName = "ManagerVM_Name";
-        let defaultValue = document.getElementById(defaultFieldName).value;
+    //Hook in custom form submit for the edit button
+    document.getElementById("editForm").addEventListener("submit", function () {
+        handleFormSubmit(event, SuccessRedirect, "../Managers/Edit?id=@Model.ManagerVM.Id");
+    });
 
-        //add eventListener to lock / unlock form field
-        document.getElementById("unlockFormButton").addEventListener("click", function () {
-            UnlockFieldset(defaultFieldName, defaultValue);
-        });
+    //Hook in custom form submit for the delete button
+    document.getElementById("deleteEntry").addEventListener("submit", function () {
+        handleFormSubmit(event, SuccessRedirect, "../Managers/");
+    });
+
+    //save defaultValue of input field so it can be restored if editing is cancelled
+    let defaultFieldName = "ManagerVM_Name";
+    let defaultValue = document.getElementById(defaultFieldName).value;
+
+    //add eventListener to lock / unlock form field
+    document.getElementById("unlockFormButton").addEventListener("click", function () {
+        UnlockFieldset(defaultFieldName, defaultValue);
+    });
 
     </script>
 }

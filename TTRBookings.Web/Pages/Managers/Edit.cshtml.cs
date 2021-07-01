@@ -26,21 +26,5 @@ namespace TTRBookings.Web.Pages.Managers
             //convert booking to bookingvm here;
             ManagerVM = ManagerVM.Create(manager);
         }
-        public IActionResult OnPost()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            Manager manager = repository.ReadEntry<Manager>(ManagerVM.Id);
-            manager.Name = ManagerVM.Name;
-
-            //store in database
-            repository.UpdateEntry(manager);
-
-            //return/redirect user to somewhere
-            return RedirectToPage("/Managers/Edit", new { manager.Id });
-        }
     }
 }

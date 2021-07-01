@@ -4,7 +4,7 @@
 <h2>Create Manager</h2>
 <br />
 
-<form asp-page="./Create" method="post">
+<form id="createForm" asp-controller="Managers" asp-action="Create" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2">
         <div class="form-row">
             <div class="col">
@@ -13,7 +13,13 @@
         </div>
         <div class="form-row w-25">
             <div class="col">
-                <input class="form-control" asp-for="ManagerVM.Name" />
+                <input class="form-control" name="ManagerName" asp-for="ManagerVM.Name" required />
+                <div class="invalid-feedback">
+                    Please provide a Manager name.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
         </div>
     </fieldset>
@@ -24,3 +30,15 @@
         </div>
     </div>
 </form>
+
+@section Scripts
+{
+<script type="text/javascript">
+
+    //Hook in custom Form Submit
+    document.getElementById("createForm").addEventListener("submit", function () {
+        handleFormSubmit(event, SuccessRedirect, "../Managers");
+    });
+
+</script>
+}

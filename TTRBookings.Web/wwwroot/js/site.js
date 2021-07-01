@@ -63,7 +63,6 @@ flatpickr.setDefaults({
 })();
 
 // Event handler for a form submit event.
-//TODO - Change all instances of the callback function to use data.success instead of success
 async function handleFormSubmit(event, callback, redirectString) {
     event.preventDefault();
     // This gets the element which the event handler was attached to.
