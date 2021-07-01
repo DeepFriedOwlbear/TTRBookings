@@ -6,7 +6,7 @@ namespace TTRBookings.Core.Interfaces
 {
     public interface IRepository
     {
-        void CreateEntry<TEntity>(TEntity entry) where TEntity : BaseEntity;
+        bool CreateEntry<TEntity>(TEntity entry) where TEntity : BaseEntity;
         bool DeleteEntry<TEntity>(TEntity entry) where TEntity : BaseEntity;
         IList<TEntity> List<TEntity>() where TEntity : BaseEntity;
         IList<TEntity> List<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : BaseEntity;

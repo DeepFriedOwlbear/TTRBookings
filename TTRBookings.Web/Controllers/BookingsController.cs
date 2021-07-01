@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
+using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Controllers
 {
@@ -12,6 +17,7 @@ namespace TTRBookings.Web.Controllers
     {   
         private readonly ILogger<BookingsController> _logger;
         private readonly IRepository repository;
+        public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
 
         public BookingsController(ILogger<BookingsController> logger, IRepository repository)
         {
@@ -34,10 +40,167 @@ namespace TTRBookings.Web.Controllers
             //store in database and return success state
             return new JsonResult(new { Success = repository.UpdateEntry(house) });
         }
+
+        [HttpPost]
+        [Route("create")]
+        public IActionResult Create(BookingCreateDTO bookingDTO)
+        {
+            if(bookingDTO.StaffId == null || bookingDTO.RoomId == null
+                || bookingDTO.TierRate == null || bookingDTO.TierRate == ""
+                || bookingDTO.TimeStart == null || bookingDTO.TimeStart == ""
+                || bookingDTO.TimeEnd == null || bookingDTO.TimeEnd == "")
+            {
+                ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
+                ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
+            }
+
+            if(ToastrErrors.Count == 0)
+            {
+                BookingVM bookingVM = new BookingVM();
+                bookingVM.Staff = new StaffVM() { Id = bookingDTO.StaffId };
+                bookingVM.Tier = new TierVM() { Rate = Decimal.Parse(bookingDTO.TierRate) };
+                bookingVM.Room = new RoomVM() { Id = bookingDTO.RoomId };
+                bookingVM.TimeSlot = new TimeSlotVM() { Start = DateTime.Parse(bookingDTO.TimeStart), End = DateTime.Parse(bookingDTO.TimeEnd) };
+
+                CheckAgainstBusinessRules(bookingVM);
+            }
+
+            if(ToastrErrors.Count > 0)
+            {
+                var toastrJson = JsonConvert.SerializeObject(ToastrErrors);
+                return new JsonResult(new { Success = false, ToastrJSON = toastrJson });
+            }
+            else
+            {
+                //assign bookingVM values to booking
+                Tier tier = new Tier(Decimal.Parse(bookingDTO.TierRate));
+
+                Booking booking = Booking.Create(
+                Guid.Parse(HttpContext.Session.GetString("HouseId")),
+                    repository.ReadEntry<Staff>(bookingDTO.StaffId),
+                    tier,
+                    repository.ReadEntry<Room>(bookingDTO.RoomId),
+                    new TimeSlot(DateTime.Parse(bookingDTO.TimeStart), DateTime.Parse(bookingDTO.TimeEnd))
+                );
+
+                //store in database
+                //Return success state
+                return new JsonResult(new { Success = repository.CreateEntry(booking) });
+            }
+        }
+
+        private void CheckAgainstBusinessRules(BookingVM bookingVM)
+        {
+            //Bookings can't be made in the past.
+            if (bookingVM.TimeSlot.Start < DateTime.Now)
+            {
+                ModelState.AddModelError("StartDateBeforeCurrentDate", "[StartDate]: Cannot be in the past.");
+                ToastrErrors.Add("Invalid Start Date", "Start Date can't be in the past.");
+            }
+            //TimeSlot Start can't be after TimeSlot End
+            if (bookingVM.TimeSlot.Start > bookingVM.TimeSlot.End)
+            {
+                ModelState.AddModelError("EndDateBeforeStartDate", "[EndDate]: Cannot be before [StartDate]");
+                ToastrErrors.Add("Invalid End Date", "End Date can't be before Start Date.");
+            }
+            //Duration between TimeSlot Start and TimeSlot End can't be longer than 24 hours
+            if ((bookingVM.TimeSlot.End - bookingVM.TimeSlot.Start).TotalHours >= 24)
+            {
+                ModelState.AddModelError("BookingDurationLongerThan24Hours", "[EndDate]: Duration between [StartDate] and [EndDate] cannot be longer than 24 hours.");
+                ToastrErrors.Add("Invalid Booking Duration", "Booking duration can't be longer than 24 hours.");
+            }
+
+            //Load all bookings where the HouseId, RoomId and StaffId matches
+            IList<Booking> existing = repository.ListWithIncludes<Booking>(
+                //the filter
+                booking => !booking.IsDeleted
+                && booking.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                && booking.Room.Id == bookingVM.Room.Id
+                && booking.Staff.Id == bookingVM.Staff.Id
+                ,
+                //the includes
+                _ => _.Room, _ => _.Staff, _ => _.TimeSlot);
+
+            if (existing.Any()) // input data from database, to check against input from frontend
+            {
+                //Is Start time of NEW booking within timeslot of EXISTING booking?
+                if (existing.Where(booking =>
+                    bookingVM.TimeSlot.Start >= booking.TimeSlot.Start
+                    && bookingVM.TimeSlot.Start <= booking.TimeSlot.End).Any())//check case X of overlap schema.
+                {
+                    ModelState.AddModelError("NewTimeslotStartContainedWithinExistingTimeslot", "[StartDate]: Cannot be within timeslot of existing booking.");
+                    ToastrErrors.Add("Start Time Scheduling Issue", "The Start Time overlaps with an existing booking.");
+                }
+
+                //Is End time of NEW booking within timeslot of EXISTING booking?
+                if (existing.Where(booking =>
+                    bookingVM.TimeSlot.End >= booking.TimeSlot.Start
+                    && bookingVM.TimeSlot.End <= booking.TimeSlot.End).Any())//check case X of overlap schema.
+                {
+                    ModelState.AddModelError("NewTimeslotEndContainedWithinExistingTimeslot", "[EndDate]: Cannot be within timeslot of existing booking.");
+                    ToastrErrors.Add("End Time Scheduling Issue", "The End Time overlaps with an existing booking.");
+                }
+
+                //Is Start time & End Time of EXISTING booking contained within timeslot of NEW booking?
+                if (existing.Where(booking =>
+                    booking.TimeSlot.Start >= bookingVM.TimeSlot.Start
+                    && booking.TimeSlot.Start <= bookingVM.TimeSlot.End
+                    && booking.TimeSlot.End >= bookingVM.TimeSlot.Start
+                    && booking.TimeSlot.End <= bookingVM.TimeSlot.End).Any())//check case X of overlap schema.
+                {
+                    ModelState.AddModelError("ExistingTimeslotStartAndEndContainedWithinNewTimeslot", "[ExistingStartDate] and [ExistingEndDate]: Cannot be within timeslot of new booking.");
+                    ToastrErrors.Add("Existing Booking Overlap", "A booking that uses that timeslot already exists.");
+                }
+
+                //Is Start time & End Time of NEW booking within timeslot of EXISTING booking?
+                if (existing.Where(booking =>
+                    bookingVM.TimeSlot.Start >= booking.TimeSlot.Start
+                    && bookingVM.TimeSlot.Start <= booking.TimeSlot.End
+                    && bookingVM.TimeSlot.End >= booking.TimeSlot.Start
+                    && bookingVM.TimeSlot.End <= booking.TimeSlot.End).Any())//check case X of overlap schema.
+                {
+                    ModelState.AddModelError("NewTimeslotStartAndEndContainedWithinExistingTimeslot", "[StartDate] and [EndDate]: Cannot be within timeslot of existing booking.");
+                    ModelState.Remove("NewTimeslotStartContainedWithinExistingTimeslot");
+                    ModelState.Remove("NewTimeslotEndContainedWithinExistingTimeslot");
+
+                    ToastrErrors.Add("New Booking Overlap", "The new booking overlaps an existing booking.");
+                    ToastrErrors.Remove("Start Time Scheduling Issue");
+                    ToastrErrors.Remove("End Time Scheduling Issue");
+                }
+
+                //Is Start time of NEW booking within timeslot of EXISTING booking X, and End time of NEW booking within timeslot of EXISTING booking Y?
+                var condition1 = existing.Where(booking =>
+                    bookingVM.TimeSlot.Start >= booking.TimeSlot.Start
+                    && bookingVM.TimeSlot.Start <= booking.TimeSlot.End);
+                if (condition1.Any())
+                {
+                    Guid idCondition1 = condition1.FirstOrDefault().Id;
+                    var condition2 = existing.Where(booking =>
+                    bookingVM.TimeSlot.End >= booking.TimeSlot.Start
+                    && bookingVM.TimeSlot.End <= booking.TimeSlot.End
+                    && booking.Id != idCondition1).Any();
+
+                    if (condition2)//check case X of overlap schema.
+                    {
+                        ModelState.AddModelError("NewBookingOverlapsWithinMultipleExistingTimeslots", "[StartDate and EndDate]: Cannot overlap with existing bookings.");
+                        ToastrErrors.Add("New Booking Overlaps Multiple Bookings", "The new booking overlaps at least two existing booking.");
+                    }
+                }
+            }
+        }
     }
 
     public sealed class BookingDeleteDTO
     {
         public Guid BookingId { get; set; }
+    }
+
+    public sealed class BookingCreateDTO
+    {
+        public Guid StaffId { get; set; }
+        public Guid RoomId { get; set; }
+        public string TierRate { get; set; }
+        public string TimeStart { get; set; }
+        public string TimeEnd { get; set; }
     }
 }

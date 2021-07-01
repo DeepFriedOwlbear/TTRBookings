@@ -25,7 +25,7 @@ flatpickr.setDefaults({
     altFormat: "D., d-m-Y H:i",
     minuteIncrement: 15,
     //Flatpickr blocks input by default, but client-side data validation needs the input allowed to validate
-    //Input is now allowed by default and when the picker is open, Input is blocked when the picker is closed
+    //Input is now allowed by default when the picker is open, Input is blocked when the picker is closed
     allowInput: true,
     onOpen: function (selectedDates, dateStr, instance) {
         $(instance.altInput).prop('readonly', true);
@@ -47,10 +47,8 @@ flatpickr.setDefaults({
 // Bootstrap Client-Side Validation
 (function () {
     'use strict'
-
     // Fetch all the forms to apply custom Bootstrap validation styles to
     var forms = document.querySelectorAll('.needs-validation')
-
     // Loop over them and prevent submission
     Array.prototype.slice.call(forms)
         .forEach(function (form) {
@@ -59,26 +57,22 @@ flatpickr.setDefaults({
                     event.preventDefault()
                     event.stopPropagation()
                 }
-
                 form.classList.add('was-validated')
             }, false)
         })
 })();
 
 // Event handler for a form submit event.
-async function handleFormSubmit(event, callback) {
+//TODO - Change all instances of the callback function to use data.success instead of success
+async function handleFormSubmit(event, callback, redirectString) {
     event.preventDefault();
-
     // This gets the element which the event handler was attached to.
     const form = event.currentTarget;
-
     // This takes the API URL from the form's `action` attribute.
     const url = form.action;
-
     try {
         // This takes all the fields in the form and makes their values available through a `FormData` instance.
         const formData = new FormData(form);
-
         const responseData = await fetch(url,
             {
                 method: 'POST', // or 'PUT'
@@ -90,10 +84,12 @@ async function handleFormSubmit(event, callback) {
             })
             .then(response => response.json())
             .then(data => {
-                //console.log('Success:', data);
-                //Use Callback function and give it the success state + submitted formData
-                callback(data.success, formData);
-                //return data;
+                //Use Callback function and give it the success state + redirect String or success state + submitted formData
+                if (redirectString != "") {
+                    callback(data, redirectString);
+                } else {
+                    callback(data, formData);
+                }
             })
             .catch((error) => {
                 console.error('Error:', error);

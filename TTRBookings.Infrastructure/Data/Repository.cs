@@ -20,12 +20,19 @@ namespace TTRBookings.Infrastructure.Data
             this.logger = logger;
         }
 
-        public void CreateEntry<TEntity>(TEntity entry)
+        public bool CreateEntry<TEntity>(TEntity entry)
             where TEntity : BaseEntity
         {
-            //TODO - change this to be a local method so we can share a single context within a 'session'
-            context.Add(entry);
-            context.SaveChanges();
+            try
+            {
+                context.Add(entry);
+                context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public TEntity ReadEntry<TEntity>(Guid id)

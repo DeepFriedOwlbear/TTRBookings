@@ -4,12 +4,12 @@
 <h2>Create Booking</h2>
 <br />
 
-<form asp-page="./Create" method="post" class="needs-validation" novalidate>    
+<form id="createForm" asp-controller="Bookings" asp-action="Create" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2">
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.Staff.Name">Staff</label>
-                <select class="custom-select" asp-for="BookingVM.Staff.Id" asp-items="Model.StaffList" required></select>
+                <select class="custom-select" name="StaffId" asp-for="BookingVM.Staff.Id" asp-items="Model.StaffList" required></select>
                 <div class="invalid-feedback">
                     Please provide a Staff.
                 </div>
@@ -19,7 +19,7 @@
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Room.Name">Room</label>
-                <select class="custom-select" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList" required></select>
+                <select class="custom-select" name="RoomId" asp-for="BookingVM.Room.Id" asp-items="Model.RoomList" required></select>
                 <div class="invalid-feedback">
                     Please provide a Room.
                 </div>
@@ -29,7 +29,7 @@
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Tier.Rate"></label>
-                <input class="form-control decimal_input" asp-for="BookingVM.Tier.Rate" step="0.01" inputmode="decimal" min="0" placeholder="Please select a valid Rate" required />
+                <input class="form-control decimal_input" name="TierRate" asp-for="BookingVM.Tier.Rate" step="0.01" inputmode="decimal" min="0" placeholder="Please select a valid Rate" required />
                 <div class="invalid-feedback">
                     Please provide a Rate.
                 </div>
@@ -41,7 +41,7 @@
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.Start">Start Time</label>
-                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select a Start Date" required />
+                <input type="text" class="form-control" name="TimeStart" asp-for="BookingVM.TimeSlot.Start" placeholder="Please select a Start Date" required />
                 <div class="invalid-feedback">
                     Please provide a Start Date.
                 </div>
@@ -51,7 +51,7 @@
             </div>
             <div class="col">
                 <label asp-for="BookingVM.TimeSlot.End">End Time</label>
-                <input type="text" class="form-control" asp-for="BookingVM.TimeSlot.End" placeholder="Please select an End Date" required />
+                <input type="text" class="form-control" name="TimeEnd" asp-for="BookingVM.TimeSlot.End" placeholder="Please select an End Date" required />
                 <div class="invalid-feedback">
                     Please provide an End Date.
                 </div>
@@ -72,6 +72,26 @@
 @section Scripts
 {
 <script type="text/javascript">
+
+    document.getElementById("createForm").addEventListener("submit", function () {
+        handleFormSubmit(event, SuccessRedirect, "../Bookings");
+    });
+
+    function SuccessRedirect(data, redirectString) {
+        if (data.success) {
+            window.location.replace(redirectString);
+        }
+        else {
+            let toastrErrors = JSON.parse(data.toastrJSON);
+
+            for (let [key, value] of Object.entries(toastrErrors)) {
+                //console.log(`${key}: ${value}`);
+                toastr.error(value, key);
+                //$("#createForm").removeClass("was-validated");
+            }
+        }
+    }
+
     //jQuery - Only allow numbers 0-9 and "," in the field.
     $(".decimal_input").on("input", function (evt) {
         var self = $(this);
@@ -80,10 +100,8 @@
     });
 
     //Toastr Error display
-    var toastrErrors = [];
     @foreach (var d in Model.ToastrErrors)
     {
-        //@:toastrErrors.push("@d");
         @:toastr.error("@d.Value", "@d.Key");
     }
 

@@ -108,7 +108,6 @@ namespace TTRBookings.Web.Pages.Bookings
                 ToastrErrors.Add("Invalid Booking Duration", "Booking duration can't be longer than 24 hours.");
             }
 
-            //TODO - existing has wrong list of bookings if Staff & Room changed during booking. Makes it possible to have overlapping timeslot.
             //Load all bookings where the HouseId, RoomId and StaffId matches
             IList<Booking> existing = repository.ListWithIncludes<Booking>(
                 //the filter

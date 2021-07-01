@@ -38,7 +38,7 @@ namespace TTRBookings.Core.Entities
 
         public decimal TotalRevenue()
         {
-            return Tiers.Sum(t => t.Revenue);
+            return Math.Round(Tiers.Sum(t => t.Revenue),2);
         }
 
         private string GetDebuggerDisplay()

@@ -30,7 +30,6 @@
             </div>
             <div class="col">
                 <label asp-for="BookingVM.Tier.Rate"></label>
-                @* //TODO - Decimals here only take "," and return invalid model when using "." *@
                 <input class="form-control decimal_input" asp-for="BookingVM.Tier.Rate" step="0.01" inputmode="decimal" min="0" placeholder="Please select a valid Rate" required />
                 <div class="invalid-feedback">
                     Please provide a Rate.
