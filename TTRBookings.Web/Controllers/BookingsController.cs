@@ -85,6 +85,22 @@ namespace TTRBookings.Web.Controllers
             }
         }
 
+        public JsonResult CreateBooking(BookingDTO bookingDTO)
+        {
+            //assign bookingVM values to booking
+            Tier tier = new Tier(Decimal.Parse(bookingDTO.TierRate));
+
+            Booking booking = Booking.Create(
+            Guid.Parse(HttpContext.Session.GetString("HouseId")),
+                repository.ReadEntry<Staff>(bookingDTO.StaffId),
+                tier,
+                repository.ReadEntry<Room>(bookingDTO.RoomId),
+                new TimeSlot(DateTime.Parse(bookingDTO.TimeStart), DateTime.Parse(bookingDTO.TimeEnd))
+            );
+
+            return new JsonResult(new { Success = repository.CreateEntry(booking) });
+        }
+
         public JsonResult EditBooking(BookingDTO bookingDTO)
         {
             //retrieve original from database.
@@ -101,22 +117,6 @@ namespace TTRBookings.Web.Controllers
             );
 
             return new JsonResult(new { Success = repository.UpdateEntry(house) });
-        }
-
-        public JsonResult CreateBooking(BookingDTO bookingDTO)
-        {
-            //assign bookingVM values to booking
-            Tier tier = new Tier(Decimal.Parse(bookingDTO.TierRate));
-
-            Booking booking = Booking.Create(
-            Guid.Parse(HttpContext.Session.GetString("HouseId")),
-                repository.ReadEntry<Staff>(bookingDTO.StaffId),
-                tier,
-                repository.ReadEntry<Room>(bookingDTO.RoomId),
-                new TimeSlot(DateTime.Parse(bookingDTO.TimeStart), DateTime.Parse(bookingDTO.TimeEnd))
-            );
-
-            return new JsonResult(new { Success = repository.CreateEntry(booking) });
         }
 
         public JsonResult DeleteBooking(BookingDTO bookingDTO)
