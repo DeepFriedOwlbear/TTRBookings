@@ -18,20 +18,5 @@ namespace TTRBookings.Web.Pages.Rooms
         {
             this.repository = repository;
         }
-
-        public IActionResult OnPost()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            Room room = new Room(RoomVM.Name);
-            room.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
-
-            repository.CreateEntry(room);
-
-            return Redirect("/Rooms");
-        }
     }
 }

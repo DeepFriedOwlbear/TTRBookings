@@ -17,20 +17,5 @@ namespace TTRBookings.Web.Pages.Staff
         {
             this.repository = repository;
         }
-
-        public IActionResult OnPost()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            Core.Entities.Staff staff = new Core.Entities.Staff(StaffVM.Name);
-            staff.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
-
-            repository.CreateEntry(staff);
-
-            return Redirect("/Staff");
-        }
     }
 }

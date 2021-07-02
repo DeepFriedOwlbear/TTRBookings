@@ -10,7 +10,7 @@ using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Controllers
 {
-    [Route("api/[controller]")] //< =  https://localhost:12345/api/bookings
+    [Route("api/[controller]")] //< =  https://localhost:12345/api/managers
     [ApiController]
     public class ManagersController : ControllerBase
     {
@@ -29,7 +29,7 @@ namespace TTRBookings.Web.Controllers
         //------------------------------------------------------------------------------------------------------------
 
         [HttpPost]          //starting a NESTED route WITHOUT a '/' as initial character will mean append to current build-up route
-        [Route("create")]   //< =  https://localhost:12345/api/bookings/delete
+        [Route("create")]   //< =  https://localhost:12345/api/managers/delete
         public IActionResult Create(ManagerDTO managerDTO)
         {
             return HandleManager(managerDTO, "create");
@@ -47,7 +47,6 @@ namespace TTRBookings.Web.Controllers
         public IActionResult Delete(ManagerDTO managerDTO)
         {
             return HandleManager(managerDTO, "delete");
-            //return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Manager>(manager.ManagerId)) });
         }
 
         //------------------------------------------------------------------------------------------------------------

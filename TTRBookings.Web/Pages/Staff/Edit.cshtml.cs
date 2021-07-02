@@ -33,27 +33,5 @@ namespace TTRBookings.Web.Pages.Staff
                 _ => _.Staff.Id == staff.Id,
                 _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot);
         }
-
-        public IActionResult OnPost()
-        {
-            if (!ModelState.IsValid)
-            {
-                //load bookings for the staff
-                Bookings = repository.ListWithIncludes<Booking>(
-                    _ => _.Staff.Id == StaffVM.Id,
-                    _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot);
-
-                return Page();
-            }
-
-            Core.Entities.Staff staff = repository.ReadEntry<Core.Entities.Staff>(StaffVM.Id);
-            staff.Name = StaffVM.Name;
-
-            //store in database
-            repository.UpdateEntry(staff);
-
-            //return/redirect user to somewhere
-            return RedirectToPage("/Staff/Edit", new { staff.Id });
-        }
     }
 }

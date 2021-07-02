@@ -44,24 +44,24 @@
 {
     <script type="text/javascript">
 
-    //Hook in custom form submit for the edit button
-    document.getElementById("editForm").addEventListener("submit", function () {
-        handleFormSubmit(event, SuccessRedirect, "../Managers/Edit?id=@Model.ManagerVM.Id");
-    });
+        //Hook in custom form submit for the edit button
+        document.getElementById("editForm").addEventListener("submit", function () {
+            handleFormSubmit(event, SuccessRedirect, "../Managers/Edit?id=@Model.ManagerVM.Id");
+        });
 
-    //Hook in custom form submit for the delete button
-    document.getElementById("deleteEntry").addEventListener("submit", function () {
-        handleFormSubmit(event, SuccessRedirect, "../Managers/");
-    });
+        //Hook in custom form submit for the delete button
+        document.getElementById("deleteEntry").addEventListener("submit", function () {
+            handleFormSubmit(event, SuccessRedirect, "../Managers/");
+        });
 
-    //save defaultValue of input field so it can be restored if editing is cancelled
-    let defaultFieldName = "ManagerVM_Name";
-    let defaultValue = document.getElementById(defaultFieldName).value;
+        //save defaultValue of input field so it can be restored if editing is cancelled
+        let defaultFieldName = "ManagerVM_Name";
+        let defaultValue = document.getElementById(defaultFieldName).value;
 
-    //add eventListener to lock / unlock form field
-    document.getElementById("unlockFormButton").addEventListener("click", function () {
-        UnlockFieldset(defaultFieldName, defaultValue);
-    });
+        //add eventListener to lock / unlock form field
+        document.getElementById("unlockFormButton").addEventListener("click", function () {
+            UnlockFieldset(defaultFieldName, defaultValue);
+        });
 
     </script>
 }
