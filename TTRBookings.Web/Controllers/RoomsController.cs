@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
@@ -118,6 +119,7 @@ namespace TTRBookings.Web.Controllers
 
         private void CheckAgainstBusinessRules(RoomDTO roomDTO)
         {
+            //Check if form fields are filled in
             if (string.IsNullOrWhiteSpace(roomDTO.RoomName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
@@ -130,7 +132,35 @@ namespace TTRBookings.Web.Controllers
             roomVM.Id = roomDTO.RoomId;
             roomVM.Name = roomDTO.RoomName;
 
-            //TODO - Need to add Business Logic to Rooms
+            //Load all rooms where the HouseId matches
+            IList<Room> existing = new List<Room>();
+            if (roomVM.Id == Guid.Empty)
+            {
+                existing = repository.ListWithIncludes<Room>(
+                    //the filter
+                    room => !room.IsDeleted
+                    && room.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                );
+            }
+            else
+            {
+                existing = repository.ListWithIncludes<Room>(
+                    //the filter
+                    room => !room.IsDeleted
+                    && room.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                    && room.Id != roomVM.Id
+                );
+            }
+
+            if (existing.Any())
+            {
+                //Is there already a room with the same name?
+                if (existing.Where(room => roomVM.Name == room.Name).Any())
+                {
+                    ModelState.AddModelError("RoomWithSameName", "[Name]: A room with the same name exists already.");
+                    ToastrErrors.Add("Name already in use", "There is already a room with the same name, names have to be unique.");
+                }
+            }
         }
     }
 }

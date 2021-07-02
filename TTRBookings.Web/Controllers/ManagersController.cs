@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
@@ -117,6 +118,7 @@ namespace TTRBookings.Web.Controllers
 
         private void CheckAgainstBusinessRules(ManagerDTO managerDTO)
         {
+            //Check if form fields are filled in
             if (string.IsNullOrWhiteSpace(managerDTO.ManagerName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
@@ -129,7 +131,35 @@ namespace TTRBookings.Web.Controllers
             managerVM.Id = managerDTO.ManagerId;
             managerVM.Name = managerDTO.ManagerName;
 
-            //TODO - Need to add Business Logic to Managers
+            //Load all managers where the HouseId matches
+            IList<Manager> existing = new List<Manager>();
+            if (managerVM.Id == Guid.Empty)
+            {
+                existing = repository.ListWithIncludes<Manager>(
+                    //the filter
+                    manager => !manager.IsDeleted
+                    && manager.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                );
+            }
+            else
+            {
+                existing = repository.ListWithIncludes<Manager>(
+                    //the filter
+                    manager => !manager.IsDeleted
+                    && manager.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                    && manager.Id != managerVM.Id
+                );
+            }
+
+            if (existing.Any())
+            {
+                //Is there already a manager with the same name?
+                if (existing.Where(manager => managerVM.Name == manager.Name).Any())
+                {
+                    ModelState.AddModelError("ManagerWithSameName", "[Name]: A manager with the same name exists already.");
+                    ToastrErrors.Add("Name already in use", "There is already a manager with the same name, names have to be unique.");
+                }
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
@@ -117,6 +118,7 @@ namespace TTRBookings.Web.Controllers
 
         private void CheckAgainstBusinessRules(StaffDTO staffDTO)
         {
+            //Check if form fields are filled in
             if (string.IsNullOrWhiteSpace(staffDTO.StaffName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
@@ -129,7 +131,33 @@ namespace TTRBookings.Web.Controllers
             staffVM.Id = staffDTO.StaffId;
             staffVM.Name = staffDTO.StaffName;
 
-            //TODO - Need to add Business Logic to staff
+            //Load all staff members where the HouseId matches
+            IList<Staff> existing = new List<Staff>();
+            if (staffVM.Id == Guid.Empty)
+            {
+                existing = repository.ListWithIncludes<Staff>(
+                    staff => !staff.IsDeleted
+                    && staff.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                );
+            }
+            else
+            {
+                existing = repository.ListWithIncludes<Staff>(
+                    staff => !staff.IsDeleted
+                    && staff.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                    && staff.Id != staffVM.Id
+                );
+            }
+
+            if (existing.Any())
+            {
+                //Is there already a staff member with the same name?
+                if (existing.Where(staff => staffVM.Name == staff.Name).Any())
+                {
+                    ModelState.AddModelError("StaffWithSameName", "[Name]: A staff member with the same name exists already.");
+                    ToastrErrors.Add("Name already in use", "There is already a staff member with the same name, names have to be unique.");
+                }
+            }
         }
     }
 }
