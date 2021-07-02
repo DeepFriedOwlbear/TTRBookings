@@ -122,7 +122,7 @@ namespace TTRBookings.Web.Controllers
 
         private void CheckFormFields(ManagerDTO managerDTO)
         {
-            if (managerDTO.ManagerName == null || managerDTO.ManagerName == "")
+            if (string.IsNullOrWhiteSpace(managerDTO.ManagerName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");

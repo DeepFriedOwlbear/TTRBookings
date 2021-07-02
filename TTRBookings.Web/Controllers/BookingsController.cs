@@ -153,9 +153,9 @@ namespace TTRBookings.Web.Controllers
         private void CheckFormFields(BookingDTO bookingDTO)
         {
             if (bookingDTO.StaffId == null || bookingDTO.RoomId == null
-                || bookingDTO.TierRate == null || bookingDTO.TierRate == ""
-                || bookingDTO.TimeStart == null || bookingDTO.TimeStart == ""
-                || bookingDTO.TimeEnd == null || bookingDTO.TimeEnd == "")
+                || string.IsNullOrWhiteSpace(bookingDTO.TierRate)
+                || string.IsNullOrWhiteSpace(bookingDTO.TimeStart)
+                || string.IsNullOrWhiteSpace(bookingDTO.TimeEnd))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
