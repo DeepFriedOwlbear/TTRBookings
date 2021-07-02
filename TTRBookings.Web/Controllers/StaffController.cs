@@ -55,16 +55,11 @@ namespace TTRBookings.Web.Controllers
 
         public JsonResult HandleStaff(StaffDTO staffDTO, string action)
         {
-            //check if form fields are filled in
             if (action != "delete")
             {
-                CheckFormFields(staffDTO);
+                CheckAgainstBusinessRules(staffDTO);
 
-                //if form fields were filled correctly, check against business logic
-                if (ToastrErrors.Count == 0)
-                    CheckAgainstBusinessRules(staffDTO);
-
-                //if form fields or business logic threw errors, return a failed success state and toastr errors
+                //if business logic threw errors return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
             }
@@ -120,24 +115,21 @@ namespace TTRBookings.Web.Controllers
         //--Business Logic checks-------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------------
 
-        private void CheckFormFields(StaffDTO staffDTO)
+        private void CheckAgainstBusinessRules(StaffDTO staffDTO)
         {
             if (string.IsNullOrWhiteSpace(staffDTO.StaffName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
+                return;
             }
-        }
 
-        //Checks the "business rules" of a staff
-        private void CheckAgainstBusinessRules(StaffDTO staffDTO)
-        {
             //Assign staffVM values
             StaffVM staffVM = new StaffVM();
             staffVM.Id = staffDTO.StaffId;
             staffVM.Name = staffDTO.StaffName;
 
-            //TODO - Need to add Business Logic to staffs
+            //TODO - Need to add Business Logic to staff
         }
     }
 }

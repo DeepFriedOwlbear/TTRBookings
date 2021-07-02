@@ -59,11 +59,7 @@ namespace TTRBookings.Web.Controllers
             //check if form fields are filled in
             if(action != "delete")
             {
-                CheckFormFields(bookingDTO);
-
-                //if form fields were filled correctly, check against business logic
-                if (ToastrErrors.Count == 0)
-                    CheckAgainstBusinessRules(bookingDTO);
+                CheckAgainstBusinessRules(bookingDTO);
 
                 //if form fields or business logic threw errors, return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
@@ -149,22 +145,16 @@ namespace TTRBookings.Web.Controllers
         //--Business Logic checks-------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------------
 
-        //Checks if form fields are filled in
-        private void CheckFormFields(BookingDTO bookingDTO)
+        private void CheckAgainstBusinessRules(BookingDTO bookingDTO)
         {
-            if (bookingDTO.StaffId == null || bookingDTO.RoomId == null
-                || string.IsNullOrWhiteSpace(bookingDTO.TierRate)
-                || string.IsNullOrWhiteSpace(bookingDTO.TimeStart)
-                || string.IsNullOrWhiteSpace(bookingDTO.TimeEnd))
+            //Checks if form fields are filled in
+            if (string.IsNullOrWhiteSpace(bookingDTO.TierRate) || string.IsNullOrWhiteSpace(bookingDTO.TimeStart) || string.IsNullOrWhiteSpace(bookingDTO.TimeEnd))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
+                return;
             }
-        }
 
-        //Checks the "business rules" of a booking
-        private void CheckAgainstBusinessRules(BookingDTO bookingDTO)
-        {
             //Assign BookingVM values
             BookingVM bookingVM = new BookingVM();
             bookingVM.Id = bookingDTO.BookingId;

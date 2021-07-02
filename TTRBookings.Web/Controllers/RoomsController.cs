@@ -56,16 +56,11 @@ namespace TTRBookings.Web.Controllers
 
         public JsonResult HandleRoom(RoomDTO roomDTO, string action)
         {
-            //check if form fields are filled in
             if (action != "delete")
             {
-                CheckFormFields(roomDTO);
+                CheckAgainstBusinessRules(roomDTO);
 
-                //if form fields were filled correctly, check against business logic
-                if (ToastrErrors.Count == 0)
-                    CheckAgainstBusinessRules(roomDTO);
-
-                //if form fields or business logic threw errors, return a failed success state and toastr errors
+                //if business logic threw errors return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
             }
@@ -121,18 +116,15 @@ namespace TTRBookings.Web.Controllers
         //--Business Logic checks-------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------------
 
-        private void CheckFormFields(RoomDTO roomDTO)
+        private void CheckAgainstBusinessRules(RoomDTO roomDTO)
         {
             if (string.IsNullOrWhiteSpace(roomDTO.RoomName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
+                return;
             }
-        }
 
-        //Checks the "business rules" of a room
-        private void CheckAgainstBusinessRules(RoomDTO roomDTO)
-        {
             //Assign RoomVM values
             RoomVM roomVM = new RoomVM();
             roomVM.Id = roomDTO.RoomId;

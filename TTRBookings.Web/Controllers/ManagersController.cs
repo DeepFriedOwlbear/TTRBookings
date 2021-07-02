@@ -55,16 +55,11 @@ namespace TTRBookings.Web.Controllers
 
         public JsonResult HandleManager(ManagerDTO managerDTO, string action)
         {
-            //check if form fields are filled in
             if (action != "delete")
             {
-                CheckFormFields(managerDTO);
+                CheckAgainstBusinessRules(managerDTO);
 
-                //if form fields were filled correctly, check against business logic
-                if (ToastrErrors.Count == 0)
-                    CheckAgainstBusinessRules(managerDTO);
-
-                //if form fields or business logic threw errors, return a failed success state and toastr errors
+                //if business logic threw errors return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
             }
@@ -120,18 +115,15 @@ namespace TTRBookings.Web.Controllers
         //--Business Logic checks-------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------------
 
-        private void CheckFormFields(ManagerDTO managerDTO)
+        private void CheckAgainstBusinessRules(ManagerDTO managerDTO)
         {
             if (string.IsNullOrWhiteSpace(managerDTO.ManagerName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
+                return;
             }
-        }
 
-        //Checks the "business rules" of a manager
-        private void CheckAgainstBusinessRules(ManagerDTO managerDTO)
-        {
             //Assign ManagerVM values
             ManagerVM managerVM = new ManagerVM();
             managerVM.Id = managerDTO.ManagerId;
