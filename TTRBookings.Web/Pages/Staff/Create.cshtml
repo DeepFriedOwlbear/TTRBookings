@@ -4,7 +4,7 @@
 <h2>Create Staff</h2>
 <br />
 
-<form asp-page="./Create" method="post">
+<form id="createForm" asp-controller="Staff" asp-action="Create" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2">
         <div class="form-row">
             <div class="col">
@@ -13,7 +13,13 @@
         </div>
         <div class="form-row w-25">
             <div class="col">
-                <input class="form-control" asp-for="StaffVM.Name" />
+                <input class="form-control" name="StaffName" asp-for="StaffVM.Name" required />
+                <div class="invalid-feedback">
+                    Please provide a Staff name.
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
         </div>
     </fieldset>
@@ -24,3 +30,15 @@
         </div>
     </div>
 </form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        //Hook in custom Form Submit
+        document.getElementById("createForm").addEventListener("submit", function () {
+            handleFormSubmit(event, SuccessRedirect, "../Staff");
+        });
+
+    </script>
+}

@@ -6,9 +6,9 @@
 
 <div class="row">
     <div class="col">
-        <form asp-page="./Edit" method="post">
+        <form id="editForm" asp-controller="Staff" asp-action="Edit" method="post" class="needs-validation" novalidate>
             <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-                <input asp-for="StaffVM.Id" type="hidden" />
+                <input name="StaffId" asp-for="StaffVM.Id" type="hidden" />
                 <div class="form-row">
                     <div class="col">
                         <label asp-for="StaffVM.Name">Name</label>
@@ -16,7 +16,13 @@
                 </div>
                 <div class="form-row w-25">
                     <div class="col">
-                        <input class="form-control" asp-for="StaffVM.Name" />
+                        <input class="form-control" name="StaffName" asp-for="StaffVM.Name" />
+                        <div class="invalid-feedback">
+                            Please provide a Staff name.
+                        </div>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
                     </div>
                 </div>
             </fieldset>
@@ -36,6 +42,11 @@
         <label>Total Revenue: @Model.StaffVM.TotalRevenue</label>
     </div>
 </div>
+<br />
+<form id="deleteEntry" asp-controller="Staff" asp-action="Delete" method="post" style="display: inline;">
+    <input id="staffId" name="staffId" asp-for="@Model.StaffVM.Id" type="hidden" />
+    <button type="submit" class="btn btn-danger">Delete Staff</button>
+</form>
 <br />
 
 <table class="table table-hover">
@@ -67,6 +78,16 @@
 @section Scripts
 {
     <script type="text/javascript">
+
+        //Hook in custom form submit for the edit button
+        document.getElementById("editForm").addEventListener("submit", function () {
+            handleFormSubmit(event, SuccessRedirect, "../Staff/Edit?id=@Model.StaffVM.Id");
+        });
+
+        //Hook in custom form submit for the delete button
+        document.getElementById("deleteEntry").addEventListener("submit", function () {
+            handleFormSubmit(event, SuccessRedirect, "../Staff/");
+        });
 
         //save defaultValue of input field so it can be restored if editing is cancelled
         let defaultFieldName = "StaffVM_Name";

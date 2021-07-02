@@ -25,7 +25,7 @@ flatpickr.setDefaults({
     altFormat: "D., d-m-Y H:i",
     minuteIncrement: 15,
     //Flatpickr blocks input by default, but client-side data validation needs the input allowed to validate
-    //Input is now allowed by default and when the picker is open, Input is blocked when the picker is closed
+    //Input is now allowed by default when the picker is open, Input is blocked when the picker is closed
     allowInput: true,
     onOpen: function (selectedDates, dateStr, instance) {
         $(instance.altInput).prop('readonly', true);
@@ -47,10 +47,8 @@ flatpickr.setDefaults({
 // Bootstrap Client-Side Validation
 (function () {
     'use strict'
-
     // Fetch all the forms to apply custom Bootstrap validation styles to
     var forms = document.querySelectorAll('.needs-validation')
-
     // Loop over them and prevent submission
     Array.prototype.slice.call(forms)
         .forEach(function (form) {
@@ -59,26 +57,23 @@ flatpickr.setDefaults({
                     event.preventDefault()
                     event.stopPropagation()
                 }
-
                 form.classList.add('was-validated')
             }, false)
         })
 })();
 
 // Event handler for a form submit event.
-async function handleFormSubmit(event, callback) {
+async function handleFormSubmit(event, callback, redirectString) {
     event.preventDefault();
-
     // This gets the element which the event handler was attached to.
     const form = event.currentTarget;
+    const myFormId = event.target.id;
 
     // This takes the API URL from the form's `action` attribute.
     const url = form.action;
-
     try {
         // This takes all the fields in the form and makes their values available through a `FormData` instance.
         const formData = new FormData(form);
-
         const responseData = await fetch(url,
             {
                 method: 'POST', // or 'PUT'
@@ -90,16 +85,57 @@ async function handleFormSubmit(event, callback) {
             })
             .then(response => response.json())
             .then(data => {
-                //console.log('Success:', data);
-                //Use Callback function and give it the success state + submitted formData
-                callback(data.success, formData);
-                //return data;
+                //Use Callback function
+                if (redirectString != undefined) {
+                    //send success state and redirect string
+                    callback(data, redirectString);
+                } else {
+                    //send success state and form data
+                    callback(data, myFormId);
+                }
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
     } catch (error) {
         console.error(error);
+    }
+}
+
+//Selects all deleteEntry forms on the site and attaches the handleFormSubmit function
+function AddEventListenerToDeleteEntries() {
+    document.querySelectorAll('[id^="deleteEntry_"]')
+        .forEach((element) => {
+            element.addEventListener("submit", function () {
+                handleFormSubmit(event, RemoveFromUI);
+            });
+        });
+}
+
+//Callback function that checks if handleFormSubmit was a success. Redirects or shows toastr errors depending on the success state
+function SuccessRedirect(data, redirectString) {
+    if (data.success) {
+        //if success, redirect to specified page
+        window.location.replace(redirectString);
+    }
+    else {
+        //if failure, display toastr errors
+        let toastrErrors = JSON.parse(data.toastrJSON);
+        for (let [key, value] of Object.entries(toastrErrors)) {
+            toastr.error(value, key);
+        }
+    }
+}
+
+//Callback function that removes a row in the Index lists (Bookings/Index, Managers/Index, etc)
+function RemoveFromUI(data, myFormId) {
+    if (data.success) {
+        let form = document.getElementById(myFormId);
+        var row = form.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+    else {
+        toastr.error("Entry could not be deleted.", "Warning");
     }
 }
 

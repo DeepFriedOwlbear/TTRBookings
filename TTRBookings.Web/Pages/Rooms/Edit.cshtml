@@ -4,9 +4,9 @@
 <h2>Details</h2>
 <br />
 
-<form asp-page="./Edit" method="post">
+<form id="editForm" asp-controller="Rooms" asp-action="Edit" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-        <input asp-for="RoomVM.Id" type="hidden" />
+        <input name="RoomId" asp-for="RoomVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
                 <label asp-for="RoomVM.Name">Name</label>
@@ -14,7 +14,13 @@
         </div>
         <div class="form-row w-25">
             <div class="col">
-                <input class="form-control" asp-for="RoomVM.Name" />
+                <input class="form-control" name="RoomName" asp-for="RoomVM.Name" />
+            </div>
+            <div class="invalid-feedback">
+                Please provide a Room name.
+            </div>
+            <div class="valid-feedback">
+                Looks good!
             </div>
         </div>
     </fieldset>
@@ -28,10 +34,25 @@
         </div>
     </div>
 </form>
+<br />
+<form id="deleteEntry" asp-controller="Rooms" asp-action="Delete" method="post" style="display: inline;">
+    <input id="roomId" name="roomId" asp-for="@Model.RoomVM.Id" type="hidden" />
+    <button type="submit" class="btn btn-danger">Delete Room</button>
+</form>
 
 @section Scripts
 {
     <script type="text/javascript">
+
+        //Hook in custom form submit for the edit button
+        document.getElementById("editForm").addEventListener("submit", function () {
+            handleFormSubmit(event, SuccessRedirect, "../Rooms/Edit?id=@Model.RoomVM.Id");
+        });
+
+        //Hook in custom form submit for the delete button
+        document.getElementById("deleteEntry").addEventListener("submit", function () {
+            handleFormSubmit(event, SuccessRedirect, "../Rooms/");
+        });
 
         //save defaultValue of input field so it can be restored if editing is cancelled
         let defaultFieldName = "RoomVM_Name";

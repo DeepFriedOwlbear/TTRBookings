@@ -26,21 +26,5 @@ namespace TTRBookings.Web.Pages.Rooms
             //convert booking to bookingvm here;
             RoomVM = RoomVM.Create(room);
         }
-        public IActionResult OnPost()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            Room room = repository.ReadEntry<Room>(RoomVM.Id);
-            room.Name = RoomVM.Name;
-
-            //store in database
-            repository.UpdateEntry(room);
-
-            //return/redirect user to somewhere
-            return RedirectToPage("/Rooms/Edit", new { room.Id });
-        }
     }
 }
