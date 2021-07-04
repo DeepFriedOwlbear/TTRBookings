@@ -62,7 +62,9 @@ namespace TTRBookings.Web.Controllers
 
                 //if business logic threw errors return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
+                {
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+                }
             }
 
             switch (action)
@@ -83,12 +85,14 @@ namespace TTRBookings.Web.Controllers
         public JsonResult CreateManager(ManagerDTO managerDTO)
         {
             //assign managerDTO values to manager
-            Manager manager = new Manager(managerDTO.ManagerName);
-            manager.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
+            Manager manager = new Manager(managerDTO.ManagerName)
+            {
+                HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
+            };
 
             return new JsonResult(new { Success = repository.CreateEntry(manager) });
         }
-        
+
         public JsonResult EditManager(ManagerDTO managerDTO)
         {
             Manager manager = repository.ReadEntry<Manager>(managerDTO.ManagerId);
@@ -127,9 +131,11 @@ namespace TTRBookings.Web.Controllers
             }
 
             //Assign ManagerVM values
-            ManagerVM managerVM = new ManagerVM();
-            managerVM.Id = managerDTO.ManagerId;
-            managerVM.Name = managerDTO.ManagerName;
+            ManagerVM managerVM = new ManagerVM
+            {
+                Id = managerDTO.ManagerId,
+                Name = managerDTO.ManagerName
+            };
 
             //Load all managers where the HouseId matches
             IList<Manager> existing = new List<Manager>();

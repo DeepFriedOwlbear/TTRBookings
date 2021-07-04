@@ -14,7 +14,7 @@ namespace TTRBookings.Web.Controllers
     [Route("api/[controller]")] //< =  https://localhost:12345/api/staff
     [ApiController]
     public class StaffController : ControllerBase
-    {   
+    {
         private readonly ILogger<StaffController> _logger;
         private readonly IRepository repository;
         public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
@@ -62,7 +62,9 @@ namespace TTRBookings.Web.Controllers
 
                 //if business logic threw errors return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
+                {
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+                }
             }
 
             switch (action)
@@ -83,8 +85,10 @@ namespace TTRBookings.Web.Controllers
         public JsonResult CreateStaff(StaffDTO staffDTO)
         {
             //assign staffDTO values to staff
-            Staff staff = new Staff(staffDTO.StaffName);
-            staff.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
+            Staff staff = new Staff(staffDTO.StaffName)
+            {
+                HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
+            };
 
             return new JsonResult(new { Success = repository.CreateEntry(staff) });
         }
@@ -127,9 +131,11 @@ namespace TTRBookings.Web.Controllers
             }
 
             //Assign staffVM values
-            StaffVM staffVM = new StaffVM();
-            staffVM.Id = staffDTO.StaffId;
-            staffVM.Name = staffDTO.StaffName;
+            StaffVM staffVM = new StaffVM
+            {
+                Id = staffDTO.StaffId,
+                Name = staffDTO.StaffName
+            };
 
             //Load all staff members where the HouseId matches
             IList<Staff> existing = new List<Staff>();

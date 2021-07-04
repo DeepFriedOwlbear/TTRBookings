@@ -63,7 +63,9 @@ namespace TTRBookings.Web.Controllers
 
                 //if business logic threw errors return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
+                {
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+                }
             }
 
             switch (action)
@@ -84,8 +86,10 @@ namespace TTRBookings.Web.Controllers
         public JsonResult CreateRoom(RoomDTO roomDTO)
         {
             //assign roomDTO values to room
-            Room room = new Room(roomDTO.RoomName);
-            room.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
+            Room room = new Room(roomDTO.RoomName)
+            {
+                HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
+            };
 
             return new JsonResult(new { Success = repository.CreateEntry(room) });
         }
@@ -128,9 +132,11 @@ namespace TTRBookings.Web.Controllers
             }
 
             //Assign RoomVM values
-            RoomVM roomVM = new RoomVM();
-            roomVM.Id = roomDTO.RoomId;
-            roomVM.Name = roomDTO.RoomName;
+            RoomVM roomVM = new RoomVM
+            {
+                Id = roomDTO.RoomId,
+                Name = roomDTO.RoomName
+            };
 
             //Load all rooms where the HouseId matches
             IList<Room> existing = new List<Room>();

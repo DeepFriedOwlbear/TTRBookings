@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Helpers;
@@ -15,7 +14,7 @@ namespace TTRBookings.Web.Pages.Bookings
     public class EditModel : PageModel
     {
         private readonly IRepository repository;
-        
+
         [BindProperty]
         public BookingVM BookingVM { get; set; }
 
