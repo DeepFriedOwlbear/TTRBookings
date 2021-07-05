@@ -35,10 +35,15 @@
     </div>
 </form>
 <br />
+
 <form id="deleteEntry" asp-controller="Rooms" asp-action="Delete" method="post" style="display: inline;">
     <input id="roomId" name="roomId" asp-for="@Model.RoomVM.Id" type="hidden" />
     <button type="submit" class="btn btn-danger">Delete Room</button>
 </form>
+<br />
+<br />
+
+<vc:bookings repository-id="@Model.RoomVM.Id" repository-filter="room"></vc:bookings>
 
 @section Scripts
 {

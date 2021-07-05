@@ -27,11 +27,6 @@ namespace TTRBookings.Web.Pages.Staff
                 id,
                 _ => _.Tiers);
             StaffVM = StaffVM.Create(staff);
-
-            //load bookings for the staff
-            Bookings = repository.ListWithIncludes<Booking>(
-                _ => _.Staff.Id == staff.Id,
-                _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot);
         }
     }
 }
