@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
@@ -55,18 +56,15 @@ namespace TTRBookings.Web.Controllers
 
         public JsonResult HandleManager(ManagerDTO managerDTO, string action)
         {
-            //check if form fields are filled in
             if (action != "delete")
             {
-                CheckFormFields(managerDTO);
+                CheckAgainstBusinessRules(managerDTO);
 
-                //if form fields were filled correctly, check against business logic
-                if (ToastrErrors.Count == 0)
-                    CheckAgainstBusinessRules(managerDTO);
-
-                //if form fields or business logic threw errors, return a failed success state and toastr errors
+                //if business logic threw errors return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
+                {
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+                }
             }
 
             switch (action)
@@ -87,12 +85,14 @@ namespace TTRBookings.Web.Controllers
         public JsonResult CreateManager(ManagerDTO managerDTO)
         {
             //assign managerDTO values to manager
-            Manager manager = new Manager(managerDTO.ManagerName);
-            manager.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
+            Manager manager = new Manager(managerDTO.ManagerName)
+            {
+                HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
+            };
 
             return new JsonResult(new { Success = repository.CreateEntry(manager) });
         }
-        
+
         public JsonResult EditManager(ManagerDTO managerDTO)
         {
             Manager manager = repository.ReadEntry<Manager>(managerDTO.ManagerId);
@@ -120,24 +120,52 @@ namespace TTRBookings.Web.Controllers
         //--Business Logic checks-------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------------
 
-        private void CheckFormFields(ManagerDTO managerDTO)
+        private void CheckAgainstBusinessRules(ManagerDTO managerDTO)
         {
-            if (managerDTO.ManagerName == null || managerDTO.ManagerName == "")
+            //Check if form fields are filled in
+            if (string.IsNullOrWhiteSpace(managerDTO.ManagerName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
+                return;
             }
-        }
 
-        //Checks the "business rules" of a manager
-        private void CheckAgainstBusinessRules(ManagerDTO managerDTO)
-        {
             //Assign ManagerVM values
-            ManagerVM managerVM = new ManagerVM();
-            managerVM.Id = managerDTO.ManagerId;
-            managerVM.Name = managerDTO.ManagerName;
+            ManagerVM managerVM = new ManagerVM
+            {
+                Id = managerDTO.ManagerId,
+                Name = managerDTO.ManagerName
+            };
 
-            //TODO - Need to add Business Logic to Managers
+            //Load all managers where the HouseId matches
+            IList<Manager> existing = new List<Manager>();
+            if (managerVM.Id == Guid.Empty)
+            {
+                existing = repository.ListWithIncludes<Manager>(
+                    //the filter
+                    manager => !manager.IsDeleted
+                    && manager.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                );
+            }
+            else
+            {
+                existing = repository.ListWithIncludes<Manager>(
+                    //the filter
+                    manager => !manager.IsDeleted
+                    && manager.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                    && manager.Id != managerVM.Id
+                );
+            }
+
+            if (existing.Any())
+            {
+                //Is there already a manager with the same name?
+                if (existing.Where(manager => managerVM.Name == manager.Name).Any())
+                {
+                    ModelState.AddModelError("ManagerWithSameName", "[Name]: A manager with the same name exists already.");
+                    ToastrErrors.Add("Name already in use", "There is already a manager with the same name, names have to be unique.");
+                }
+            }
         }
     }
 }

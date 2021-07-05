@@ -13,7 +13,7 @@ namespace TTRBookings.Infrastructure.Data
             //using var context = new TTRBookingsContext();
             context.Database.EnsureDeleted();
             context.Database.Migrate();
-            
+
             if (!context.Houses.Any())
             {
                 House house = CreateHouse();
@@ -25,8 +25,8 @@ namespace TTRBookings.Infrastructure.Data
                 context.SaveChanges();
             }
             context.SaveChanges();
-        }     
-        
+        }
+
         private static House CreateHouse()
         {
             //--input for calculations

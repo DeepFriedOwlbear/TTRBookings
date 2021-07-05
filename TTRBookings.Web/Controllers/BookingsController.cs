@@ -14,7 +14,7 @@ namespace TTRBookings.Web.Controllers
     [Route("api/[controller]")] //< =  https://localhost:12345/api/bookings
     [ApiController]
     public class BookingsController : ControllerBase
-    {   
+    {
         private readonly ILogger<BookingsController> _logger;
         private readonly IRepository repository;
         public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
@@ -57,22 +57,20 @@ namespace TTRBookings.Web.Controllers
         public JsonResult HandleBooking(BookingDTO bookingDTO, string action)
         {
             //check if form fields are filled in
-            if(action != "delete")
+            if (action != "delete")
             {
-                CheckFormFields(bookingDTO);
-
-                //if form fields were filled correctly, check against business logic
-                if (ToastrErrors.Count == 0)
-                    CheckAgainstBusinessRules(bookingDTO);
+                CheckAgainstBusinessRules(bookingDTO);
 
                 //if form fields or business logic threw errors, return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
+                {
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+                }
             }
 
-            switch (action) 
+            switch (action)
             {
-                case "create": 
+                case "create":
                     return CreateBooking(bookingDTO);
                 case "edit":
                     return EditBooking(bookingDTO);
@@ -149,29 +147,25 @@ namespace TTRBookings.Web.Controllers
         //--Business Logic checks-------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------------
 
-        //Checks if form fields are filled in
-        private void CheckFormFields(BookingDTO bookingDTO)
+        private void CheckAgainstBusinessRules(BookingDTO bookingDTO)
         {
-            if (bookingDTO.StaffId == null || bookingDTO.RoomId == null
-                || bookingDTO.TierRate == null || bookingDTO.TierRate == ""
-                || bookingDTO.TimeStart == null || bookingDTO.TimeStart == ""
-                || bookingDTO.TimeEnd == null || bookingDTO.TimeEnd == "")
+            //Checks if form fields are filled in
+            if (string.IsNullOrWhiteSpace(bookingDTO.TierRate) || string.IsNullOrWhiteSpace(bookingDTO.TimeStart) || string.IsNullOrWhiteSpace(bookingDTO.TimeEnd))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
+                return;
             }
-        }
 
-        //Checks the "business rules" of a booking
-        private void CheckAgainstBusinessRules(BookingDTO bookingDTO)
-        {
             //Assign BookingVM values
-            BookingVM bookingVM = new BookingVM();
-            bookingVM.Id = bookingDTO.BookingId;
-            bookingVM.Staff = new StaffVM() { Id = bookingDTO.StaffId };
-            bookingVM.Tier = new TierVM() { Rate = Decimal.Parse(bookingDTO.TierRate) };
-            bookingVM.Room = new RoomVM() { Id = bookingDTO.RoomId };
-            bookingVM.TimeSlot = new TimeSlotVM() { Start = DateTime.Parse(bookingDTO.TimeStart), End = DateTime.Parse(bookingDTO.TimeEnd) };
+            BookingVM bookingVM = new BookingVM
+            {
+                Id = bookingDTO.BookingId,
+                Staff = new StaffVM() { Id = bookingDTO.StaffId },
+                Tier = new TierVM() { Rate = Decimal.Parse(bookingDTO.TierRate) },
+                Room = new RoomVM() { Id = bookingDTO.RoomId },
+                TimeSlot = new TimeSlotVM() { Start = DateTime.Parse(bookingDTO.TimeStart), End = DateTime.Parse(bookingDTO.TimeEnd) }
+            };
 
             //Bookings can't be made in the past.
             if (bookingVM.TimeSlot.Start < DateTime.Now)
@@ -194,7 +188,7 @@ namespace TTRBookings.Web.Controllers
 
             //Load all bookings where the HouseId, RoomId and StaffId matches
             IList<Booking> existing = new List<Booking>();
-            if(bookingVM.Id != Guid.Empty)
+            if (bookingVM.Id != Guid.Empty)
             {
                 existing = repository.ListWithIncludes<Booking>(
                     //the filter
@@ -206,7 +200,7 @@ namespace TTRBookings.Web.Controllers
                     ,
                     //the includes
                     _ => _.Room, _ => _.Staff, _ => _.TimeSlot);
-            } 
+            }
             else
             {
                 existing = repository.ListWithIncludes<Booking>(

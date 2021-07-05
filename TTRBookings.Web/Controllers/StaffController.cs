@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
@@ -13,7 +14,7 @@ namespace TTRBookings.Web.Controllers
     [Route("api/[controller]")] //< =  https://localhost:12345/api/staff
     [ApiController]
     public class StaffController : ControllerBase
-    {   
+    {
         private readonly ILogger<StaffController> _logger;
         private readonly IRepository repository;
         public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
@@ -55,18 +56,15 @@ namespace TTRBookings.Web.Controllers
 
         public JsonResult HandleStaff(StaffDTO staffDTO, string action)
         {
-            //check if form fields are filled in
             if (action != "delete")
             {
-                CheckFormFields(staffDTO);
+                CheckAgainstBusinessRules(staffDTO);
 
-                //if form fields were filled correctly, check against business logic
-                if (ToastrErrors.Count == 0)
-                    CheckAgainstBusinessRules(staffDTO);
-
-                //if form fields or business logic threw errors, return a failed success state and toastr errors
+                //if business logic threw errors return a failed success state and toastr errors
                 if (ToastrErrors.Count > 0)
+                {
                     return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+                }
             }
 
             switch (action)
@@ -87,8 +85,10 @@ namespace TTRBookings.Web.Controllers
         public JsonResult CreateStaff(StaffDTO staffDTO)
         {
             //assign staffDTO values to staff
-            Staff staff = new Staff(staffDTO.StaffName);
-            staff.HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"));
+            Staff staff = new Staff(staffDTO.StaffName)
+            {
+                HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
+            };
 
             return new JsonResult(new { Success = repository.CreateEntry(staff) });
         }
@@ -120,24 +120,50 @@ namespace TTRBookings.Web.Controllers
         //--Business Logic checks-------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------------
 
-        private void CheckFormFields(StaffDTO staffDTO)
+        private void CheckAgainstBusinessRules(StaffDTO staffDTO)
         {
-            if (staffDTO.StaffName == null || staffDTO.StaffName == "")
+            //Check if form fields are filled in
+            if (string.IsNullOrWhiteSpace(staffDTO.StaffName))
             {
                 ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
                 ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
+                return;
             }
-        }
 
-        //Checks the "business rules" of a staff
-        private void CheckAgainstBusinessRules(StaffDTO staffDTO)
-        {
             //Assign staffVM values
-            StaffVM staffVM = new StaffVM();
-            staffVM.Id = staffDTO.StaffId;
-            staffVM.Name = staffDTO.StaffName;
+            StaffVM staffVM = new StaffVM
+            {
+                Id = staffDTO.StaffId,
+                Name = staffDTO.StaffName
+            };
 
-            //TODO - Need to add Business Logic to staffs
+            //Load all staff members where the HouseId matches
+            IList<Staff> existing = new List<Staff>();
+            if (staffVM.Id == Guid.Empty)
+            {
+                existing = repository.ListWithIncludes<Staff>(
+                    staff => !staff.IsDeleted
+                    && staff.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                );
+            }
+            else
+            {
+                existing = repository.ListWithIncludes<Staff>(
+                    staff => !staff.IsDeleted
+                    && staff.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                    && staff.Id != staffVM.Id
+                );
+            }
+
+            if (existing.Any())
+            {
+                //Is there already a staff member with the same name?
+                if (existing.Where(staff => staffVM.Name == staff.Name).Any())
+                {
+                    ModelState.AddModelError("StaffWithSameName", "[Name]: A staff member with the same name exists already.");
+                    ToastrErrors.Add("Name already in use", "There is already a staff member with the same name, names have to be unique.");
+                }
+            }
         }
     }
 }

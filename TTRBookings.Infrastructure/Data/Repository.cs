@@ -82,7 +82,7 @@ namespace TTRBookings.Infrastructure.Data
 
         public IList<TEntity> List<TEntity>()
             where TEntity : BaseEntity
-            => ListWithIncludes<TEntity>(_=>true);
+            => ListWithIncludes<TEntity>(_ => true);
 
         public IList<TEntity> ListWithIncludes<TEntity>(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
             where TEntity : BaseEntity

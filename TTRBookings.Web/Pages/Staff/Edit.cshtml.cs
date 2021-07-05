@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
@@ -11,7 +11,7 @@ namespace TTRBookings.Web.Pages.Staff
     public class EditModel : PageModel
     {
         private readonly IRepository repository;
-        
+
         [BindProperty]
         public StaffVM StaffVM { get; set; }
         public IList<Booking> Bookings { get; set; } = new List<Booking>();
@@ -27,11 +27,6 @@ namespace TTRBookings.Web.Pages.Staff
                 id,
                 _ => _.Tiers);
             StaffVM = StaffVM.Create(staff);
-
-            //load bookings for the staff
-            Bookings = repository.ListWithIncludes<Booking>(
-                _ => _.Staff.Id == staff.Id,
-                _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot);
         }
     }
 }

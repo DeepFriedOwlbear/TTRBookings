@@ -25,10 +25,13 @@ namespace TTRBookings.Core.Entities
 
         public Staff CreateStaff(string name)
         {
-            Staff staff = new Staff(name);
-            staff.HouseId = Id;
+            Staff staff = new Staff(name)
+            {
+                HouseId = Id
+            };
+
             Staff.Add(staff);
-            
+
             return staff;
         }
 
