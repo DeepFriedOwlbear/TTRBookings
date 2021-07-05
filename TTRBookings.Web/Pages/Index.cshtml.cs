@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TTRBookings.Core.Entities;
@@ -14,8 +12,6 @@ namespace TTRBookings.Web.Pages
     {
         private readonly IRepository repository;
         public List<House> Houses { get; } = new List<House> { };
-
-        public Guid StaffId { get; set; }
 
         public IndexModel(IRepository repository)
         {
