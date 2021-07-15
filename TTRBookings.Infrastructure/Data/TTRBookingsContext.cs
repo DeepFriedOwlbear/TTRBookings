@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TTRBookings.Core.Entities;
+using TTRBookings.Authentication.Data;
 
 namespace TTRBookings.Infrastructure.Data
 {
@@ -17,6 +18,7 @@ namespace TTRBookings.Infrastructure.Data
         public DbSet<Tier> Tiers { get; set; }
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public TTRBookingsContext(DbContextOptions<TTRBookingsContext> options) : base(options) { }
 

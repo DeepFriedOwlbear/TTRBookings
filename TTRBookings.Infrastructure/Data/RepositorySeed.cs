@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using TTRBookings.Authentication.Data;
 using TTRBookings.Core.Entities;
 
 namespace TTRBookings.Infrastructure.Data
@@ -24,6 +25,10 @@ namespace TTRBookings.Infrastructure.Data
 
                 context.SaveChanges();
             }
+
+            context.Users.Add(new User("TestUser", "123123"));
+            context.Users.Add(new User("Admin", "123123"));
+
             context.SaveChanges();
         }
 
