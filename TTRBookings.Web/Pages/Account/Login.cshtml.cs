@@ -1,14 +1,15 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using TTRBookings.Authentication.Data;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Threading.Tasks;
+using TTRBookings.Authentication;
+using TTRBookings.Authentication.Data;
 using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Account
@@ -46,9 +47,9 @@ namespace TTRBookings.Web.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                IList<User> users = repository.List<User>(user => user.Name == Input.Name && user.Password == Input.Password);
+                IList<User> users = repository.List<User>(user => user.Name == Input.Name);
 
-                if (users.Count == 0)
+                if (users.Count == 0 || !Encryption.VerifyPassword(Input.Password, users.FirstOrDefault().Password))
                 {
                     ModelState.AddModelError(string.Empty, "Invalid Email or Password");
                     return Page();
@@ -58,7 +59,7 @@ namespace TTRBookings.Web.Pages.Account
                 {
                     new Claim(ClaimTypes.NameIdentifier, users.FirstOrDefault().Id.ToString()),
                     new Claim(ClaimTypes.Name, users.FirstOrDefault().Name),
-                    //new Claim("UserDefined", "whatever"),
+                    //new Claim("UserDefined", "whatever") // <-- Can be used to create custom Claims
                 };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

@@ -26,8 +26,8 @@ namespace TTRBookings.Infrastructure.Data
                 context.SaveChanges();
             }
 
-            context.Users.Add(new User("TestUser", "123123"));
-            context.Users.Add(new User("Admin", "123123"));
+            context.Users.Add(User.Create("TestUser", "123123"));
+            context.Users.Add(User.Create("Admin", "123123"));
 
             context.SaveChanges();
         }

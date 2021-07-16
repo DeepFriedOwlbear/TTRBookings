@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TTRBookings.Authentication.Data;
-using System.Linq;
-using TTRBookings.Core.Interfaces;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using TTRBookings.Authentication.Data;
+using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Account
 {

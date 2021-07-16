@@ -1,12 +1,11 @@
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using TTRBookings.Authentication.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using TTRBookings.Authentication.Data;
 using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Account
@@ -30,6 +29,7 @@ namespace TTRBookings.Web.Pages.Account
         public class InputModel
         {
             [Required]
+            [StringLength(30, ErrorMessage = "The {0} must be between {2} and {1} characters long.", MinimumLength = 2)]
             [DataType(DataType.Text)]
             [Display(Name = "Username")]
             public string Name { get; set; }
@@ -61,15 +61,15 @@ namespace TTRBookings.Web.Pages.Account
 
                 if (users.Count != 0)
                 {
-                    ModelState.AddModelError(string.Empty, Input.Name + " already exists.");
+                    ModelState.AddModelError(string.Empty, "Username is already in use.");
                 }
                 else
                 {
-                    User user = new User(Input.Name, Input.Password);
+                    User user = Authentication.Data.User.Create(Input.Name, Input.Password);
 
                     //save to DB
-                    repository.CreateEntry(user); 
-                    
+                    repository.CreateEntry(user);
+
                     return RedirectToPage("RegisterConfirmation", new { name = Input.Name });
                 }
             }

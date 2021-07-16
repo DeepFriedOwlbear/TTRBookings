@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TTRBookings.Core.Entities;
 using TTRBookings.Authentication.Data;
+using TTRBookings.Core.Entities;
 
 namespace TTRBookings.Infrastructure.Data
 {
