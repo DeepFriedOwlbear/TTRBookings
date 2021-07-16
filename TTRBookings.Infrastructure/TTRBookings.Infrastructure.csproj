@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TTRBookings.Authentication\TTRBookings.Authentication.csproj" />
     <ProjectReference Include="..\TTRBookings.Core\TTRBookings.Core.csproj" />
   </ItemGroup>
 

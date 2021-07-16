@@ -27,25 +27,33 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-page="/Index">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-page="/Bookings/Index">Bookings</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-page="/Staff/Index">Staff</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-page="/Managers/Index">Managers</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-page="/Rooms/Index">Rooms</a>
-                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Bookings/Index">Bookings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Staff/Index">Staff</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Managers/Index">Managers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Rooms/Index">Rooms</a>
+                        </li>
+                    }
                 </ul>
 
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <vc:houses></vc:houses>
-                    </li>
-                </ul>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <partial name="_LogoutPartial.cshtml" />
+                    <vc:houses></vc:houses>
+                }
+                else
+                {
+                    <partial name="_LoginPartial.cshtml" />
+                }
+
             </div>
 
         </nav>

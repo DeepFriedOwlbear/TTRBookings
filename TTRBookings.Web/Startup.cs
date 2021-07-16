@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,25 @@ namespace TTRBookings.Web
             });
             //Session Storage End
 
+            //AddAuthentication is used for the User Login.
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie("Cookies", options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                    options.ReturnUrlParameter = "ReturnUrl";
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                // Register other policies here
+            });
+
             services.AddMvc();
             services.AddRazorPages();
 
@@ -63,6 +84,8 @@ namespace TTRBookings.Web
 
             app.UseRouting();
 
+            //Authentication and Authorization used for User Login.
+            app.UseAuthentication();
             app.UseAuthorization();
 
             //Session Storage
