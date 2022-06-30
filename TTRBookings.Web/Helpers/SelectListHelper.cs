@@ -2,31 +2,30 @@
 using System;
 using System.Collections.Generic;
 
-namespace TTRBookings.Web.Helpers
+namespace TTRBookings.Web.Helpers;
+
+public static class SelectListHelper
 {
-    public static class SelectListHelper
+    public static List<SelectListItem> PopulateList<TEntity>(IEnumerable<TEntity> items, Func<TEntity, string> textSelector)
+        where TEntity : Core.BaseEntity
     {
-        public static List<SelectListItem> PopulateList<TEntity>(IEnumerable<TEntity> items, Func<TEntity, string> textSelector)
-            where TEntity : Core.BaseEntity
-        {
-            return PopulateList(items, textSelector, null);
-        }
+        return PopulateList(items, textSelector, null);
+    }
 
-        public static List<SelectListItem> PopulateList<TEntity>(IEnumerable<TEntity> items, Func<TEntity, string> textSelector, Guid? selectedId)
-            where TEntity : Core.BaseEntity
-        {
-            List<SelectListItem> populatedList = new List<SelectListItem>();
+    public static List<SelectListItem> PopulateList<TEntity>(IEnumerable<TEntity> items, Func<TEntity, string> textSelector, Guid? selectedId)
+        where TEntity : Core.BaseEntity
+    {
+        List<SelectListItem> populatedList = new List<SelectListItem>();
 
-            foreach (var item in items)
+        foreach (var item in items)
+        {
+            populatedList.Add(new SelectListItem
             {
-                populatedList.Add(new SelectListItem
-                {
-                    Value = item.Id.ToString(),
-                    Text = textSelector(item),
-                    Selected = item.Id == selectedId
-                });
-            }
-            return populatedList;
+                Value = item.Id.ToString(),
+                Text = textSelector(item),
+                Selected = item.Id == selectedId
+            });
         }
+        return populatedList;
     }
 }

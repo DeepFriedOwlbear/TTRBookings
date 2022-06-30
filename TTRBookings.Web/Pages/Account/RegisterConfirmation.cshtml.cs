@@ -6,37 +6,36 @@ using System.Threading.Tasks;
 using TTRBookings.Authentication.Data;
 using TTRBookings.Core.Interfaces;
 
-namespace TTRBookings.Web.Pages.Account
+namespace TTRBookings.Web.Pages.Account;
+
+[AllowAnonymous]
+public class RegisterConfirmationModel : PageModel
 {
-    [AllowAnonymous]
-    public class RegisterConfirmationModel : PageModel
+    private readonly IRepository repository;
+
+    public RegisterConfirmationModel(IRepository repository)
     {
-        private readonly IRepository repository;
+        this.repository = repository;
+    }
 
-        public RegisterConfirmationModel(IRepository repository)
+    public string Name { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(string name)
+    {
+        if (name == null)
         {
-            this.repository = repository;
+            return RedirectToPage("/Index");
         }
 
-        public string Name { get; set; }
+        IList<User> users = repository.List<User>(user => user.Name == name);
 
-        public async Task<IActionResult> OnGetAsync(string name)
+        if (users.Count == 0)
         {
-            if (name == null)
-            {
-                return RedirectToPage("/Index");
-            }
-
-            IList<User> users = repository.List<User>(user => user.Name == name);
-
-            if (users.Count == 0)
-            {
-                return NotFound($"Unable to load user with email '{name}'.");
-            }
-
-            Name = name;
-
-            return Page();
+            return NotFound($"Unable to load user with email '{name}'.");
         }
+
+        Name = name;
+
+        return Page();
     }
 }

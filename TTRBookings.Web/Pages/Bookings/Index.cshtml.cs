@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 
-namespace TTRBookings.Web.Pages.Bookings
+namespace TTRBookings.Web.Pages.Bookings;
+
+//https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/da1?view=aspnetcore-5.0
+
+public class IndexModel : PageModel
 {
-    //https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/da1?view=aspnetcore-5.0
+    private readonly IRepository repository;
 
-    public class IndexModel : PageModel
+    public IList<Booking> Bookings { get; set; } = new List<Booking>();
+
+    public IndexModel(IRepository repository)
     {
-        private readonly IRepository repository;
+        this.repository = repository;
+    }
 
-        public IList<Booking> Bookings { get; set; } = new List<Booking>();
-
-        public IndexModel(IRepository repository)
-        {
-            this.repository = repository;
-        }
-
-        public void OnGet()
-        {
-            //Bookings = repository.ListWithIncludes<Booking>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")), _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot);
-        }
+    public void OnGet()
+    {
+        //Bookings = repository.ListWithIncludes<Booking>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")), _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot);
     }
 }

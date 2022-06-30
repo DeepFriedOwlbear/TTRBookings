@@ -6,27 +6,25 @@ using System.Linq;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
 
-namespace TTRBookings.Web.Pages
+namespace TTRBookings.Web.Pages;
+
+[AllowAnonymous]
+public class IndexModel : PageModel
 {
+    private readonly IRepository repository;
+    public List<House> Houses { get; } = new List<House> { };
 
-    [AllowAnonymous]
-    public class IndexModel : PageModel
+    public IndexModel(IRepository repository)
     {
-        private readonly IRepository repository;
-        public List<House> Houses { get; } = new List<House> { };
+        this.repository = repository;
+    }
 
-        public IndexModel(IRepository repository)
+    public void OnGet()
+    {
+        //Fetch the firstOrDefault houseId from the DB
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString("HouseId")))
         {
-            this.repository = repository;
-        }
-
-        public void OnGet()
-        {
-            //Fetch the firstOrDefault houseId from the DB
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("HouseId")))
-            {
-                HttpContext.Session.SetString("HouseId", repository.List<House>().FirstOrDefault().Id.ToString());
-            }
+            HttpContext.Session.SetString("HouseId", repository.List<House>().FirstOrDefault().Id.ToString());
         }
     }
 }

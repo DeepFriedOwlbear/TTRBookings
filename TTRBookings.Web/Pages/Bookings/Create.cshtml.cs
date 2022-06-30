@@ -9,44 +9,43 @@ using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Helpers;
 using TTRBookings.Web.Models;
 
-namespace TTRBookings.Web.Pages.Bookings
+namespace TTRBookings.Web.Pages.Bookings;
+
+public class CreateModel : PageModel
 {
-    public class CreateModel : PageModel
+    private readonly IRepository repository;
+
+    public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
+
+    public List<SelectListItem> RoomList { get; } = new List<SelectListItem> { };
+    public List<SelectListItem> StaffList { get; } = new List<SelectListItem> { };
+
+    [BindProperty] public BookingVM BookingVM { get; set; }
+
+    public CreateModel(IRepository repository)
     {
-        private readonly IRepository repository;
+        this.repository = repository;
+    }
 
-        public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
+    public void OnGet()
+    {
+        //populate drop-down lists
+        PopulateLists(null);
+    }
 
-        public List<SelectListItem> RoomList { get; } = new List<SelectListItem> { };
-        public List<SelectListItem> StaffList { get; } = new List<SelectListItem> { };
+    private void PopulateLists(Guid? bookingId)
+    {
+        //Load Lists before returning the Page
+        RoomList.AddRange(SelectListHelper.PopulateList<Room>(
+            repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+            e => e.Name,
+            bookingId
+        ));
 
-        [BindProperty] public BookingVM BookingVM { get; set; }
-
-        public CreateModel(IRepository repository)
-        {
-            this.repository = repository;
-        }
-
-        public void OnGet()
-        {
-            //populate drop-down lists
-            PopulateLists(null);
-        }
-
-        private void PopulateLists(Guid? bookingId)
-        {
-            //Load Lists before returning the Page
-            RoomList.AddRange(SelectListHelper.PopulateList<Room>(
-                repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                e => e.Name,
-                bookingId
-            ));
-
-            StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
-                repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
-                e => e.Name,
-                bookingId
-            ));
-        }
+        StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
+            repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+            e => e.Name,
+            bookingId
+        ));
     }
 }

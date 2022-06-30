@@ -3,17 +3,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.Models;
 
-namespace TTRBookings.Web.Pages.Managers
+namespace TTRBookings.Web.Pages.Managers;
+
+public class CreateModel : PageModel
 {
-    public class CreateModel : PageModel
+    private readonly IRepository repository;
+
+    [BindProperty] public ManagerVM ManagerVM { get; set; }
+
+    public CreateModel(IRepository repository)
     {
-        private readonly IRepository repository;
-
-        [BindProperty] public ManagerVM ManagerVM { get; set; }
-
-        public CreateModel(IRepository repository)
-        {
-            this.repository = repository;
-        }
+        this.repository = repository;
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace TTRBookings.Core
+namespace TTRBookings.Core;
+
+public class BaseEntity
 {
-    public class BaseEntity
-    {
-        public Guid Id { get; set; }
-        public bool IsDeleted { get; set; }
-    }
+    public Guid Id { get; set; }
+    public bool IsDeleted { get; set; }
 }

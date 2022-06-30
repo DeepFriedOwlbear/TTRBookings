@@ -1,21 +1,20 @@
 ﻿using TTRBookings.Core;
 
-namespace TTRBookings.Authentication.Data
+namespace TTRBookings.Authentication.Data;
+
+public class User : BaseEntity
 {
-    public class User : BaseEntity
+    public string Name { get; set; }
+    public string Password { get; set; }
+
+    private User(string name, string password)
     {
-        public string Name { get; set; }
-        public string Password { get; set; }
+        Name = name;
+        Password = password;
+    }
 
-        private User(string name, string password)
-        {
-            Name = name;
-            Password = password;
-        }
-
-        public static User Create(string name, string password)
-        {
-            return new User(name, Encryption.HashPassword(password));
-        }
+    public static User Create(string name, string password)
+    {
+        return new User(name, Encryption.HashPassword(password));
     }
 }

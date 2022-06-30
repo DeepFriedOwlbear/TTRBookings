@@ -5,16 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 
-namespace TTRBookings.Web.Pages.Account
+namespace TTRBookings.Web.Pages.Account;
+
+[AllowAnonymous]
+public class LogoutModel : PageModel
 {
-    [AllowAnonymous]
-    public class LogoutModel : PageModel
+    public async Task<IActionResult> OnGet(string returnUrl = null)
     {
-        public async Task<IActionResult> OnGet(string returnUrl = null)
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToPage("/Index");
-        }
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToPage("/Index");
     }
 }
 
