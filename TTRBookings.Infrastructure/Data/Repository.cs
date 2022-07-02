@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -20,7 +21,7 @@ public class Repository : IRepository
         this.logger = logger;
     }
 
-    public bool CreateEntry<TEntity>(TEntity entry)
+    public bool AddAndSaveChanges<TEntity>(TEntity entry)
         where TEntity : BaseEntity
     {
         try
@@ -35,45 +36,35 @@ public class Repository : IRepository
         }
     }
 
-    public TEntity ReadEntry<TEntity>(Guid id)
+    public TEntity UpdateAndSaveChanges<TEntity>(TEntity entry)
         where TEntity : BaseEntity
     {
-        //load entry from the DB where id matches
-        return context.Set<TEntity>()
-            .Where(e => !e.IsDeleted)
-            .FirstOrDefault(e => e.Id == id);
-    }
-
-    public TEntity UpdateEntry<TEntity>(TEntity entry)
-        where TEntity : BaseEntity
-    {
-        //load entry from the DB
-        //update entry
-        //savechanges
         context.Update(entry);
         context.SaveChanges();
         return entry;
     }
 
-    public bool DeleteEntry<TEntity>(TEntity entry)
+    public bool ArchiveAndSaveChanges<TEntity>(TEntity entry)
         where TEntity : BaseEntity
     {
-        //find entry in the DB
-        //delete entry
-        //savechanges
-
         try
         {
-            entry.IsDeleted = true;
-            UpdateEntry(entry);
+            entry.IsArchived = true;
+            UpdateAndSaveChanges(entry);
             return true;
         }
         catch
         {
             return false;
         }
-        //context.Remove(entry);
-        //context.SaveChanges();
+    }
+
+    public TEntity GetById<TEntity>(Guid id)
+        where TEntity : BaseEntity
+    {
+        return context.Set<TEntity>()
+                      .Where(e => !e.IsArchived)
+                      .FirstOrDefault(e => e.Id == id);
     }
 
     public IList<TEntity> List<TEntity>(Expression<Func<TEntity, bool>> predicate)
@@ -89,7 +80,7 @@ public class Repository : IRepository
     {
         return context.Set<TEntity>()
             .AddIncludes(includes)
-            .Where(e => !e.IsDeleted)
+            .Where(e => !e.IsArchived)
             .Where(predicate)
             .ToList();
     }
@@ -98,7 +89,7 @@ public class Repository : IRepository
     {
         return context.Set<TEntity>()
             .AddIncludes(includes)
-            .Where(e => !e.IsDeleted)
+            .Where(e => !e.IsArchived)
             .FirstOrDefault(e => e.Id == id);
     }
 }

@@ -1,170 +1,114 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
+using TTRBookings.Web.DTOs;
 using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Controllers;
 
-[Route("api/[controller]")] //< =  https://localhost:12345/api/managers
+[Route("api/[controller]")]
 [ApiController]
 public class ManagersController : ControllerBase
 {
     private readonly ILogger<ManagersController> _logger;
-    private readonly IRepository repository;
+    private readonly INewRepository<Manager> _managers;
+
     public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
 
-    public ManagersController(ILogger<ManagersController> logger, IRepository repository)
+    public ManagersController(
+        ILogger<ManagersController> logger, 
+        INewRepository<Manager> managers)
     {
         _logger = logger;
-        this.repository = repository;
-    }
-
-    //------------------------------------------------------------------------------------------------------------
-    //--API Calls-------------------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------
-
-    [HttpPost]          //starting a NESTED route WITHOUT a '/' as initial character will mean append to current build-up route
-    [Route("create")]   //< =  https://localhost:12345/api/managers/delete
-    public IActionResult Create(ManagerDTO managerDTO)
-    {
-        return HandleManager(managerDTO, "create");
+        _managers = managers;
     }
 
     [HttpPost]
-    [Route("edit")]
-    public IActionResult Edit(ManagerDTO managerDTO)
+    [Route("create")]
+    public async Task<IActionResult> Create(ManagerDTO managerDTO)
     {
-        return HandleManager(managerDTO, "edit");
-    }
+        await CheckAgainstBusinessRules(managerDTO);
 
-    [HttpPost]
-    [Route("delete")]
-    public IActionResult Delete(ManagerDTO managerDTO)
-    {
-        return HandleManager(managerDTO, "delete");
-    }
-
-    //------------------------------------------------------------------------------------------------------------
-    //--Manager Methods-------------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------
-
-    public JsonResult HandleManager(ManagerDTO managerDTO, string action)
-    {
-        if (action != "delete")
+        if (ToastrErrors.Count > 0)
         {
-            CheckAgainstBusinessRules(managerDTO);
-
-            //if business logic threw errors return a failed success state and toastr errors
-            if (ToastrErrors.Count > 0)
-            {
-                return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
-            }
+            return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
         }
 
-        switch (action)
-        {
-            case "create":
-                return CreateManager(managerDTO);
-            case "edit":
-                return EditManager(managerDTO);
-            case "delete":
-                return DeleteManager(managerDTO);
-            default:
-                ModelState.AddModelError("ErrorOccured", "An error occured while performing this operation.");
-                ToastrErrors.Add("An error occured", "An error occured while performing this operation.");
-                return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
-        }
-    }
-
-    public JsonResult CreateManager(ManagerDTO managerDTO)
-    {
-        //assign managerDTO values to manager
-        Manager manager = new Manager(managerDTO.ManagerName)
+        Manager manager = new Manager(managerDTO.Name)
         {
             HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
         };
 
-        return new JsonResult(new { Success = repository.CreateEntry(manager) });
+        return new JsonResult(
+            new { 
+                Success = await _managers.AddAsync(manager) 
+            });
     }
 
-    public JsonResult EditManager(ManagerDTO managerDTO)
+    [HttpPost]
+    [Route("edit")]
+    public async Task<IActionResult> Edit(ManagerDTO managerDTO)
     {
-        Manager manager = repository.ReadEntry<Manager>(managerDTO.ManagerId);
-        manager.Name = managerDTO.ManagerName;
+        await CheckAgainstBusinessRules(managerDTO);
 
-        return new JsonResult(new { Success = repository.UpdateEntry(manager) });
+        if (ToastrErrors.Count > 0)
+        {
+            return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+        }
+
+        Manager manager = await _managers.GetByIdAsync(managerDTO.Id);
+        manager.Name = managerDTO.Name;
+
+        return new JsonResult(
+            new { 
+                Success = await _managers.UpdateAsync(manager) 
+            });
     }
 
-    public JsonResult DeleteManager(ManagerDTO managerDTO)
+    [HttpPost]
+    [Route("delete")]
+    public async Task<IActionResult> Delete(ManagerDTO managerDTO)
     {
-        return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Manager>(managerDTO.ManagerId)) });
+        Manager manager = await _managers.GetByIdAsync(managerDTO.Id);
+
+        return new JsonResult(
+            new {
+                Success = await _managers.DeleteAsync(manager)
+            });
     }
 
-    //------------------------------------------------------------------------------------------------------------
-    //--Data Transfer Object--------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------
-
-    public sealed class ManagerDTO
+    private async Task CheckAgainstBusinessRules(ManagerDTO managerDTO)
     {
-        public Guid ManagerId { get; set; }
-        public string ManagerName { get; set; }
-    }
-
-    //------------------------------------------------------------------------------------------------------------
-    //--Business Logic checks-------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------
-
-    private void CheckAgainstBusinessRules(ManagerDTO managerDTO)
-    {
-        //Check if form fields are filled in
-        if (string.IsNullOrWhiteSpace(managerDTO.ManagerName))
+        // Check if form fields are filled in
+        if (string.IsNullOrWhiteSpace(managerDTO.Name))
         {
             ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
             ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
             return;
         }
 
-        //Assign ManagerVM values
-        ManagerVM managerVM = new ManagerVM
-        {
-            Id = managerDTO.ManagerId,
-            Name = managerDTO.ManagerName
-        };
+        // Load all managers where the HouseId matches
+        var existingQuery = _managers.Where(x => x.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                                              && x.IsArchived == false);
 
-        //Load all managers where the HouseId matches
-        IList<Manager> existing = new List<Manager>();
-        if (managerVM.Id == Guid.Empty)
-        {
-            existing = repository.ListWithIncludes<Manager>(
-                //the filter
-                manager => !manager.IsDeleted
-                && manager.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
-            );
-        }
-        else
-        {
-            existing = repository.ListWithIncludes<Manager>(
-                //the filter
-                manager => !manager.IsDeleted
-                && manager.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
-                && manager.Id != managerVM.Id
-            );
-        }
+        // If the Id is not empty, select all managers that aren't the provided Manager
+        if (managerDTO.Id != Guid.Empty)
+            existingQuery.Where(x => x.Id != managerDTO.Id);
 
-        if (existing.Any())
+        // Is there already a manager with the same name?
+        if (existingQuery.Where(x => x.Name == managerDTO.Name).Any())
         {
-            //Is there already a manager with the same name?
-            if (existing.Where(manager => managerVM.Name == manager.Name).Any())
-            {
-                ModelState.AddModelError("ManagerWithSameName", "[Name]: A manager with the same name exists already.");
-                ToastrErrors.Add("Name already in use", "There is already a manager with the same name, names have to be unique.");
-            }
+            ModelState.AddModelError("ManagerWithSameName", "[Name]: A manager with the same name exists already.");
+            ToastrErrors.Add("Name already in use", "There is already a manager with the same name, names have to be unique.");
         }
     }
 }

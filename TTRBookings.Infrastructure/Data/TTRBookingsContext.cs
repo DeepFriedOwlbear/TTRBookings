@@ -31,23 +31,4 @@ public class TTRBookingsContext : DbContext
             .WithOne()
             .HasForeignKey(o => o.HouseId);
     }
-
-    //public override int SaveChanges()
-    //{
-    //    //foreach all the changed entities.
-    //    //check all entities marked for deletion, and set isdeleted flag.
-    //    //change to modified instead of delete flag.
-
-    //    //foreach(var entry in this.ChangeTracker.Entries())
-    //    //{
-    //    //    if(entry.State == EntityState.Deleted)
-    //    //    {
-    //    //        //set isdeletedflag
-    //    //        //entry.CurrentValues.
-    //    //        //entry.State = EntityState.Modified;
-    //    //    }
-    //    //}
-
-    //    return base.SaveChanges();
-    //}
 }

@@ -21,7 +21,7 @@ public class EditModel : PageModel
 
     public void OnGet(Guid id)
     {
-        var room = repository.ReadEntry<Room>(id);
+        var room = repository.GetById<Room>(id);
 
         //convert booking to bookingvm here;
         RoomVM = RoomVM.Create(room);

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TTRBookings.Core.Interfaces;
 using TTRBookings.Infrastructure.Data;
+using TTRBookings.Infrastructure.Data.Interfaces;
 
 namespace TTRBookings.Web;
 
@@ -66,6 +67,7 @@ public class Startup
            opt.UseInMemoryDatabase("TTRBookingsContext"));
 
         services.AddScoped<IRepository, Repository>();
+        services.AddScoped(typeof(INewRepository<>), typeof(NewRepository<>));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

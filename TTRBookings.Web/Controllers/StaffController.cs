@@ -5,8 +5,11 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
 using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
+using TTRBookings.Web.DTOs;
 using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Controllers;
@@ -16,153 +19,95 @@ namespace TTRBookings.Web.Controllers;
 public class StaffController : ControllerBase
 {
     private readonly ILogger<StaffController> _logger;
-    private readonly IRepository repository;
+    private readonly INewRepository<Staff> _staff;
     public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
 
-    public StaffController(ILogger<StaffController> logger, IRepository repository)
+    public StaffController(
+        ILogger<StaffController> logger, 
+        INewRepository<Staff> staff)
     {
         _logger = logger;
-        this.repository = repository;
-    }
-
-    //------------------------------------------------------------------------------------------------------------
-    //--API Calls-------------------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------
-
-    [HttpPost]          //starting a NESTED route WITHOUT a '/' as initial character will mean append to current build-up route
-    [Route("create")]   //< =  https://localhost:12345/api/staff/delete
-    public IActionResult Create(StaffDTO staffDTO)
-    {
-        return HandleStaff(staffDTO, "create");
+        _staff=staff;
     }
 
     [HttpPost]
-    [Route("edit")]
-    public IActionResult Edit(StaffDTO staffDTO)
+    [Route("create")]
+    public async Task<IActionResult> Create(StaffDTO staffDTO)
     {
-        return HandleStaff(staffDTO, "edit");
-    }
+        await CheckAgainstBusinessRules(staffDTO);
 
-    [HttpPost]
-    [Route("delete")]
-    public IActionResult Delete(StaffDTO staffDTO)
-    {
-        return HandleStaff(staffDTO, "delete");
-    }
-
-    //------------------------------------------------------------------------------------------------------------
-    //--staff Methods----------------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------
-
-    public JsonResult HandleStaff(StaffDTO staffDTO, string action)
-    {
-        if (action != "delete")
+        if (ToastrErrors.Count > 0)
         {
-            CheckAgainstBusinessRules(staffDTO);
-
-            //if business logic threw errors return a failed success state and toastr errors
-            if (ToastrErrors.Count > 0)
-            {
-                return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
-            }
+            return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
         }
 
-        switch (action)
-        {
-            case "create":
-                return CreateStaff(staffDTO);
-            case "edit":
-                return EditStaff(staffDTO);
-            case "delete":
-                return DeleteStaff(staffDTO);
-            default:
-                ModelState.AddModelError("ErrorOccured", "An error occured while performing this operation.");
-                ToastrErrors.Add("An error occured", "An error occured while performing this operation.");
-                return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
-        }
-    }
-
-    public JsonResult CreateStaff(StaffDTO staffDTO)
-    {
-        //assign staffDTO values to staff
-        Staff staff = new Staff(staffDTO.StaffName)
+        Staff staff = new Staff(staffDTO.Name)
         {
             HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
         };
 
-        return new JsonResult(new { Success = repository.CreateEntry(staff) });
+        return new JsonResult(
+            new
+            {
+                Success = await _staff.AddAsync(staff)
+            });
     }
 
-    public JsonResult EditStaff(StaffDTO staffDTO)
+    public async Task<IActionResult> Edit(StaffDTO staffDTO)
     {
-        Staff staff = repository.ReadEntry<Staff>(staffDTO.StaffId);
-        staff.Name = staffDTO.StaffName;
+        await CheckAgainstBusinessRules(staffDTO);
 
-        return new JsonResult(new { Success = repository.UpdateEntry(staff) });
+        if (ToastrErrors.Count > 0)
+        {
+            return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
+        }
+
+        Staff staff = await _staff.GetByIdAsync(staffDTO.Id);
+        staff.Name = staffDTO.Name;
+
+        return new JsonResult(
+            new
+            {
+                Success = await _staff.UpdateAsync(staff)
+            });
     }
 
-    public JsonResult DeleteStaff(StaffDTO staffDTO)
+    [HttpPost]
+    [Route("delete")]
+    public async Task<IActionResult> Delete(StaffDTO staffDTO)
     {
-        return new JsonResult(new { Success = repository.DeleteEntry(repository.ReadEntry<Staff>(staffDTO.StaffId)) });
+        Staff staff = await _staff.GetByIdAsync(staffDTO.Id);
+
+        return new JsonResult(
+            new
+            {
+                Success = await _staff.DeleteAsync(staff)
+            });
     }
 
-    //------------------------------------------------------------------------------------------------------------
-    //--Data Transfer Object--------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------
-
-    public sealed class StaffDTO
-    {
-        public Guid StaffId { get; set; }
-        public string StaffName { get; set; }
-    }
-
-    //------------------------------------------------------------------------------------------------------------
-    //--Business Logic checks-------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------
-
-    private void CheckAgainstBusinessRules(StaffDTO staffDTO)
+    private async Task CheckAgainstBusinessRules(StaffDTO staffDTO)
     {
         //Check if form fields are filled in
-        if (string.IsNullOrWhiteSpace(staffDTO.StaffName))
+        if (string.IsNullOrWhiteSpace(staffDTO.Name))
         {
             ModelState.AddModelError("EmptyFormFields", "[FormFields] Some form fields are empty.");
             ToastrErrors.Add("Empty Form Fields", "Some form fields are empty.");
             return;
         }
 
-        //Assign staffVM values
-        StaffVM staffVM = new StaffVM
-        {
-            Id = staffDTO.StaffId,
-            Name = staffDTO.StaffName
-        };
+        // Load all staff where the HouseId matches
+        var existingQuery = _staff.Where(x => x.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
+                                           && x.IsArchived == false);
 
-        //Load all staff members where the HouseId matches
-        IList<Staff> existing = new List<Staff>();
-        if (staffVM.Id == Guid.Empty)
-        {
-            existing = repository.ListWithIncludes<Staff>(
-                staff => !staff.IsDeleted
-                && staff.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
-            );
-        }
-        else
-        {
-            existing = repository.ListWithIncludes<Staff>(
-                staff => !staff.IsDeleted
-                && staff.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))
-                && staff.Id != staffVM.Id
-            );
-        }
+        // If the Id is not empty, select all staff that aren't the provided room
+        if (staffDTO.Id != Guid.Empty)
+            existingQuery.Where(x => x.Id != staffDTO.Id);
 
-        if (existing.Any())
+        // Is there already a staff with the same name?
+        if (existingQuery.Where(x => x.Name == staffDTO.Name).Any())
         {
-            //Is there already a staff member with the same name?
-            if (existing.Where(staff => staffVM.Name == staff.Name).Any())
-            {
-                ModelState.AddModelError("StaffWithSameName", "[Name]: A staff member with the same name exists already.");
-                ToastrErrors.Add("Name already in use", "There is already a staff member with the same name, names have to be unique.");
-            }
+            ModelState.AddModelError("StaffWithSameName", "[Name]: A staff member with the same name exists already.");
+            ToastrErrors.Add("Name already in use", "There is already a staff member with the same name, names have to be unique.");
         }
     }
 }

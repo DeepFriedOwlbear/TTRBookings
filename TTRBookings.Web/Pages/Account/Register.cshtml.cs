@@ -68,7 +68,7 @@ public class RegisterModel : PageModel
                 User user = Authentication.Data.User.Create(Input.Name, Input.Password);
 
                 //save to DB
-                repository.CreateEntry(user);
+                repository.AddAndSaveChanges(user);
 
                 return RedirectToPage("RegisterConfirmation", new { name = Input.Name });
             }
