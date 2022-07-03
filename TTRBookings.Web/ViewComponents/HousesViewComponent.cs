@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
 using TTRBookings.Web.Helpers;
 
 namespace TTRBookings.Web.ViewComponents;
@@ -14,18 +16,19 @@ public class HousesViewComponent : ViewComponent
 {
     public List<SelectListItem> Houses { get; } = new List<SelectListItem> { };
 
-    private readonly IRepository repository;
-    public HousesViewComponent(IRepository repository)
+    private readonly IRepository<House> _houses;
+    public HousesViewComponent(IRepository<House> houses)
     {
-        this.repository = repository;
+        _houses=houses;
     }
 
-    public IViewComponentResult Invoke()
+    public async Task<IViewComponentResult> InvokeAsync()
     {
         if (string.IsNullOrEmpty(HttpContext.Session.GetString("HouseId")))
         {
             Houses.AddRange(SelectListHelper.PopulateList(
-                repository.List<House>(), e => e.Name
+                await _houses.GetAllAsync(), 
+                x => x.Name
                 ));
 
             HttpContext.Session.SetString("HouseId", Houses.FirstOrDefault().Value);
@@ -33,7 +36,8 @@ public class HousesViewComponent : ViewComponent
         else
         {
             Houses.AddRange(SelectListHelper.PopulateList(
-                repository.List<House>(), e => e.Name,
+                await _houses.GetAllAsync(), 
+                x => x.Name,
                 Guid.Parse(HttpContext.Session.GetString("HouseId"))
                 ));
         }
@@ -45,11 +49,11 @@ public class HousesViewComponent : ViewComponent
 public class SelectedHouse
 {
     public List<SelectListItem> Houses { get; } = new List<SelectListItem> { };
-    public string HouseId { get; set; }
+    public string Id { get; set; }
 
     public SelectedHouse(string houseId, List<SelectListItem> houses)
     {
-        HouseId = houseId;
+        Id = houseId;
         Houses = houses;
     }
 }

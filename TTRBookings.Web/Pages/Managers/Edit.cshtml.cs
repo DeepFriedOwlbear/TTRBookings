@@ -1,27 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
 using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Pages.Managers;
 
 public class EditModel : PageModel
 {
-    private readonly IRepository repository;
+    private readonly IRepository<Manager> _managers;
 
     [BindProperty]
     public ManagerVM ManagerVM { get; set; }
 
-    public EditModel(IRepository repository)
+    public EditModel(IRepository<Manager> managers)
     {
-        this.repository = repository;
+        _managers = managers;
     }
 
-    public void OnGet(Guid id)
+    public async Task OnGetAsync(Guid id)
     {
-        var manager = repository.GetById<Manager>(id);
+        var manager = await _managers.GetByIdAsync(id);
 
         //convert booking to bookingvm here;
         ManagerVM = ManagerVM.Create(manager);

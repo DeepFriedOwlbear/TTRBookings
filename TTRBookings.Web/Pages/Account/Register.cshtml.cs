@@ -2,22 +2,24 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using TTRBookings.Authentication.Data;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
 
 namespace TTRBookings.Web.Pages.Account;
 
 [AllowAnonymous]
 public class RegisterModel : PageModel
 {
-    private readonly IRepository repository;
+    private readonly IRepository<User> _users;
 
-    public RegisterModel(IRepository repository)
+    public RegisterModel(IRepository<User> users)
     {
-        this.repository = repository;
+        _users=users;
     }
 
     [BindProperty]
@@ -46,7 +48,7 @@ public class RegisterModel : PageModel
         public string ConfirmPassword { get; set; }
     }
 
-    public async Task OnGetAsync(string returnUrl = null)
+    public void OnGet(string returnUrl = null)
     {
         ReturnUrl = returnUrl;
     }
@@ -57,7 +59,7 @@ public class RegisterModel : PageModel
 
         if (ModelState.IsValid)
         {
-            IList<User> users = repository.List<User>(user => user.Name == Input.Name);
+            var users = await _users.Where(x => x.Name == Input.Name).ToListAsync();
 
             if (users.Count != 0)
             {
@@ -67,8 +69,7 @@ public class RegisterModel : PageModel
             {
                 User user = Authentication.Data.User.Create(Input.Name, Input.Password);
 
-                //save to DB
-                repository.AddAndSaveChanges(user);
+                await _users.AddAsync(user);
 
                 return RedirectToPage("RegisterConfirmation", new { name = Input.Name });
             }

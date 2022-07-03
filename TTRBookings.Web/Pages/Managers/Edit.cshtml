@@ -6,7 +6,7 @@
 
 <form id="editForm" asp-controller="Managers" asp-action="Edit" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-        <input name="ManagerId" asp-for="ManagerVM.Id" type="hidden" />
+        <input name="Id" asp-for="ManagerVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
                 <label asp-for="ManagerVM.Name">Name</label>
@@ -14,7 +14,7 @@
         </div>
         <div class="form-row w-25">
             <div class="col">
-                <input class="form-control" name="ManagerName" asp-for="ManagerVM.Name" required />
+                <input class="form-control" name="Name" asp-for="ManagerVM.Name" required />
             </div>
             <div class="invalid-feedback">
                 Please provide a Manager name.

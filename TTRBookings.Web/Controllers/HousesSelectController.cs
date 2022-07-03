@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TTRBookings.Core.Interfaces;
 using TTRBookings.Web.DTOs;
 
 namespace TTRBookings.Web.Controllers;

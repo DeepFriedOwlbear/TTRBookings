@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using TTRBookings.Core;
 
-namespace TTRBookings.Core.Interfaces;
+namespace TTRBookings.Infrastructure.Data.Interfaces;
 
-public interface IRepository
+public interface IDeprecatedRepository
 {
     bool AddAndSaveChanges<TEntity>(TEntity entry) where TEntity : BaseEntity;
     bool ArchiveAndSaveChanges<TEntity>(TEntity entry) where TEntity : BaseEntity;

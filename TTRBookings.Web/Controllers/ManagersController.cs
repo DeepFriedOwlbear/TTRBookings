@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
 using TTRBookings.Infrastructure.Data.Interfaces;
 using TTRBookings.Web.DTOs;
 using TTRBookings.Web.Models;
@@ -20,13 +19,13 @@ namespace TTRBookings.Web.Controllers;
 public class ManagersController : ControllerBase
 {
     private readonly ILogger<ManagersController> _logger;
-    private readonly INewRepository<Manager> _managers;
+    private readonly IRepository<Manager> _managers;
 
     public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
 
     public ManagersController(
         ILogger<ManagersController> logger, 
-        INewRepository<Manager> managers)
+        IRepository<Manager> managers)
     {
         _logger = logger;
         _managers = managers;
@@ -36,7 +35,7 @@ public class ManagersController : ControllerBase
     [Route("create")]
     public async Task<IActionResult> Create(ManagerDTO managerDTO)
     {
-        await CheckAgainstBusinessRules(managerDTO);
+        CheckAgainstBusinessRules(managerDTO);
 
         if (ToastrErrors.Count > 0)
         {
@@ -58,7 +57,7 @@ public class ManagersController : ControllerBase
     [Route("edit")]
     public async Task<IActionResult> Edit(ManagerDTO managerDTO)
     {
-        await CheckAgainstBusinessRules(managerDTO);
+        CheckAgainstBusinessRules(managerDTO);
 
         if (ToastrErrors.Count > 0)
         {
@@ -86,7 +85,7 @@ public class ManagersController : ControllerBase
             });
     }
 
-    private async Task CheckAgainstBusinessRules(ManagerDTO managerDTO)
+    private void CheckAgainstBusinessRules(ManagerDTO managerDTO)
     {
         // Check if form fields are filled in
         if (string.IsNullOrWhiteSpace(managerDTO.Name))

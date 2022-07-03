@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TTRBookings.Core.Interfaces;
 using TTRBookings.Infrastructure.Data;
 using TTRBookings.Infrastructure.Data.Interfaces;
 
@@ -66,8 +65,8 @@ public class Startup
         services.AddDbContext<TTRBookingsContext>(opt =>
            opt.UseInMemoryDatabase("TTRBookingsContext"));
 
-        services.AddScoped<IRepository, Repository>();
-        services.AddScoped(typeof(INewRepository<>), typeof(NewRepository<>));
+        //services.AddScoped<IRepository, Repository>();
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

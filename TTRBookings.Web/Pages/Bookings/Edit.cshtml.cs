@@ -2,10 +2,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Core.QueryExtensions;
+using TTRBookings.Infrastructure.Data.Interfaces;
 using TTRBookings.Web.Helpers;
 using TTRBookings.Web.Models;
 
@@ -13,7 +17,9 @@ namespace TTRBookings.Web.Pages.Bookings;
 
 public class EditModel : PageModel
 {
-    private readonly IRepository repository;
+    private readonly IRepository<Room> _rooms;
+    private readonly IRepository<Core.Entities.Staff> _staff;
+    private readonly IRepository<Booking> _bookings;
 
     [BindProperty]
     public BookingVM BookingVM { get; set; }
@@ -23,31 +29,37 @@ public class EditModel : PageModel
     public List<SelectListItem> RoomList { get; } = new List<SelectListItem>();
     public List<SelectListItem> StaffList { get; } = new List<SelectListItem>();
 
-    public EditModel(IRepository repository)
+    public EditModel(
+        IRepository<Room> rooms,
+        IRepository<Core.Entities.Staff> staff,
+        IRepository<Booking> bookings)
     {
-        this.repository = repository;
+        _rooms=rooms;
+        _staff=staff;
+        _bookings=bookings;
     }
 
-    public void OnGet(Guid id)
+    public async Task OnGetAsync(Guid id)
     {
         //Load booking matching Id
-        var booking = repository.ReadEntryWithIncludes<Booking>(id, _ => _.Room, _ => _.Staff, _ => _.TimeSlot, _ => _.Tier);
+        var booking = await _bookings.GetByIdWithIncludes(id);
         //Populate drop-down lists
-        PopulateLists(booking.Id);
+        await PopulateLists(booking.Id);
         //convert booking to bookingvm here;
         BookingVM = BookingVM.Create(booking);
     }
 
-    private void PopulateLists(Guid bookingId)
+    private async Task PopulateLists(Guid bookingId)
     {
+        //Load Lists before returning the Page
         RoomList.AddRange(SelectListHelper.PopulateList(
-            repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+            await _rooms.Where(x => x.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))).ToListAsync(),
             e => e.Name,
             bookingId
         ));
 
         StaffList.AddRange(SelectListHelper.PopulateList(
-            repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+            await _staff.Where(X => X.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))).ToListAsync(),
             e => e.Name,
             bookingId
         ));

@@ -1,25 +1,28 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
 
 namespace TTRBookings.Web.Pages.Managers;
 
 public class IndexModel : PageModel
 {
-    private readonly IRepository repository;
+    private readonly IRepository<Manager> _managers;
 
     public IList<Manager> Managers { get; set; }
 
-    public IndexModel(IRepository repository)
+    public IndexModel(IRepository<Manager> managers)
     {
-        this.repository = repository;
+        _managers=managers;
     }
 
-    public void OnGet()
+    public async Task OnGetAsync()
     {
-        Managers = repository.List<Manager>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")));
+        Managers = await _managers.Where(x => x.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))).ToListAsync();
     }
 }

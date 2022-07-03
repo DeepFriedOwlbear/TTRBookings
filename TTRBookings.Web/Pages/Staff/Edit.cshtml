@@ -8,7 +8,7 @@
     <div class="col">
         <form id="editForm" asp-controller="Staff" asp-action="Edit" method="post" class="needs-validation" novalidate>
             <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-                <input name="StaffId" asp-for="StaffVM.Id" type="hidden" />
+                <input name="Id" asp-for="StaffVM.Id" type="hidden" />
                 <div class="form-row">
                     <div class="col">
                         <label asp-for="StaffVM.Name">Name</label>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="form-row w-25">
                     <div class="col">
-                        <input class="form-control" name="StaffName" asp-for="StaffVM.Name" />
+                        <input class="form-control" name="Name" asp-for="StaffVM.Name" />
                         <div class="invalid-feedback">
                             Please provide a Staff name.
                         </div>

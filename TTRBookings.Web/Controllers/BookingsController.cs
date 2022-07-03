@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
 using TTRBookings.Core.QueryExtensions;
 using TTRBookings.Infrastructure.Data.Interfaces;
 using TTRBookings.Web.DTOs;
@@ -21,18 +20,18 @@ namespace TTRBookings.Web.Controllers;
 public class BookingsController : ControllerBase
 {
     private readonly ILogger<BookingsController> _logger;
-    private readonly INewRepository<Booking> _bookings;
-    private readonly INewRepository<Room> _rooms;
-    private readonly INewRepository<Staff> _staff;
-    private readonly INewRepository<House> _houses;
+    private readonly IRepository<Booking> _bookings;
+    private readonly IRepository<Room> _rooms;
+    private readonly IRepository<Staff> _staff;
+    private readonly IRepository<House> _houses;
     public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
 
     public BookingsController(
         ILogger<BookingsController> logger,
-        INewRepository<Booking> bookings,
-        INewRepository<Room> rooms,
-        INewRepository<Staff> staff,
-        INewRepository<House> houses)
+        IRepository<Booking> bookings,
+        IRepository<Room> rooms,
+        IRepository<Staff> staff,
+        IRepository<House> houses)
     {
         _logger = logger;
         _bookings = bookings;
