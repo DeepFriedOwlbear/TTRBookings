@@ -33,7 +33,7 @@
             <td class="w-25 text-center">
                 <a asp-page="/Bookings/Edit" asp-route-id="@booking.Id" class="btn btn-primary btn-sm">Details</a>
                 <form onsubmit="handleFormSubmit(event, RemoveFromUI)" id="deleteEntry_@booking.Id" asp-controller="Bookings" asp-action="Delete" method="post" style="display: inline;">
-                    <input id="bookingId" name="bookingId" asp-for="@booking.Id" type="hidden" />
+                    <input id="Id" name="Id" asp-for="@booking.Id" type="hidden" />
                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                 </form>
             </td>

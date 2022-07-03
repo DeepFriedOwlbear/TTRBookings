@@ -47,10 +47,7 @@ public class ManagersController : ControllerBase
             HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
         };
 
-        return new JsonResult(
-            new { 
-                Success = await _managers.AddAsync(manager) 
-            });
+        return new JsonResult( new { Success = await _managers.AddAsync(manager) });
     }
 
     [HttpPost]
@@ -67,10 +64,7 @@ public class ManagersController : ControllerBase
         Manager manager = await _managers.GetByIdAsync(managerDTO.Id);
         manager.Name = managerDTO.Name;
 
-        return new JsonResult(
-            new { 
-                Success = await _managers.UpdateAsync(manager) 
-            });
+        return new JsonResult(new { Success = await _managers.UpdateAsync(manager) });
     }
 
     [HttpPost]
@@ -79,10 +73,7 @@ public class ManagersController : ControllerBase
     {
         Manager manager = await _managers.GetByIdAsync(managerDTO.Id);
 
-        return new JsonResult(
-            new {
-                Success = await _managers.DeleteAsync(manager)
-            });
+        return new JsonResult(new { Success = await _managers.DeleteAsync(manager) });
     }
 
     private void CheckAgainstBusinessRules(ManagerDTO managerDTO)

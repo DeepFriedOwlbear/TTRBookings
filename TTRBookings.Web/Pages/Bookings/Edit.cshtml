@@ -6,7 +6,7 @@
 
 <form id="editForm" asp-controller="Bookings" asp-action="Edit" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-        <input name="BookingId" asp-for="BookingVM.Id" type="hidden" />
+        <input name="Id" asp-for="BookingVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
                 <label asp-for="BookingVM.Staff.Name">Staff</label>
@@ -74,7 +74,7 @@
 </form>
 <br/>
 <form id="deleteEntry" asp-controller="Bookings" asp-action="Delete" method="post" style="display: inline;">
-    <input id="bookingId" name="bookingId" asp-for="@Model.BookingVM.Id" type="hidden" />
+    <input id="Id" name="Id" asp-for="@Model.BookingVM.Id" type="hidden" />
     <button type="submit" class="btn btn-danger">Delete Booking</button>
 </form>
 

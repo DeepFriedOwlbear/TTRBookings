@@ -45,11 +45,7 @@ public class StaffController : ControllerBase
             HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
         };
 
-        return new JsonResult(
-            new
-            {
-                Success = await _staff.AddAsync(staff)
-            });
+        return new JsonResult(new { Success = await _staff.AddAsync(staff) });
     }
 
     public async Task<IActionResult> Edit(StaffDTO staffDTO)
@@ -64,11 +60,7 @@ public class StaffController : ControllerBase
         Staff staff = await _staff.GetByIdAsync(staffDTO.Id);
         staff.Name = staffDTO.Name;
 
-        return new JsonResult(
-            new
-            {
-                Success = await _staff.UpdateAsync(staff)
-            });
+        return new JsonResult(new { Success = await _staff.UpdateAsync(staff) });
     }
 
     [HttpPost]
@@ -77,11 +69,7 @@ public class StaffController : ControllerBase
     {
         Staff staff = await _staff.GetByIdAsync(staffDTO.Id);
 
-        return new JsonResult(
-            new
-            {
-                Success = await _staff.DeleteAsync(staff)
-            });
+        return new JsonResult(new { Success = await _staff.DeleteAsync(staff) });
     }
 
     private void CheckAgainstBusinessRules(StaffDTO staffDTO)

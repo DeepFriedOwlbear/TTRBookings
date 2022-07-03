@@ -13,7 +13,7 @@ using TTRBookings.Web.Models;
 
 namespace TTRBookings.Web.Controllers;
 
-[Route("api/[controller]")] //< =  https://localhost:12345/api/rooms
+[Route("api/[controller]")]
 [ApiController]
 public class RoomsController : ControllerBase
 {
@@ -46,11 +46,7 @@ public class RoomsController : ControllerBase
             HouseId = Guid.Parse(HttpContext.Session.GetString("HouseId"))
         };
 
-        return new JsonResult(
-            new
-            {
-                Success = await _rooms.AddAsync(room)
-            });
+        return new JsonResult(new { Success = await _rooms.AddAsync(room) });
     }
 
     [HttpPost]
@@ -67,11 +63,7 @@ public class RoomsController : ControllerBase
         Room room = await _rooms.GetByIdAsync(roomDTO.Id);
         room.Name = roomDTO.Name;
 
-        return new JsonResult(
-            new
-            {
-                Success = await _rooms.UpdateAsync(room)
-            });
+        return new JsonResult(new { Success = await _rooms.UpdateAsync(room) });
     }
 
     [HttpPost]
@@ -80,11 +72,7 @@ public class RoomsController : ControllerBase
     {
         Room room = await _rooms.GetByIdAsync(roomDTO.Id);
 
-        return new JsonResult(
-            new
-            {
-                Success = await _rooms.DeleteAsync(room)
-            });
+        return new JsonResult(new { Success = await _rooms.DeleteAsync(room) });
     }
 
     private void CheckAgainstBusinessRules(RoomDTO roomDTO)

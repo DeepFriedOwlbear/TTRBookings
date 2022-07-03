@@ -73,7 +73,7 @@ public class BookingsController : ControllerBase
             return new JsonResult(new { Success = false, ToastrJSON = JsonConvert.SerializeObject(ToastrErrors) });
         }
 
-        Booking booking = await _bookings.GetByIdWithIncludes(bookingDTO.BookingId);
+        Booking booking = await _bookings.GetByIdWithIncludes(bookingDTO.Id);
         House house = await _houses.GetByIdWithIncludes(booking.HouseId);
 
         //assign bookingVM values to booking
@@ -92,7 +92,7 @@ public class BookingsController : ControllerBase
     [Route("delete")]
     public async Task<IActionResult> Delete(BookingDTO bookingDTO)
     {
-        Booking booking = await _bookings.GetByIdWithIncludes(bookingDTO.BookingId);
+        Booking booking = await _bookings.GetByIdWithIncludes(bookingDTO.Id);
         House house = await _houses.GetByIdWithIncludes(booking.HouseId);
 
         house.RemoveBooking(booking);
@@ -113,7 +113,7 @@ public class BookingsController : ControllerBase
         //Assign BookingVM values
         BookingVM bookingVM = new BookingVM
         {
-            Id = bookingDTO.BookingId,
+            Id = bookingDTO.Id,
             Staff = new StaffVM() { Id = bookingDTO.StaffId },
             Tier = new TierVM() { Rate = decimal.Parse(bookingDTO.TierRate) },
             Room = new RoomVM() { Id = bookingDTO.RoomId },
