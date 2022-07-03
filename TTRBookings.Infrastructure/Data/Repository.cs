@@ -73,13 +73,11 @@ public class Repository<T> : IRepository<T>
         }
     }
 
-    public async Task<T> GetByIdAsync(Guid id)
-    {
-        return await DbSet.Where(x => x.Id == id).FirstOrDefaultAsync();
-    }
+    public async Task<T> GetByIdAsync(Guid id) 
+        => await DbSet.Where(x => x.Id == id).FirstOrDefaultAsync();
 
     public async Task<IList<T>> GetAllAsync(bool archived = false)
-        => await Queryable.Where(x => x.IsArchived == archived).ToListAsync();
+        => await DbSet.Where(x => x.IsArchived == archived).ToListAsync();
 
     public TTRBookingsContext GetContext() => Context;
 

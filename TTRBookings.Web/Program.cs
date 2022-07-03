@@ -11,10 +11,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        //describe the 'world' and build it
         var host = CreateHostBuilder(args).Build();
 
-        //ask the 'world' its dependency manager to give us a database context to pass to the repository seed.
         using (var scope = host.Services.CreateScope())
         {
             var services = scope.ServiceProvider;

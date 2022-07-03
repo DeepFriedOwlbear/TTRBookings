@@ -32,7 +32,6 @@ public class Startup
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
         });
-        //Session Storage End
 
         //AddAuthentication is used for the User Login.
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -65,7 +64,6 @@ public class Startup
         services.AddDbContext<TTRBookingsContext>(opt =>
            opt.UseInMemoryDatabase("TTRBookingsContext"));
 
-        //services.AddScoped<IRepository, Repository>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
 
@@ -94,7 +92,6 @@ public class Startup
 
         //Session Storage
         app.UseSession();
-        //Session Storage End
 
         app.UseEndpoints(endpoints =>
         {
