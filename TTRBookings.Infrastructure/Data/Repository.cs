@@ -1,32 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 using TTRBookings.Core;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
 
 namespace TTRBookings.Infrastructure.Data;
 
-public class Repository : IRepository
+public class Repository<T> : IRepository<T> 
+    where T : BaseEntity
 {
-    private readonly TTRBookingsContext context;
-    private readonly ILogger<Repository> logger;
+    private IQueryable<T> _queryable => DbSet;
+    private TTRBookingsContext Context;
+    protected DbSet<T> DbSet;
 
-    public Repository(TTRBookingsContext context, ILogger<Repository> logger)
+    public Repository(TTRBookingsContext context)
     {
-        this.context = context;
-        this.logger = logger;
+        Context = context;
+        DbSet = Context.Set<T>();
     }
 
-    public bool CreateEntry<TEntity>(TEntity entry)
-        where TEntity : BaseEntity
+    public async Task<bool> AddAsync(T entity)
     {
         try
         {
-            context.Add(entry);
-            context.SaveChanges();
+            await DbSet.AddAsync(entity);
+            await Context.SaveChangesAsync();
             return true;
         }
         catch
@@ -35,85 +38,58 @@ public class Repository : IRepository
         }
     }
 
-    public TEntity ReadEntry<TEntity>(Guid id)
-        where TEntity : BaseEntity
+    public async Task<bool> UpdateAsync(T entity)
     {
-        //load entry from the DB where id matches
-        return context.Set<TEntity>()
-            .Where(e => !e.IsDeleted)
-            .FirstOrDefault(e => e.Id == id);
-    }
-
-    public TEntity UpdateEntry<TEntity>(TEntity entry)
-        where TEntity : BaseEntity
-    {
-        //load entry from the DB
-        //update entry
-        //savechanges
-        context.Update(entry);
-        context.SaveChanges();
-        return entry;
-    }
-
-    public bool DeleteEntry<TEntity>(TEntity entry)
-        where TEntity : BaseEntity
-    {
-        //find entry in the DB
-        //delete entry
-        //savechanges
-
         try
         {
-            entry.IsDeleted = true;
-            UpdateEntry(entry);
+            DbSet.Update(entity);
+            await Context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteAsync(T entity, bool archive = true)
+    {
+        try
+        {
+            if (archive)
+            {
+                entity.IsArchived = true;
+                await UpdateAsync(entity);
+                return true;
+            }
+
+            DbSet.Remove(entity);
+            await Context.SaveChangesAsync();
             return true;
         }
         catch
         {
             return false;
         }
-        //context.Remove(entry);
-        //context.SaveChanges();
     }
 
-    public IList<TEntity> List<TEntity>(Expression<Func<TEntity, bool>> predicate)
-        where TEntity : BaseEntity
-        => ListWithIncludes(predicate);
-
-    public IList<TEntity> List<TEntity>()
-        where TEntity : BaseEntity
-        => ListWithIncludes<TEntity>(_ => true);
-
-    public IList<TEntity> ListWithIncludes<TEntity>(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
-        where TEntity : BaseEntity
+    public async Task<T> GetByIdAsync(Guid id)
     {
-        return context.Set<TEntity>()
-            .AddIncludes(includes)
-            .Where(e => !e.IsDeleted)
-            .Where(predicate)
-            .ToList();
+        return await DbSet.Where(x => x.Id == id).FirstOrDefaultAsync();
     }
 
-    public TEntity ReadEntryWithIncludes<TEntity>(Guid id, params Expression<Func<TEntity, object>>[] includes) where TEntity : BaseEntity
-    {
-        return context.Set<TEntity>()
-            .AddIncludes(includes)
-            .Where(e => !e.IsDeleted)
-            .FirstOrDefault(e => e.Id == id);
-    }
-}
+    public async Task<IList<T>> GetAllAsync(bool archived = false)
+        => await _queryable.Where(x => x.IsArchived == archived).ToListAsync();
 
-internal static class RepositoryExtensions
-{
-    public static IQueryable<TEntity> AddIncludes<TEntity>(this IQueryable<TEntity> query, Expression<Func<TEntity, object>>[] includes) where TEntity : BaseEntity
-    {
-        foreach (var include in includes)
-        {
-            var includeString = include.ToString();
-            includeString = includeString.Replace(" ", null).Replace("_=>_.", null).Replace(".get_Item(0)", null);
-            query = query.Include(includeString);
-        }
+    public TTRBookingsContext GetContext() => Context;
 
-        return query;
-    }
+    #region Inherited Implementations
+
+    IEnumerator IEnumerable.GetEnumerator() => _queryable.GetEnumerator();
+    public IEnumerator<T> GetEnumerator() => _queryable.GetEnumerator();
+    public IQueryProvider Provider => _queryable.Provider;
+    public Type ElementType => _queryable.ElementType;
+    public Expression Expression => _queryable.Expression;
+
+    #endregion
 }

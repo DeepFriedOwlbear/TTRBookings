@@ -1,37 +1,36 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Core.QueryExtensions;
+using TTRBookings.Infrastructure.Data.Interfaces;
 
 namespace TTRBookings.Web.ViewComponents;
 
 public class BookingsViewComponent : ViewComponent
 {
-    private readonly IRepository repository;
+    private readonly IRepository<Booking> _bookings;
     public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
-    public BookingsViewComponent(IRepository repository)
+    public BookingsViewComponent(
+        IRepository<Booking> bookings)
     {
-        this.repository = repository;
+        _bookings=bookings;
     }
 
-    public IViewComponentResult Invoke(Guid repositoryId, string repositoryFilter)
+    public async Task<IViewComponentResult> InvokeAsync(Guid repositoryId, string repositoryFilter)
     {
+        var bookingsQuery = _bookings.WithIncludes();
+
         Bookings = repositoryFilter switch
         {
-            "staff" => repository.ListWithIncludes<Booking>(
-                _ => _.Staff.Id == repositoryId,
-                _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot),
-
-            "room" => repository.ListWithIncludes<Booking>(
-                _ => _.Room.Id == repositoryId,
-                _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot),
-
-            _ => repository.ListWithIncludes<Booking>(
-                _ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")),
-                _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot),
+            "staff" => await bookingsQuery.Where(x => x.Staff.Id == repositoryId).ToListAsync(),
+            "room"  => await bookingsQuery.Where(x => x.Room.Id == repositoryId).ToListAsync(),
+                  _ => await bookingsQuery.Where(x => x.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))).ToListAsync()
         };
 
         return View(new BookingsList(Bookings) { RepositoryFilter = repositoryFilter });

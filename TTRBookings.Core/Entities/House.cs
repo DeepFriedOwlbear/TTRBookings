@@ -84,9 +84,9 @@ public class House : BaseEntity
 
         //update booking
         booking.Update(staff)
-            .Update(room)
-            .Update(tier)
-            .Update(timeSlot);
+               .Update(room)
+               .Update(tier)
+               .Update(timeSlot);
     }
 
     private decimal TotalStaffRevenue()

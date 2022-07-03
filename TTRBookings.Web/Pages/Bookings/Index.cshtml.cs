@@ -1,25 +1,20 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
 
 namespace TTRBookings.Web.Pages.Bookings;
 
-//https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/da1?view=aspnetcore-5.0
-
 public class IndexModel : PageModel
 {
-    private readonly IRepository repository;
-
     public IList<Booking> Bookings { get; set; } = new List<Booking>();
 
-    public IndexModel(IRepository repository)
+    public IndexModel()
     {
-        this.repository = repository;
+
     }
 
     public void OnGet()
     {
-        //Bookings = repository.ListWithIncludes<Booking>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId")), _ => _.Room, _ => _.Staff, _ => _.Tier, _ => _.TimeSlot);
+    
     }
 }

@@ -6,7 +6,7 @@
 
 <form id="editForm" asp-controller="Rooms" asp-action="Edit" method="post" class="needs-validation" novalidate>
     <fieldset id="FormFieldset" class="p-3 mb-2 bg-secondary text-white" disabled>
-        <input name="RoomId" asp-for="RoomVM.Id" type="hidden" />
+        <input name="Id" asp-for="RoomVM.Id" type="hidden" />
         <div class="form-row">
             <div class="col">
                 <label asp-for="RoomVM.Name">Name</label>
@@ -14,7 +14,7 @@
         </div>
         <div class="form-row w-25">
             <div class="col">
-                <input class="form-control" name="RoomName" asp-for="RoomVM.Name" />
+                <input class="form-control" name="Name" asp-for="RoomVM.Name" />
             </div>
             <div class="invalid-feedback">
                 Please provide a Room name.

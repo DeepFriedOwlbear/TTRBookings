@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,18 +11,18 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using TTRBookings.Authentication;
 using TTRBookings.Authentication.Data;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
 
 namespace TTRBookings.Web.Pages.Account;
 
 [AllowAnonymous]
 public class LoginModel : PageModel
 {
-    private readonly IRepository repository;
+    private readonly IRepository<User> _users;
 
-    public LoginModel(IRepository repository)
+    public LoginModel(IRepository<User> users)
     {
-        this.repository = repository;
+        _users = users;
     }
 
     [BindProperty]
@@ -47,7 +48,7 @@ public class LoginModel : PageModel
     {
         if (ModelState.IsValid)
         {
-            IList<User> users = repository.List<User>(user => user.Name == Input.Name);
+            var users = await _users.Where(x => x.Name == Input.Name).ToListAsync();
 
             if (users.Count == 0 || !Encryption.VerifyPassword(Input.Password, users.FirstOrDefault().Password))
             {

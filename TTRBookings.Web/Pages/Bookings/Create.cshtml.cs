@@ -2,10 +2,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TTRBookings.Core.Entities;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
 using TTRBookings.Web.Helpers;
 using TTRBookings.Web.Models;
 
@@ -13,7 +16,8 @@ namespace TTRBookings.Web.Pages.Bookings;
 
 public class CreateModel : PageModel
 {
-    private readonly IRepository repository;
+    private readonly IRepository<Room> _rooms;
+    private readonly IRepository<Core.Entities.Staff> _staff;
 
     public Dictionary<string, string> ToastrErrors { get; set; } = new Dictionary<string, string> { };
 
@@ -22,28 +26,31 @@ public class CreateModel : PageModel
 
     [BindProperty] public BookingVM BookingVM { get; set; }
 
-    public CreateModel(IRepository repository)
+    public CreateModel(
+        IRepository<Room> rooms, 
+        IRepository<Core.Entities.Staff> staff)
     {
-        this.repository = repository;
+        _rooms = rooms;
+        _staff = staff;
     }
 
-    public void OnGet()
+    public async Task OnGetAsync()
     {
         //populate drop-down lists
-        PopulateLists(null);
+        await PopulateLists(null);
     }
 
-    private void PopulateLists(Guid? bookingId)
+    private async Task PopulateLists(Guid? bookingId)
     {
         //Load Lists before returning the Page
-        RoomList.AddRange(SelectListHelper.PopulateList<Room>(
-            repository.List<Room>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+        RoomList.AddRange(SelectListHelper.PopulateList(
+            await _rooms.Where(x => x.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))).ToListAsync(),
             e => e.Name,
             bookingId
         ));
 
-        StaffList.AddRange(SelectListHelper.PopulateList<Core.Entities.Staff>(
-            repository.List<Core.Entities.Staff>(_ => _.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))),
+        StaffList.AddRange(SelectListHelper.PopulateList(
+            await _staff.Where(X => X.HouseId == Guid.Parse(HttpContext.Session.GetString("HouseId"))).ToListAsync(),
             e => e.Name,
             bookingId
         ));

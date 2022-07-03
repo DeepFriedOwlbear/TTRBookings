@@ -1,21 +1,23 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TTRBookings.Authentication.Data;
-using TTRBookings.Core.Interfaces;
+using TTRBookings.Infrastructure.Data.Interfaces;
 
 namespace TTRBookings.Web.Pages.Account;
 
 [AllowAnonymous]
 public class RegisterConfirmationModel : PageModel
 {
-    private readonly IRepository repository;
+    private readonly IRepository<User> _users;
 
-    public RegisterConfirmationModel(IRepository repository)
+    public RegisterConfirmationModel(IRepository<User> users)
     {
-        this.repository = repository;
+        _users=users;
     }
 
     public string Name { get; set; }
@@ -27,7 +29,7 @@ public class RegisterConfirmationModel : PageModel
             return RedirectToPage("/Index");
         }
 
-        IList<User> users = repository.List<User>(user => user.Name == name);
+        var users = await _users.Where(x => x.Name == name).ToListAsync();
 
         if (users.Count == 0)
         {

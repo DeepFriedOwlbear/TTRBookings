@@ -26,7 +26,7 @@
             <td class="w-25 text-center">
                 <a asp-page="./Edit" asp-route-id="@manager.Id" class="btn btn-primary btn-sm">Details</a>
                 <form id="deleteEntry_@manager.Id" asp-controller="Managers" asp-action="Delete" method="post" style="display: inline;">
-                    <input id="managerId" name="managerId" asp-for="@manager.Id" type="hidden" />
+                    <input id="Id" name="Id" asp-for="@manager.Id" type="hidden" />
                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                 </form>
             </td>
