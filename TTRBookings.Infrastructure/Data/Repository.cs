@@ -14,7 +14,7 @@ namespace TTRBookings.Infrastructure.Data;
 public class Repository<T> : IRepository<T> 
     where T : BaseEntity
 {
-    private IQueryable<T> _queryable => DbSet;
+    private IQueryable<T> Queryable => DbSet;
     private TTRBookingsContext Context;
     protected DbSet<T> DbSet;
 
@@ -79,17 +79,17 @@ public class Repository<T> : IRepository<T>
     }
 
     public async Task<IList<T>> GetAllAsync(bool archived = false)
-        => await _queryable.Where(x => x.IsArchived == archived).ToListAsync();
+        => await Queryable.Where(x => x.IsArchived == archived).ToListAsync();
 
     public TTRBookingsContext GetContext() => Context;
 
     #region Inherited Implementations
 
-    IEnumerator IEnumerable.GetEnumerator() => _queryable.GetEnumerator();
-    public IEnumerator<T> GetEnumerator() => _queryable.GetEnumerator();
-    public IQueryProvider Provider => _queryable.Provider;
-    public Type ElementType => _queryable.ElementType;
-    public Expression Expression => _queryable.Expression;
+    IEnumerator IEnumerable.GetEnumerator() => Queryable.GetEnumerator();
+    public IEnumerator<T> GetEnumerator() => Queryable.GetEnumerator();
+    public IQueryProvider Provider => Queryable.Provider;
+    public Type ElementType => Queryable.ElementType;
+    public Expression Expression => Queryable.Expression;
 
     #endregion
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using TTRBookings.Core;
 
-namespace TTRBookings.Infrastructure.Data.Interfaces;
+namespace TTRBookings.Infrastructure.Deprecated;
 
 public interface IDeprecatedRepository
 {

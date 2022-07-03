@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using TTRBookings.Core;
-using TTRBookings.Infrastructure.Data.Interfaces;
+using TTRBookings.Infrastructure.Data;
 
-namespace TTRBookings.Infrastructure.Data;
+namespace TTRBookings.Infrastructure.Deprecated;
 
 public class DeprecatedRepository : IDeprecatedRepository
 {
