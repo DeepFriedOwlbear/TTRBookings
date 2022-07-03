@@ -32,7 +32,6 @@ public class Program
             }
         }
 
-        //run the 'world'
         host.Run();
     }
 
